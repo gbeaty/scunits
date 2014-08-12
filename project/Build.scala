@@ -14,7 +14,7 @@ object Ddaq extends Build {
   val ddaqDeps = Seq(
     "org.scalaz" %% "scalaz-core" % "7.0.6",
     "org.specs2" %% "specs2" % "2.4" % "test",
-    "com.chuusai" % "shapeless_2.10.4" % "2.0.0"
+    "com.chuusai" %% "shapeless" % "2.0.0"
   ) ++ jodas
 
   val commonResolvers = Seq(
@@ -28,11 +28,11 @@ object Ddaq extends Build {
     "Scalaz Bintray Repo" at "http://dl.bintray.com/scalaz/releases"
   )
 
-  scalacOptions in Test ++= Seq("-Yrangepos")
+  // scalacOptions in Test ++= Seq("-Yrangepos")
 
   def project(name: String, path: String) = sbt.Project(
     name,
-    base = file(name),
+    base = file(path),
     settings = Defaults.defaultSettings ++ Seq(
       scalaVersion := scala,
       resolvers ++= commonResolvers,
