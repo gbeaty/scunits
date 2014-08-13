@@ -1,10 +1,10 @@
 package scunits
-import shapeless._
+
+import scunits.tlist._
+import scunits.nums._
 
 trait Quantity
-abstract class BaseQuantity(val name: String, val symbol: String) extends Quantity {
-  type Basis = this.type :: HNil
-}
+class BaseQuantity(val name: String, val symbol: String) extends Quantity
 
 object Length extends BaseQuantity("length", "L")
 object Time extends BaseQuantity("time", "T")
@@ -15,6 +15,82 @@ object ElectricCurrent extends BaseQuantity("electric current", "I")
 object LuminousIntensity extends BaseQuantity("luminous intensity", "J")
 object Angle extends BaseQuantity("angle", "")
 object SolidAngle extends BaseQuantity("solid angle", "")
+
+object QList extends TList[BaseQuantity]
+import QList._
+
+trait BaseQuantities {
+  type Quantities <: TEl[BaseQuantity]
+
+  trait Mapper extends TMap[BaseQuantity] {
+    type Out = Integer
+    type Apply[Q <: BaseQuantity] = _0
+  }
+
+  type Mags = Magnitudes[Quantities, Quantities#Map[Mapper]]
+}
+
+trait Magnitudes[Q <: TEl[BaseQuantity], E <: TEl[Integer]] {
+  type Exponents = E
+  type *[R <: Magnitudes[Q, _ <: TEl[Integer]]] = E#Zip[R#Exponents,Integer]
+  type /[R <: Magnitudes[Q, _ <: TEl[Integer]]]
+  type ^[I <: Integer]
+}
+
+object PhysicalQuantities extends BaseQuantities {
+  type Quantities =
+    Length.type :: Time.type :: Mass.type :: Temperature.type :: AmountOfSubstance.type ::
+    ElectricCurrent.type :: LuminousIntensity.type :: Angle.type :: SolidAngle.type :: TNil[BaseQuantity]
+}
+
+/*trait DerivedQuantity[BQ <: TList[BaseQuantity]] extends TList[Magnitude[_ <: BaseQuantity,_ <: Integer]] {
+  
+  trait QMap extends TMap[BaseQuantity] {
+    type Out[Q <: BaseQuantity] = Magnitude[Q,_0]
+  }
+}*/
+
+/*object Units {
+  import scunits.nums._
+
+  trait Units[U <: Units[U]] {
+    type Mult[R <: U] <: Units[U]
+    type Div[R <: U] <: Units[U]
+  }
+  trait UNil extends Units[UNil] {
+    type Mult[R <: Units[UNil]] = UNil
+    type Div[R <: Units[UNil]] = UNil
+  }
+  trait UEl[Q <: BaseQuantityEl, M <: Integer, T <: SuccQuantity[_ <: BaseQuantity]] extends Units[UEl[Q,_<:Integer,T]] {
+    type Mag = M
+    type Mult[R <: UEl[Q,_<:Integer,T]] = UEl[Q, M + R#Mag, T]
+    type Div[R <: UEl[Q,_<:Integer,T]] = UEl[Q, M - R#Mag, T]
+  }
+}*/
+
+/*sealed trait Units[M <: Integer, Q <: BaseQuantityEl] {
+  type Magnitude = M
+  type Quantity = Q
+  // type Result = Units[_ <: Integer, Q]
+
+  type Mult[R <: Units[_ <: Integer,Q]]// <: Units[M + R#Magnitude, Q]
+}
+sealed trait LastUnit[M <: Integer, Q <: FirstQuantity] extends Units[M,Q] {
+  type Mult[R <: LastUnit[_ <: Integer,Q]] = LastUnit[M + R#Magnitude, Q]
+}*/
+/*trait SuccUnit[M <: Integer, Q <: SuccQuantity[_ <: BaseQuantityEl], T <: Units[_ <: Integer, Q#Prev]] extends Units[M,Q] {
+  type Tail = T
+
+  // type Mult[R <: SuccUnit[_ <: Integer, Q, _ <: Units[_ <: Integer, Q]]]
+}*/
+
+/*trait Units[M <: Integer, Q <: BaseQuantityEl, T <: Units[_ <: Integer, _, _]] {
+  type Magnitude = M
+  type Quantity = Q
+  type Tail = T
+
+  // type Multiply[R <: Units[_ <: Integer, Q]] = Units[Magnitude#Add[R#Magnitude], Q]
+}*/
 
 // abstract class DerivedQuantity[B <: HList](implicit ) extends Quantity
 
@@ -28,28 +104,6 @@ class Div[L <: Quantity, R <: Quantity](l: L, r: R)
 
 object Speed extends Div(Length,Time)
 object Acceleration extends Div(Speed,Time)*/
-trait Multiplier[L <: Quantity, R <: Quantity, E <: Quantity] {
+/*trait Multiplier[L <: Quantity, R <: Quantity, E <: Quantity] {
   def apply(l: Measurement[L], r: Measurement[R]) = Measurement[E](l.v * r.v)
-}
-
-object QuantityOps {
-
-}
-
-protected case class Measurement[Q <: Quantity](v: Double) extends AnyVal {
-  def +(m: Measurement[Q]) = Measurement(v + m.v)
-  def -(m: Measurement[Q]) = Measurement(v - m.v)
-
-  def *[R <: Quantity, E <: Quantity](r: Measurement[R])(implicit m: Multiplier[Q,R,E]): Measurement[E] = m(this, r)
-}
-
-object Test {
-  import si._
-  import shapeless._
-  import syntax.singleton._
-  import record._
-
-  // type Test = (Length.type ->> Int) :: (Time.type ->> Int) :: HNil
-  // def exponent(e: Int) = if(e < 0) (Nat(-e), true) else (Nat(e), false)
-  val test = (Length ->> 1) :: (Time ->> -1) :: HNil
-}
+}*/
