@@ -1,7 +1,7 @@
 package scunits
 
 import scunits.tlist._
-import scunits.nums._
+import scunits.integer._
 
 trait Quantity
 class BaseQuantity(val name: String, val symbol: String) extends Quantity
@@ -27,14 +27,7 @@ trait BaseQuantities {
     type Apply[Q <: BaseQuantity] = _0
   }
 
-  type Mags = Magnitudes[Quantities, Quantities#Map[Mapper]]
-}
-
-trait Magnitudes[Q <: TEl[BaseQuantity], E <: TEl[Integer]] {
-  type Exponents = E
-  type *[R <: Magnitudes[Q, _ <: TEl[Integer]]] = E#Zip[R#Exponents,Integer]
-  type /[R <: Magnitudes[Q, _ <: TEl[Integer]]]
-  type ^[I <: Integer]
+  // type Dimensions = Magnitudes[Quantities, Quantities#Map[Mapper]]
 }
 
 object PhysicalQuantities extends BaseQuantities {
@@ -42,6 +35,26 @@ object PhysicalQuantities extends BaseQuantities {
     Length.type :: Time.type :: Mass.type :: Temperature.type :: AmountOfSubstance.type ::
     ElectricCurrent.type :: LuminousIntensity.type :: Angle.type :: SolidAngle.type :: TNil[BaseQuantity]
 }
+
+package object quantity {
+  type Exponents = TEl[Integer]
+  type Quantities = TEl[BaseQuantity]
+  // type *[L <: Exponents, R <: Exponents] = L#Zip[R,Integer]#Map[Op[+]]
+  //type Div[R <: Exponents] = Zip[R,Integer]#Map[Op[-]]
+}
+
+trait Dimension[Q <: TEl[BaseQuantity], E <: TEl[Integer]] {
+  type Quantities = Q
+  type Exponents = E
+  type Mult[R <: Dimension[Q,_ <: TEl[Integer]]] = Dimension[Q,E#Zip[R#Exponents,Integer]#Map[Op[+]]]
+  type Div[R <: Dimension[Q,_ <: TEl[Integer]]] = Dimension[Q,E#Zip[R#Exponents,Integer]#Map[Op[-]]]
+  // type Mult[RE <: TEl[Integer]] = Dimension[Q,E#Zip[RE,Integer]#Map[Op[+]]]
+}
+
+/*trait Magnitudes[Q <: Quantities, E <: Exponents] {
+  type Exponents = E
+  type Quantities = Q
+}*/
 
 /*trait DerivedQuantity[BQ <: TList[BaseQuantity]] extends TList[Magnitude[_ <: BaseQuantity,_ <: Integer]] {
   

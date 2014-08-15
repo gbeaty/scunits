@@ -2,7 +2,7 @@ package scunits
 
 case class UnitM[Q <: Quantity](name: String, symbol: String, mult: Double = 1.0, offset: Double = 0.0) {
 
-  def construct(v: Double) = Measurement[Q](v)
+  def construct(v: Double) = Measure(v)
 
   def apply(v: Double) = construct(mult * v + offset)  
 }

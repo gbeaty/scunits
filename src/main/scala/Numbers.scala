@@ -1,6 +1,6 @@
 package scunits
 
-package object nums {
+package object integer {
 
   trait Integer {
     type Succ <: Integer
