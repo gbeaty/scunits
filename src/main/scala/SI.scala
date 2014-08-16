@@ -1,6 +1,7 @@
 package scunits
 
 package object si {
+  import scunits.quantity.Physical._
 
   object Prefixes {
     val yocto = new Prefix("yocto", "y", 1e-24)
