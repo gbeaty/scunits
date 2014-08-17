@@ -5,11 +5,11 @@ import scunits.integer._
 import scunits.bool._
 import scunits.integer.Ops._
 
-trait BaseDim[I <: NonNegInt, M <: NonZeroInt] {
+trait BaseDim[I <: NonNegInt, M <: Integer] {
   type Index = I
   type Mag = M
-  // type Mult[R <: Dimension[I,_ <: NonZeroInt]] = Dimension[I,E + R#Exponent]
-  // type Div[R <: Dimension[I,_ <: NonZeroInt]] = Dimension[I,E - R#Exponent]
+  type Mult[R <: BaseDim[I,_ <: Integer]] = BaseDim[I,M + R#Mag]
+  type Div[R <: BaseDim[I,_ <: Integer]] = BaseDim[I,M - R#Mag]
 }
 
 object Dims {
@@ -19,13 +19,14 @@ object Dims {
 import Dims._
 trait Dims {
   type Empty <: Bool
-  type Mult[R <: SomeDim] <: SomeDims
+  type Mult[R <: SomeDim]
 }
 trait Dim[H <: SomeDim, T <: Dims] extends Dims {
   type Empty = False
   // type Test = (H#Index > H#Mag)#Ifs[Int,Int,Int]
   // val t: Test = 2
-  // type Mult[R <: SomeDim] = (H#Index > R#Index)#If[SomeDims,SomeDims]
+  private type HmR[R <: SomeDim, RM <: Integer] = RM#IsPos#If[Dim[R,this.type],this.type]
+  type Mult[R <: SomeDim] = HmR[R, H#Index - R#Index]
 }
 trait DimNil extends Dims {
   type Empty = True
