@@ -2,6 +2,7 @@ package scunits
 
 import scunits.tlist._
 import scunits.integer._
+import scunits.integer.Ops._
 
 class BaseQuantity(val name: String, val symbol: String)
 
