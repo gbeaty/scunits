@@ -1,6 +1,7 @@
 package scunits
 
 import scunits.bool._
+import scunits2._
 
 package object integer {
 
@@ -24,6 +25,7 @@ package object integer {
     type Less[R <: Integer] = Sub[R]#IsNeg
     type GreaterOrEq[R <: Integer] = Sub[R]#IsNeg#Not
     type LessOrEq[R <: Integer] = Sub[R]#IsPos#Not
+    type BranchNegZeroPos[B, N<:B, Z<:B, P<:B] <: B
   }
 
   trait NonNegInt extends Integer {
@@ -37,9 +39,11 @@ package object integer {
   }
   trait NegInt extends NonPosInt with NonZeroInt {
     type IsNeg = True
+    type BranchNegZeroPos[B, N<:B, Z<:B, P<:B] = N
   }
   trait PosInt extends NonNegInt with NonZeroInt{
     type IsPos = True
+    type BranchNegZeroPos[B, N<:B, Z<:B, P<:B] = P
   }  
   type Count = SuccInt[_]
 
@@ -65,6 +69,7 @@ package object integer {
     type Pred = PredInt[_0]
     type Sub[N <: Integer] = N#Neg
     type Neg = _0
+    type BranchNegZeroPos[B, N<:B, Z<:B, P<:B] = Z
   }
 
   object Ops {
