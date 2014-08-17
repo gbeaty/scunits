@@ -7,9 +7,6 @@ import scunits.integer.Ops._
 trait DimensionLike {
   type Id <: NonNegInt
   type Mag <: Integer
-
-  type Mult[R <: DimensionLike] = Dimension[Id, Mag + R#Mag]
-  type Div[R <: DimensionLike] = Dimension[Id, Mag - R#Mag]
 }
 trait Dimension[I <: NonNegInt, M <: Integer] extends DimensionLike {
   type Mag = M 
@@ -17,36 +14,44 @@ trait Dimension[I <: NonNegInt, M <: Integer] extends DimensionLike {
 }
 
 trait DList {
-  type Add[R <: DimensionLike] <: DNelLike
-  type Mult[R <: DList] <: DList
-  protected type MultL[L <: DList] <: DList
+  type Add[R <: DimensionLike] = Op[R,+]
+  type Sub[R <: DimensionLike] = Op[R,-]
+  type Op[R <: DimensionLike, O[_ <: Integer, _ <: Integer] <: Integer] <: DNelLike
+
+  type Mult[R <: DList] = Combine[R,+]
+  type Div[R <: DList] = Combine[R,-]
+
+  type Combine[R <: DList, O[_ <: Integer, _ <: Integer] <: Integer] <: DList
+  protected type CombineL[L <: DList, O[_ <: Integer, _ <: Integer] <: Integer] <: DList
+
+  type Negate <: DList
 }
 trait DNelLike extends DList {
   type Head <: DimensionLike
   type Tail <: DList
 
-  type Add[R <: DimensionLike] = (R#Id - Head#Id)#BranchNegZeroPos[
+  type Op[R <: DimensionLike, O[_ <: Integer, _ <: Integer] <: Integer] = (R#Id - Head#Id)#BranchNegZeroPos[
     DNelLike,
-    DNel[R,DNel[Head,Tail]],
-    DNel[Dimension[Head#Id,Head#Mag + R#Mag],Tail],
-    DNel[Head,Tail#Add[R]]
+    DNel[Dimension[R#Id,O[_0,R#Mag]],DNel[Head,Tail]],
+    DNel[Dimension[Head#Id,O[Head#Mag,R#Mag]],Tail],
+    DNel[Head,Tail#Op[R,O]]
   ]
 
-  type Mult[R <: DList] = R#MultL[DNel[Head,Tail]]
-  type MultL[L <: DList] = L#Add[Head]#Mult[Tail]
-  // type MultL[L <: DNelLike] = L#Add[Quantities.Length.]
-  // DNel[Dimension[_0,_2],DNil]
+  type Combine[R <: DList, O[_ <: Integer, _ <: Integer] <: Integer] = R#CombineL[DNel[Head,Tail],O]
+  protected type CombineL[L <: DList, O[_ <: Integer, _ <: Integer] <: Integer] = L#Op[Head,O]#Combine[Tail,O]
+  type Negate = DNel[Dimension[Head#Id,Head#Mag#Neg],Tail#Negate]
 }
-// Length#Mult[Length] = Length#MultL[Length] = Length#Add[Length.Dim]#Mult[DNil]
+
 trait DNel[H <: DimensionLike, T <: DList] extends DNelLike {
   type Head = H
   type Tail = T
 }
 
 trait DNil extends DList {
-  type Add[R <: DimensionLike] = DNel[R,DNil]
-  type Mult[R <: DList] = R
-  type MultL[L <: DList] = L
+  type Op[R <: DimensionLike, O[_ <: Integer, _ <: Integer] <: Integer] = DNel[Dimension[R#Id,O[_0,R#Mag]],DNil]
+  type Combine[R <: DList, O[_ <: Integer, _ <: Integer] <: Integer] = R
+  protected type CombineL[L <: DList, O[_ <: Integer, _ <: Integer] <: Integer] = L
+  type Negate = DNil
 }
 
 class BaseQuantity[I <: NonNegInt](val name: String, val symbol: String) {
@@ -60,61 +65,64 @@ object Quantities {
   object Time extends BaseQuantity[_1]("time", "T")
   object Mass extends BaseQuantity[_2]("mass", "M")
   object Temperature extends BaseQuantity[_3]("temperature", "Θ")
-  object AmountOfSubstance extends BaseQuantity[_4]("mole", "N")
-  object ElectricCurrent extends BaseQuantity[_5]("electric current", "I")
+  object AmountOfSubstance extends BaseQuantity[_4]("mole", "N")  
   object LuminousIntensity extends BaseQuantity[_6]("luminous intensity", "J")
   object Angle extends BaseQuantity[_7]("angle", "")
   object SolidAngle extends BaseQuantity[_8]("solid angle", "")
   object Bit extends BaseQuantity[_9]("bit", "b")
 
   type *[L <: DList, R <: DList] = L#Mult[R]
+  type /[L <: DList, R <: DList] = L#Div[R]
 
   type Area = Length.Base * Length.Base
   type Volume = Area * Length.Base
+  type Density = Volume / Mass.Base
+  type Speed = Length.Base / Time.Base
+  type Acceleration = Speed / Time.Base
+  type Frequency = DNil / Time.Base
+  type Force = Mass.Base * Acceleration
+  type Pressure = Force / Area
+  type Energy = Force * Mass.Base
+  type Power = Energy / Time.Base
 
-  object Electrical {
-    type Capacity = ElectricCurrent.Base * Time.Base
+  object Electric {
+    object Current extends BaseQuantity[_5]("electric current", "I")
+    type Charge = Current.Base * Time.Base
+    type Potential = Power / Current.Base
+    type Capacitance = Charge / Potential
+    type Resistance = Potential / Current.Base
+    type Conductance = Current.Base / Potential
+    type Flux = Potential / Time.Base
+    type FieldStrength = Flux / Area
+    type Inductance = FieldStrength / Current.Base
   }
-  // type Volume = Area * Length.type
+
+  type Illuminance = LuminousIntensity.Base / Area
+
+  object Radioactive {
+    type Decay = Frequency
+    type Dose = Area / (Decay * Decay)
+  }
+
+  type CatalyticActivity = AmountOfSubstance.Base / Time.Base
 }
 
 object Tests {
   import Quantities._
+  import Electric._
 
-  implicitly[Length.Dim =:= Dimension[_0,_1]]
-  implicitly[Length.Dim#Mult[Length.Dim] =:= Dimension[_0,_2]]
-  implicitly[Length.Dim#Div[Length.Dim] =:= Dimension[_0,_0]]
-  implicitly[Length.Dim#Mult[Length.Dim]#Div[Length.Dim] =:= Dimension[_0,_1]]
+  implicitly[Current.Base#Add[Time.Dim] =:= Charge]
+  implicitly[Time.Base#Add[Current.Dim] =:= Charge]
 
-  type LengthAndTime = DNel[Length.Dim, DNel[Time.Dim,DNil]]
-  implicitly[Length.Base#Add[Time.Dim] =:= LengthAndTime]
-  implicitly[Time.Base#Add[Length.Dim] =:= LengthAndTime]
+  implicitly[Volume#Negate =:= DNel[Dimension[_0,_3#Neg],DNil]]
 
   implicitly[DNil * DNil =:= DNil]
   implicitly[DNil * Length.Base =:= Length.Base]
   implicitly[Length.Base * DNil =:= Length.Base]
   implicitly[Area =:= DNel[Dimension[_0,_2],DNil]]
   implicitly[Volume =:= DNel[Dimension[_0,_3],DNil]]
-  implicitly[Electrical.Capacity =:= DNel[Dimension[_1,_1],DNel[Dimension[_5,_1],DNil]]]
-  implicitly[Time.Base * ElectricCurrent.Base =:= Electrical.Capacity]
+  implicitly[Charge =:= DNel[Dimension[_1,_1],DNel[Dimension[_5,_1],DNil]]]
+  implicitly[Time.Base * Current.Base =:= Charge]
 
-  // DNel[Dimension[_0,_2],DNil]
-
-  // DNel[Length.Dim,DNel[Time.Dim,DNil]]
-
-  // implicitly[Length.Base#Add[Time.Dim] =:= DNel[Dimension[_1,_1], DNil]]
-
-  // Time.Dim#Id#Sub[_0]#BranchNegZeroPos[DNel[Dimension[_0,Time.Dim#Mag#Succ],DNil],DNel[Time.Dim,DNil]]
-
-  // _1#Succ#DoNonZero[[NM <: Integer]Dimension[_0,NM],One]
-
-  // val t: Area = 1
-
-  // implicitly[Length.Base =:= DNil#Insert[Length.Base]]
-  // implicitly[Length.Base =:= DNel[_0,_1,DNil]]
-  // implicitly[Area =:= DNel[_0,_2,DNil]]
-  // implicitly[DNil#Combine[Length.type] =:= DNel[_0,_1,DNil]]
-  // implicitly[DNil * Length.type =:= Length.type]
-  // implicitly[Length.type * DNil =:= Length.type]
-  // implicitly[Area =:= DNel[BaseDim[_0,_2],DNil]]
+  // implicitly[(DNil / Time.Base) =:= DNel[Dimension[_1,_1#Neg],DNil]]
 }
