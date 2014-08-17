@@ -1,25 +1,29 @@
-package scunits
-
 import scunits.tlist._
 import scunits.integer._
 
-class BaseQuantity(val name: String, val symbol: String)
+package object scunits {
+  type BaseQuantities = TEl[BaseQuantity]
+  type Magnitudes = TEl[Integer]
+  type DimensionsOf[Q <: BaseQuantities] = Dimensions[Q, _ <: TEl[Integer]]
 
-trait Quantity[Q <: TEl[BaseQuantity], E <: TEl[Integer]] {
-  type Quantities = Q
-  type Exponents = E
-  type Mult[R <: Quantity[Q,_ <: TEl[Integer]]] = Quantity[Q,E#Zip[R#Exponents,Integer]#Map[Op[+]]]
-  type Div[R <: Quantity[Q,_ <: TEl[Integer]]] = Quantity[Q,E#Zip[R#Exponents,Integer]#Map[Op[-]]]
-}
+  class BaseQuantity(val name: String, val symbol: String)
 
-case class UnitM[Q](name: String, symbol: String, mult: Double = 1.0, offset: Double = 0.0) {
+  trait Dimensions[Q <: BaseQuantities, M <: Magnitudes] {
+    type Quantities = Q
+    type Mags = M
+    type Mult[R <: DimensionsOf[Q]] = Dimensions[Q,M#Zip[R#Mags,Integer]#Map[Op[+]]]
+    type Div[R <: DimensionsOf[Q]] = Dimensions[Q,M#Zip[R#Mags,Integer]#Map[Op[-]]]
+  }
 
-  def construct(v: Double) = Measure(v)
+  case class UnitM[Q](name: String, symbol: String, mult: Double = 1.0, offset: Double = 0.0) {
 
-  def apply(v: Double) = construct(mult * v + offset)  
-}
+    def construct(v: Double) = Measure(v)
 
-class Prefix(val name: String, val symbol: String, val mult: Double) {
-  def apply[Q](u: UnitM[Q]) = UnitM[Q](name + u.name, symbol + u.symbol, mult * u.mult)
-  def apply[Q](u: UnitM[Q], v: Double) = u.construct(mult * u.mult * v)
+    def apply(v: Double) = construct(mult * v + offset)  
+  }
+
+  class Prefix(val name: String, val symbol: String, val mult: Double) {
+    def apply[Q](u: UnitM[Q]) = UnitM[Q](name + u.name, symbol + u.symbol, mult * u.mult)
+    def apply[Q](u: UnitM[Q], v: Double) = u.construct(mult * u.mult * v)
+  }
 }
