@@ -3,18 +3,8 @@ package scunits
 import scunits.integer._
 import scunits.integer.Ops._
 
-trait DimensionLike {
-  type Id <: NonNegInt
-  type Mag <: Integer
-  type Neg = Dimension[Id,Mag#Neg]
-}
-trait Dimension[I <: NonNegInt, M <: Integer] extends DimensionLike {
-  type Mag = M 
-  type Id = I
-}
-
 trait Dimensions {
-  type Add[R <: DimensionLike] <: DNelLike
+  type Add[R <: DNelLike] <: DNelLike
 
   type Mult[R <: Dimensions] = Combine[R]
   type Div[R <: Dimensions] = Combine[R#Neg]
@@ -25,28 +15,30 @@ trait Dimensions {
   type Neg <: Dimensions
 }
 trait DNelLike extends Dimensions {
-  type Head <: DimensionLike
+  type Base <: BaseQuantityLike
+  type Mag <: Integer
   type Tail <: Dimensions
 
-  type Add[R <: DimensionLike] = (R#Id - Head#Id)#BranchNegZeroPos[
+  type Add[R <: DNelLike] = (R#Base#Id - Base#Id)#BranchNegZeroPos[
     DNelLike,
-    DNel[Dimension[R#Id,R#Mag],DNel[Head,Tail]],
-    DNel[Dimension[Head#Id,Head#Mag + R#Mag],Tail],
-    DNel[Head,Tail#Add[R]]
+    DNel[R#Base,R#Mag,DNel[Base,Mag,Tail]],
+    DNel[Base,Mag + R#Mag,Tail],
+    DNel[Base,Mag,Tail#Add[R]]
   ]
 
-  type Combine[R <: Dimensions] = R#CombineL[DNel[Head,Tail]]
-  protected type CombineL[L <: Dimensions] = L#Add[Head]#Combine[Tail]
-  type Neg = DNel[Dimension[Head#Id,Head#Mag#Neg],Tail#Neg]
+  type Combine[R <: Dimensions] = R#CombineL[DNel[Base,Mag,Tail]]
+  protected type CombineL[L <: Dimensions] = L#Add[DNel[Base,Mag,Tail]]#Combine[Tail]
+  type Neg = DNel[Base,Mag#Neg,Tail#Neg]
 }
 
-trait DNel[H <: DimensionLike, T <: Dimensions] extends DNelLike {
-  type Head = H
+trait DNel[B <: BaseQuantityLike, M <: Integer, T <: Dimensions] extends DNelLike {
+  type Base = B
+  type Mag = M
   type Tail = T
 }
 
 trait DNil extends Dimensions {
-  type Add[R <: DimensionLike] = DNel[Dimension[R#Id,R#Mag],DNil] 
+  type Add[R <: DNelLike] = DNel[R#Base,R#Mag,DNil] 
   type Combine[R <: Dimensions] = R
   protected type CombineL[L <: Dimensions] = L
   type Neg = DNil
@@ -57,23 +49,25 @@ object Tests {
   import Electric._
   import Magnetic._
 
-  implicitly[Current#Add[Time.Dim] =:= Charge]
-  implicitly[Time#Add[Current.Dim] =:= Charge]
-
-  implicitly[Volume#Neg =:= DNel[Dimension[_0,_3#Neg],DNil]]
+  // DNel[Length.type,_3#Neg,DNil]
+  // DNel[Length,     _3#Neg,DNil]
+  implicitly[Volume#Neg =:= DNel[Length.type,_3#Neg,DNil]]
 
   implicitly[DNil * DNil =:= DNil]
   implicitly[DNil * Length =:= Length]
   implicitly[Length * DNil =:= Length]
-  implicitly[Area =:= DNel[Dimension[_0,_2],DNil]]
-  implicitly[Volume =:= DNel[Dimension[_0,_3],DNil]]
-  implicitly[Charge =:= DNel[Dimension[_1,_1],DNel[Dimension[_8,_1],DNil]]]
+  implicitly[Area =:= DNel[Length.type,  _2,DNil]]
+  implicitly[Volume =:= DNel[Length.type,_3,DNil]]
+  implicitly[Charge =:= DNel[Time.type,  _1,DNel[Current.type,_1,DNil]]]
   implicitly[Time * Current =:= Charge]
 
-  implicitly[(DNil / Time) =:= DNel[Dimension[_1,_1#Neg],DNil]]
-  implicitly[Speed =:= DNel[Dimension[_0,_1],DNel[Dimension[_1,_1#Neg],DNil]]]
-  implicitly[Acceleration =:= DNel[Dimension[_0,_1],DNel[Dimension[_1,_2#Neg],DNil]]]
-  implicitly[Acceleration * Mass =:= DNel[Dimension[_0,_1],DNel[Dimension[_1,_2#Neg],DNel[Dimension[_2,_1],DNil]]]]
+  implicitly[(DNil / Time) =:= DNel[Time.type,_1#Neg,DNil]]
+  implicitly[Speed =:= DNel[Length.type,_1,DNel[Time.type,_1#Neg,DNil]]]
+  implicitly[Acceleration =:= DNel[Length.type,_1,DNel[Time.type,_2#Neg,DNil]]]
+  implicitly[Acceleration * Mass =:= DNel[Length.type,_1,DNel[Time.type,_2#Neg,DNel[Mass.type,_1,DNil]]]]
+
+  // implicitly[Length / Length =:= DNil]
+
   // implicitly[Mass * Acceleration =:= DNel[Dimension[_0,_1],DNel[Dimension[_1,_2#Neg],DNel[Dimension[_2,_1],DNil]]]]
   // val t: (Mass * Acceleration) = 5
   // DNel[_28.Head,_28.Tail] forSome { val _28: DNel[Dimension[_0,_1],DNel[Dimension[_2,_1],DNil]]; val _28: DNel[Dimension[_0,_1],DNel[Dimension[_1,_2#Neg,DNel[Dimension[_2,_1],DNil]]] }

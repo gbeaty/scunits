@@ -2,10 +2,12 @@ package scunits
 
 import scunits.integer._
 
-class BaseQuantity[I <: NonNegInt](val name: String, val symbol: String) {
+trait BaseQuantityLike {
+  type Id <: NonNegInt
+}
+class BaseQuantity[I <: NonNegInt](val name: String, val symbol: String) extends BaseQuantityLike {
   type Id = I
-  type Base = DNel[Dim, DNil]
-  type Dim = Dimension[Id, _1]
+  type Base = DNel[this.type, _1, DNil]
 }
 
 package object quantity {
