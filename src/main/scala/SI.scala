@@ -1,7 +1,7 @@
 package scunits
 
 package object si {
-  import scunits.quantity.Physical._
+  import scunits.Quantities._
 
   object Prefixes {
     val yocto = new Prefix("yocto", "y", 1e-24)
@@ -30,7 +30,7 @@ package object si {
   val gram = UnitM[Mass.type]("gram", "g")  
   val kelvin = UnitM[Temperature.type]("kelvin", "K")
   val celcius = UnitM[Temperature.type]("celsius", "", offset = 273.15)
-  val ampere = UnitM[ElectricCurrent.type]("ampere", "A")
+  val ampere = UnitM[Electric.Current.type]("ampere", "A")
   val mole = UnitM[AmountOfSubstance.type]("mole", "mol")
   val candela = UnitM[LuminousIntensity.type]("candela", "cd")
 

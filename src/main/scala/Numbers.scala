@@ -1,7 +1,6 @@
 package scunits
 
 import scunits.bool._
-import scunits2._
 
 package object integer {
 
