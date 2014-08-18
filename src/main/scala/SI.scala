@@ -1,7 +1,8 @@
 package scunits
 
-package object si {
-  import scunits.Quantities._
+import scunits.quantity._
+
+package object si {  
 
   object Prefixes {
     val yocto = new Prefix("yocto", "y", 1e-24)
@@ -26,13 +27,32 @@ package object si {
     val yotta = new Prefix("yotta", "Y", 1e24)
   }
 
-  val meter = UnitM[Length.type]("meter", "m")
-  val gram = UnitM[Mass.type]("gram", "g")  
-  val kelvin = UnitM[Temperature.type]("kelvin", "K")
-  val celcius = UnitM[Temperature.type]("celsius", "", offset = 273.15)
-  val ampere = UnitM[Electric.Current.type]("ampere", "A")
-  val mole = UnitM[AmountOfSubstance.type]("mole", "mol")
-  val candela = UnitM[LuminousIntensity.type]("candela", "cd")
+  val meter = UnitM[Length.Base]("meter", "m")
+  val gram = UnitM[Mass.Base]("gram", "g")  
+  val kelvin = UnitM[Temperature.Base]("kelvin", "K")
+  val celcius = UnitM[Temperature.Base]("celsius", "", offset = 273.15)
+  val ampere = UnitM[Electric.Current.Base]("ampere", "A")
+  val mole = UnitM[AmountOfSubstance.Base]("mole", "mol")
+  val candela = UnitM[Luminous.Intensity.Base]("candela", "cd")
+  val hertz = UnitM[Frequency]("hertz","Hz")
+  val newton = UnitM[Force]("newton","N")
+  val pascal = UnitM[Pressure]("pascal","Pa")
+  val joule = UnitM[Energy]("joule","J")
+  val watt = UnitM[Power]("watt","W")
+  val coulomb = UnitM[Electric.Charge]("coulomb","C")
+  val volt = UnitM[Electric.Potential]("volt","V")
+  val farad = UnitM[Electric.Capacitance]("farad","F")
+  val ohm = UnitM[Electric.Resistance]("ohm","Ω")
+  val siemens = UnitM[Electric.Conductance]("siemens","S")
+  val weber = UnitM[Magnetic.Flux]("weber","Wb")
+  val tesla = UnitM[Magnetic.FieldStrength]("tesla","T")
+  val henry = UnitM[Electric.Inductance]("henry","H")
+  val lumen = UnitM[Luminous.Intensity.Base]("lumen","lm")
+  val lux = UnitM[Illuminance]("lux","lx")
+  val becquerel = UnitM[Radioactive.Decay]("becquerel","Bq")
+  val gray = UnitM[Radioactive.Dose]("gray","Gy")
+  val sievert = UnitM[Radioactive.Dose]("sievert","Sv")
+  val katal = UnitM[CatalyticActivity]("katal","kat")
 
   import Prefixes._
   val test = micro(meter, 1000)
