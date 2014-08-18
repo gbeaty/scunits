@@ -1,9 +1,9 @@
 package scunits
 
 package object time {
-  import scunits.quantity.Physical._
+  import scunits.Quantities._
   
-  val second = UnitM[Time]("second","s")
-  val minute = UnitM[Time]("minute","min",60.0)
-  val hour = UnitM[Time]("hour","hr",3600.0)
+  val second = UnitM[Time.Base]("second","s")
+  val minute = UnitM[Time.Base]("minute","min",60.0)
+  val hour = UnitM[Time.Base]("hour","hr",3600.0)
 }

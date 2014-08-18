@@ -28,8 +28,6 @@ object Ddaq extends Build {
     "Scalaz Bintray Repo" at "http://dl.bintray.com/scalaz/releases"
   )
 
-  // scalacOptions in Test ++= Seq("-Yrangepos")
-
   def project(name: String, path: String) = sbt.Project(
     name,
     base = file(path),
@@ -41,7 +39,7 @@ object Ddaq extends Build {
     )
   )
 
-  val scunits = project("scunits", ".") //.dependsOn(RootProject(uri("https://github.com/KarolS/units.git")))   
+  val scunits = project("scunits", ".") 
 
   override def rootProject = Some(scunits)
 }

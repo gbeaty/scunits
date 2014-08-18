@@ -1,45 +1,59 @@
 package scunits
 
 import scunits.integer._
+import scunits.bool._
+
+package object tlist2 {
+  trait TList
+  trait TNil extends TList
+  trait TNel[H,T <: TList] extends TList {
+    type Head = H
+    type Tail = T
+  }
+  trait TOp[L <: TList, End <: TNil, Nel[_,_ <: TList]]
+}
 
 package object tlist {
+
   trait TList[B] {
     type ::[H <: B, T <: TEl[B]] = TNel[B,H,T]
   }
   trait TEl[B] {
-    type Base = B    
+    type Base = B
+    type Empty <: Bool
     type Map[M <: TMap[B]] <: TEl[M#Out]
     type Tail <: TEl[B]
-
-    type Zip[R <: TEl[RB],RB] <: TEl[Tup[B,RB]]
-    type Zip2[L <: TNel[LB,LH,LT],LB,LH <: LB,LT <: TEl[LB]] <: TEl[Tup[LB,B]]
+    type Zip[R <: TEl[RB],RB] <: TEl[Tup2[B,RB]]
+    type Zip2[L <: TNel[LB,LH,LT],LB,LH <: LB,LT <: TEl[LB]] <: TEl[Tup2[LB,B]]
   }
   trait TNil[B] extends TEl[B] {
+    type Empty = True
     type Map[M <: TMap[B]] = TNil[M#Out]
     type Tail = TNil[B]
-    type Zip[R <: TEl[RB],RB] = TNil[Tup[B,RB]]
-    type Zip2[L <: TNel[LB,LH,LT],LB,LH <: LB,LT <: TEl[LB]] = TNil[Tup[LB,B]]
+    type Zip[R <: TEl[RB],RB] = TNil[Tup2[B,RB]]
+    type Zip2[L <: TNel[LB,LH,LT],LB,LH <: LB,LT <: TEl[LB]] = TNil[Tup2[LB,B]]
   }
   trait TNel[B, H <: B, T <: TEl[B]] extends TEl[B] {
+    type Empty = False
     type Head = H
     type Tail = T
     type Map[M <: TMap[B]] = TNel[M#Out, M#Apply[H], T#Map[M]]
     type Zip[R <: TEl[RB],RB] = R#Zip2[this.type,B,H,T]
-    type Zip2[L <: TNel[LB,LH,LT],LB,LH <: LB,LT <: TEl[LB]] = TNel[Tup[LB,B],Tup[LH,H],LT#Zip[T,B]]
+    type Zip2[L <: TNel[LB,LH,LT],LB,LH <: LB,LT <: TEl[LB]] = TNel[Tup2[LB,B],Tup2[LH,H],LT#Zip[T,B]]
   }
   trait TMap[B] {
     type Out
     type Apply[I <: B] <: Out
   }
 
-  trait Tup[+A,+B] {
+  trait Tup2[+A,+B] {
     type L <: A
     type R <: B
   }
 
-  trait Op[O[_ <: Integer,_ <: Integer] <: Integer] extends TMap[Tup[Integer,Integer]] {
+  trait Op[O[_ <: Integer,_ <: Integer] <: Integer] extends TMap[Tup2[Integer,Integer]] {
     type Out = Integer
-    type Apply[LR <: Tup[_ <: Integer,_ <: Integer]] = O[LR#L,LR#R]
+    type Apply[LR <: Tup2[_ <: Integer,_ <: Integer]] = O[LR#L,LR#R]
   }
 
   object Tests {
@@ -49,9 +63,9 @@ package object tlist {
       type EvensMinusOdds = _1#Neg :: _1#Neg :: TNil[Integer]
       type OddsMinusEvens = _1     :: _1     :: TNil[Integer]
     }
-    object Zipped extends TList[Tup[Integer,Integer]] {
-      type Zipped =   Tup[_0,_1] :: Tup[_2,_3] :: TNil[Tup[Integer,Integer]]
-      type ZipShort = Tup[_2,_1]               :: TNil[Tup[Integer,Integer]]
+    object Zipped extends TList[Tup2[Integer,Integer]] {
+      type Zipped =   Tup2[_0,_1] :: Tup2[_2,_3] :: TNil[Tup2[Integer,Integer]]
+      type ZipShort = Tup2[_2,_1]               :: TNil[Tup2[Integer,Integer]]
     }
     object Strings extends TList[String] {
       type FiveStrings = String :: String :: TNil[String]
