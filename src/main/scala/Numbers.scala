@@ -1,8 +1,8 @@
 package scunits
 
-package object integer {
+package object integer {  
 
-  trait Integer extends {
+  trait Integer {
     type Succ <: Integer
     type Add[N <: Integer] <: Integer
     type Pred <: Integer
@@ -10,11 +10,15 @@ package object integer {
     type Neg <: Integer
 
     type BranchNegZeroPos[B, N<:B, Z<:B, P<:B] <: B
+
+    type DimMag[B <: BaseQuantityLike, T <: Dimensions] <: Dimensions
   }
 
   trait NonNegInt extends Integer
   trait NonPosInt extends Integer
-  trait NonZeroInt extends Integer
+  trait NonZeroInt extends Integer {
+    type DimMag[B <: BaseQuantityLike, T <: Dimensions] = DNel[B,this.type,T]
+  }
   trait NegInt extends NonPosInt with NonZeroInt {
     type BranchNegZeroPos[B, N<:B, Z<:B, P<:B] = N
   }
@@ -46,6 +50,8 @@ package object integer {
     type Sub[N <: Integer] = N#Neg
     type Neg = _0
     type BranchNegZeroPos[B, N<:B, Z<:B, P<:B] = Z
+
+    type DimMag[B <: BaseQuantityLike, T <: Dimensions] = T
   }
 
   object Ops {

@@ -4,10 +4,10 @@ import scunits.integer._
 
 trait BaseQuantityLike {
   type Id <: NonNegInt
+  type Base = DNel[this.type, _1, DNil]
 }
 class BaseQuantity[I <: NonNegInt](val name: String, val symbol: String) extends BaseQuantityLike {
-  type Id = I
-  type Base = DNel[this.type, _1, DNil]
+  type Id = I  
 }
 
 package object quantity {
