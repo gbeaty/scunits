@@ -1,8 +1,9 @@
 package scunits
 
-package object integer {  
+package object integer {
 
   trait Integer {
+    type Self <: Integer
     type Succ <: Integer
     type Add[N <: Integer] <: Integer
     type Pred <: Integer
@@ -13,21 +14,34 @@ package object integer {
 
     type DimMag[B <: BaseQuantityLike, T <: Dimensions] <: Dimensions
   }
+  trait IntegerConst[I <: Integer] extends Integer {
+    type Self = I
+  }
 
   trait NonNegInt extends Integer
+  trait NonNegIntConst[I <: NonNegInt] extends IntegerConst[I] with NonNegInt
+
   trait NonPosInt extends Integer
+  trait NonPosIntConst[I <: NonPosInt] extends IntegerConst[I] with NonPosInt
+
   trait NonZeroInt extends Integer {
-    type DimMag[B <: BaseQuantityLike, T <: Dimensions] = DNel[B,this.type,T]
+    type DimMag[B <: BaseQuantityLike, T <: Dimensions] = DNel[B,Self,T]
   }
+  trait NonZeroIntConst[I <: NonZeroInt] extends IntegerConst[I] with NonZeroInt
+
   trait NegInt extends NonPosInt with NonZeroInt {
     type BranchNegZeroPos[B, N<:B, Z<:B, P<:B] = N
   }
+  trait NegIntConst[I <: NegInt] extends NonPosIntConst[I] with NonZeroIntConst[I] with NegInt
+
   trait PosInt extends NonNegInt with NonZeroInt{
     type BranchNegZeroPos[B, N<:B, Z<:B, P<:B] = P
-  }  
+  }
+  trait PosIntConst[I <: PosInt] extends NonNegIntConst[I] with NonZeroIntConst[I] with PosInt
+
   type Count = SuccInt[_]
 
-  class SuccInt[P <: NonNegInt] extends PosInt {
+  class SuccInt[P <: NonNegInt] extends PosIntConst[SuccInt[P]] {
     type Succ = SuccInt[SuccInt[P]]
     type Add[N <: Integer] = P#Add[N]#Succ
     type Pred = P
@@ -35,7 +49,7 @@ package object integer {
     type Neg = P#Neg#Pred
   }
 
-  class PredInt[S <: NonPosInt] extends NegInt {
+  class PredInt[S <: NonPosInt] extends NegIntConst[PredInt[S]] {
     type Succ = S
     type Add[N <: Integer] = S#Add[N]#Pred
     type Pred = PredInt[PredInt[S]]
@@ -43,7 +57,7 @@ package object integer {
     type Neg = S#Neg#Succ
   }
 
-  final class _0 extends NonNegInt with NonPosInt {
+  final class _0 extends NonNegIntConst[_0] with NonPosIntConst[_0] {
     type Succ = SuccInt[_0]
     type Add[N <: Integer] = N
     type Pred = PredInt[_0]
