@@ -16,8 +16,8 @@ package object quantity {
   object Mass extends BaseQuantity[_2]("mass", "M")
   object Temperature extends BaseQuantity[_3]("temperature", "Θ")
   object AmountOfSubstance extends BaseQuantity[_4]("mole", "N")    
-  object Angle extends BaseQuantity[_5]("angle", "")
-  object SolidAngle extends BaseQuantity[_6]("solid angle", "")
+  // object Angle extends BaseQuantity[_5]("angle", "")
+  // object SolidAngle extends BaseQuantity[_6]("solid angle", "")
   object Info extends BaseQuantity[_7]("bit", "b")
 
   type Length = Length.Base
@@ -25,9 +25,9 @@ package object quantity {
   type Mass = Mass.Base
   type Temperature = Temperature.Base
   type AmountOfSubstance = AmountOfSubstance.Base
-  type Angle = Angle.Base
-  type SolidAngle = SolidAngle.Base
-  type Info = Info.Base  
+  type Angle = DNil // type Angle = Angle.Base
+  type SolidAngle = DNil // type SolidAngle = SolidAngle.Base
+  type Info = Info.Base
 
   type Area = Length#Mult[Length]
   type Volume = Area#Mult[Length]
@@ -39,6 +39,8 @@ package object quantity {
   type Pressure = Force#Div[Area]
   type Energy = Force#Mult[Length]
   type Power = Energy#Div[Time]
+  type VolumeFlow = Volume#Div[Time]
+  type AngularVelocity = DNil#Div[Time]
 
   object Electric {
     object Current extends BaseQuantity[_8]("electric current", "I")
