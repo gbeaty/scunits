@@ -1,5 +1,6 @@
-package scunits
+package scunits.test
 
+import scunits._
 import scunits.integer._
 import scunits.integer.Ops._
 
@@ -10,7 +11,7 @@ object Tests {
   import Radioactive._
 
   // Test DNil
-  implicitly[DNil#Mult[DNil] =:= DNil]  
+  implicitly[DNil#Mult[DNil] =:= DNil]
   implicitly[Length#Mult[DNil] =:= Length]
   implicitly[DNil#Mult[Length] =:= Length]
   implicitly[Length#Div[DNil] =:= Length]

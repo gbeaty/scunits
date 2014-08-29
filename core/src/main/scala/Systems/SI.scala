@@ -1,5 +1,6 @@
-package scunits
+package scunits.system
 
+import scunits._
 import scunits.quantity._
 
 package object si {  
@@ -27,7 +28,7 @@ package object si {
     val yotta = new Prefix("yotta", "Y", 1e24)
   }
 
-  /*val meter = UnitM[Length]("meter", "m")
+  val meter = UnitM[Length]("meter", "m")
   val gram = UnitM[Mass]("gram", "g")  
   val kelvin = UnitM[Temperature]("kelvin", "K")
   val celcius = UnitM[Temperature]("celsius", "", offset = 273.15)
@@ -52,5 +53,5 @@ package object si {
   val becquerel = UnitM[Radioactive.Decay]("becquerel","Bq")
   val gray = UnitM[Radioactive.Dose]("gray","Gy")
   val sievert = UnitM[Radioactive.Dose]("sievert","Sv")
-  val katal = UnitM[CatalyticActivity]("katal","kat")*/
+  val katal = UnitM[CatalyticActivity]("katal","kat")
 }

@@ -28,9 +28,9 @@ object Ddaq extends Build {
     "Scalaz Bintray Repo" at "http://dl.bintray.com/scalaz/releases"
   )
 
-  def project(name: String, path: String) = sbt.Project(
+  def project(name: String) = sbt.Project(
     name,
-    base = file(path),
+    base = file(name),
     settings = Defaults.defaultSettings ++ Seq(
       scalaVersion := scala,
       resolvers ++= commonResolvers,
@@ -39,7 +39,8 @@ object Ddaq extends Build {
     )
   )
 
-  val scunits = project("scunits", ".") 
+  val core = project("core") 
+  val test = project("test").dependsOn(core)
 
-  override def rootProject = Some(scunits)
+  override def rootProject = Some(core)
 }
