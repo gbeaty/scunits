@@ -19,8 +19,7 @@ sealed trait DNelLike extends Dimensions {
 
   protected type MultL[Left <: DNelLike] = (Left#Id - Id)#BranchNegZeroPos[
     Dimensions,
-    DNel[Left#Id, Left#Mag,       Left#Tail#Mult[Self]], // Take and inc left.
-    // DNel[Left#Id, Left#Mag + Mag, Left#Tail#Mult[Tail]],     
+    DNel[Left#Id, Left#Mag,       Left#Tail#Mult[Self]], // Take and inc left.  
     (Left#Mag + Mag)#DimMag[Id,Left#Tail#Mult[Tail]],    // Combine both and inc both.
     DNel[Id,      Mag,            Left#Mult[Tail]]       // Take and inc right.
   ]
@@ -43,7 +42,7 @@ trait DNil extends Dimensions {
 object Test {
   type *[L <: Dimensions, R <: Dimensions] = L#Mult[R]
   type /[L <: Dimensions, R <: Dimensions] = L#Div[R]
-  
+
   type Test = DNel[_0,_1,DNel[_1,_1#Neg,DNil]]#Mult[DNel[_0,_1,DNil]]
   type Test2 = DNel[_0,_1,DNil]#Mult[DNel[_0,_1,DNel[_1,_1#Neg,DNil]]]
 }
