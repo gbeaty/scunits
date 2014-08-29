@@ -16,10 +16,12 @@ sealed trait DNelLike extends Dimensions {
   type Self = DNel[Base,Mag,Tail]
 
   type Mult[Right <: Dimensions] = Right#MultL[Self]
-
+// Left = Mass(2), Self/Right = Time(1)
+// Branch = _2 - _1 = _1
+// Mass * DNel = DNel#MultL[Mass] = Mass
   protected type MultL[Left <: DNelLike] = (Left#Base#Id - Base#Id)#BranchNegZeroPos[
     Dimensions,
-    DNel[Left#Base, Left#Mag,       Left#Tail#Mult[Self]], // Take and inc left.  
+    DNel[Left#Base, Left#Mag,       Left#Tail#Mult[Self]], // Take and inc left.
     (Left#Mag + Mag)#DimMag[Base,Left#Tail#Mult[Tail]],    // Combine both and inc both.
     DNel[Base,      Mag,            Left#Mult[Tail]]       // Take and inc right.
   ]
