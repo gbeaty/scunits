@@ -38,5 +38,5 @@ object Ddaq extends Build {
     libraryDependencies ++= testDeps
   )
 
-  override def rootProject = Some(test)
+  override def rootProject = Some(core)
 }
