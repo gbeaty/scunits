@@ -45,6 +45,7 @@ object Tests {
   implicitly[Potential#Div[Resistance] =:= Current]
   implicitly[Resistance#Mult[Current] =:= Potential]
   implicitly[Conductance#Mult[Flux] =:= Charge]
+  implicitly[Flux#Div[Inductance] =:= Current]
 
   // Magnetism
   implicitly[Flux#Div[Area] =:= FieldStrength]
