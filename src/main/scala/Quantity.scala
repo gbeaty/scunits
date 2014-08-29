@@ -29,31 +29,33 @@ package object quantity {
   type SolidAngle = SolidAngle.Base
   type Info = Info.Base  
 
-  type Area = Length#Mult[Length]
-  type Volume = Area#Mult[Length]
-  type Density = Volume#Div[Mass]
-  type Speed = Length#Div[Time]
-  type Acceleration = Speed#Div[Time]
-  type Frequency = DNil#Div[Time]
-  type Force = Mass#Mult[Acceleration]
-  type Pressure = Force#Div[Area]
-  type Energy = Force#Mult[Mass]
-  type Power = Energy#Div[Time]
+  type Area = DNel[Length.type,_2,DNil] // Length#Mult[Length]
+  type Volume = DNel[Length.type,_3,DNil] // Area#Mult[Length]
+  type Density = DNel[Length.type,_3#Neg,DNel[Mass.type,_1,DNil]] // Mass#Div[Volume]
+  type Speed = DNel[Length.type,_1,DNel[Time.type,_1#Neg,DNil]] // Length#Div[Time]
+  type Acceleration = DNel[Length.type,_1,DNel[Time.type,_2#Neg,DNil]] // Speed#Div[Time]
+  type Frequency = DNel[Time.type,_1#Neg,DNil] // DNil#Div[Time]
+  type Force = DNel[Length.type,_1,DNel[Time.type,_2#Neg,DNel[Mass.type,_1,DNil]]] // Mass#Mult[Acceleration]
+  type Pressure = DNel[Length.type,_1#Neg,DNel[Time.type,_2#Neg,DNel[Mass.type,_1,DNil]]] // Force#Div[Area]
+  type Energy = DNel[Length.type,_2,DNel[Time.type,_2#Neg,DNel[Mass.type,_1,DNil]]] // Force#Mult[Mass]
+  type Power = DNel[Length.type,_2,DNel[Time.type,_3#Neg,DNel[Mass.type,_1,DNil]]] // Energy#Div[Time]
 
   object Electric {
     object Current extends BaseQuantity[_8]("electric current", "I")
     type Current = Current.Base
-    type Charge = Current#Mult[Time]
-    type Potential = Power#Div[Current]
-    type Capacitance = Charge#Div[Potential]
-    type Resistance = Potential#Div[Current]
-    type Conductance = Current#Div[Potential]
-    type Inductance = Magnetic.FieldStrength#Div[Current]
+    type Charge = DNel[Time.type,_1,DNel[Current.type,_1, DNil]] // Current#Mult[Time]
+    type Potential = DNel[Length.type,_2,DNel[Time.type,_3#Neg,DNel[Mass.type,_1,DNel[Current.type,_1#Neg,DNil]]]] // Power#Div[Current]
+    type Capacitance = DNel[Length.type,_2#Neg,DNel[Time.type,_4,DNel[Mass.type,_1#Neg,DNel[Current.type,_2,DNil]]]]
+    // kg−1⋅m−2⋅s4⋅A2
+    type Resistance = DNel[Length.type,_2,DNel[Time.type,_3#Neg,DNel[Mass.type,_1,DNel[Current.type,_2#Neg,DNil]]]] // Potential#Div[Current]
+    type Conductance = DNel[Length.type,_2#Neg,DNel[Time.type,_3,DNel[Mass.type,_1#Neg,DNel[Current.type,_2,DNil]]]] // Current#Div[Potential]
+    type Inductance = DNel[Length.type,_2,DNel[Time.type,_2#Neg,DNel[Mass.type,_1,DNel[Current.type,_2#Neg,DNil]]]] // Magnetic.FieldStrength#Div[Current]
   }
 
   object Magnetic {
-    type Flux = Electric.Potential#Div[Time]
-    type FieldStrength = Flux#Div[Area]
+    import Electric.Current
+    type Flux = DNel[Length.type,_2,DNel[Time.type,_2#Neg,DNel[Mass.type,_1,DNel[Current.type,_1#Neg,DNil]]]] // Electric.Potential#Div[Time]
+    type FieldStrength = DNel[Time.type,_2#Neg,DNel[Mass.type,_1,DNel[Current.type,_1#Neg,DNil]]] // Flux#Div[Area]
     type Inductance = Electric.Inductance
   }
 
@@ -65,7 +67,7 @@ package object quantity {
 
   object Radioactive {
     type Decay = Frequency
-    type Dose = Area#Div[(Decay#Mult[Decay])]
+    type Dose = DNel[Length.type,_2,DNel[Time.type,_2#Neg,DNil]]
   }
 
   type CatalyticActivity = AmountOfSubstance#Div[Time]

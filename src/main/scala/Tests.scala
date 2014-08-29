@@ -7,6 +7,7 @@ object Tests {
   import scunits.quantity._
   import Electric._
   import Magnetic._
+  import Radioactive._
 
   // Test DNil
   implicitly[DNil#Mult[DNil] =:= DNil]  
@@ -24,21 +25,31 @@ object Tests {
   // Test associativity
   implicitly[Area#Mult[Length] =:= Length#Mult[Area]]
   implicitly[Flux#Mult[Power] =:= Power#Mult[Flux]]
-
-  // val a: Time#Mult[Mass] = 1
-  // [error]  required: scunits.quantity.Mass#MultL[scunits.DNel[scunits.quantity.Time.type,scunits.integer.SuccInt[scunits.integer._0],scunits.DNil]]
-  // [error]     (which expands to)  scunits.DNel[scunits.quantity.Time.type,scunits.integer.SuccInt[scunits.integer._0],scunits.DNel[scunits.quantity.Mass.type,scunits.integer.SuccInt[scunits.integer._0],scunits.DNil]]
-  // This simplifies to: DNel[Time.type,_1,DNel[Mass.type,_1,DNil]]
-  
-  // val b: Mass#Mult[Time] = 1
-  // [error]  required: scunits.quantity.Time#MultL[scunits.DNel[scunits.quantity.Mass.type,scunits.integer.SuccInt[scunits.integer._0],scunits.DNil]]
-  // [error]     (which expands to)  scunits.DNel[scunits.quantity.Time.type,scunits.integer.SuccInt[scunits.integer._0],scunits.DNel[scunits.quantity.Mass.type, scunits.integer.SuccInt[scunits.integer._0], scunits.DNil]]
-  // This simplifies to: DNel[Time.type,_1,DNel[Mass.type, _1, DNil]]
-
   implicitly[Time#Mult[Mass] =:= Mass#Mult[Time]]
 
-  // Test other relationships between quantities
+  // Length
+  implicitly[Area#Div[Length] =:= Length]
+  implicitly[Volume#Div[Length] =:= Area]
+  implicitly[Volume#Div[Area] =:= Length]
+  implicitly[Density#Mult[Volume] =:= Mass]
+  implicitly[Speed#Div[Length] =:= Frequency]
+  implicitly[Energy#Div[Length] =:= Force]
+
+  // Power and energy
   implicitly[Power#Mult[Time] =:= Energy]
   implicitly[Energy#Div[Time] =:= Power]
   implicitly[Acceleration#Mult[Time] =:= Speed]
+
+  // Electricity
+  implicitly[Conductance#Mult[Time] =:= Capacitance]
+  implicitly[Potential#Div[Resistance] =:= Current]
+  implicitly[Resistance#Mult[Current] =:= Potential]
+  implicitly[Conductance#Mult[Flux] =:= Charge]
+
+  // Magnetism
+  implicitly[Flux#Div[Area] =:= FieldStrength]
+  implicitly[Flux#Div[Time] =:= Potential]
+  
+  // Radioactivity
+  implicitly[Dose#Div[Length] =:= Acceleration]
 }
