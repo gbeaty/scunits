@@ -2,13 +2,12 @@ package scunits
 
 import scunits.integer._
 
-trait BaseQuantityLike {
+sealed trait BaseQuantityLike {
   type Id <: NonNegInt
-  type Base = DNel[this.type, _1, DNil]
-  type Mag[M <: NonZeroInt] = DimConst[this.type,M]
+  type Base = DNel[Id, _1, DNil]
 }
 class BaseQuantity[I <: NonNegInt](val name: String, val symbol: String) extends BaseQuantityLike {
-  type Id = I  
+  type Id = I
 }
 
 package object quantity {
@@ -28,36 +27,33 @@ package object quantity {
   type AmountOfSubstance = AmountOfSubstance.Base
   type Angle = Angle.Base
   type SolidAngle = SolidAngle.Base
-  type Info = Info.Base
+  type Info = Info.Base  
 
-  type *[L <: Dimensions, R <: Dimensions] = L#Mult[R]
-  type /[L <: Dimensions, R <: Dimensions] = L#Div[R]
-
-  type Area = Length * Length
-  type Volume = Area * Length
-  type Density = Volume / Mass
-  type Speed = Length / Time
-  type Acceleration = Speed / Time
-  type Frequency = DNil / Time
-  type Force = Mass * Acceleration
-  type Pressure = Force / Area
-  type Energy = Force * Mass
-  type Power = Energy / Time
+  type Area = Length#Mult[Length]
+  type Volume = Area#Mult[Length]
+  type Density = Volume#Div[Mass]
+  type Speed = Length#Div[Time]
+  type Acceleration = Speed#Div[Time]
+  type Frequency = DNil#Div[Time]
+  type Force = Mass#Mult[Acceleration]
+  type Pressure = Force#Div[Area]
+  type Energy = Force#Mult[Mass]
+  type Power = Energy#Div[Time]
 
   object Electric {
     object Current extends BaseQuantity[_8]("electric current", "I")
     type Current = Current.Base
-    type Charge = Current * Time
-    type Potential = Power / Current
-    type Capacitance = Charge / Potential
-    type Resistance = Potential / Current
-    type Conductance = Current / Potential    
-    type Inductance = Magnetic.FieldStrength / Current
+    type Charge = Current#Mult[Time]
+    type Potential = Power#Div[Current]
+    type Capacitance = Charge#Div[Potential]
+    type Resistance = Potential#Div[Current]
+    type Conductance = Current#Div[Potential]
+    type Inductance = Magnetic.FieldStrength#Div[Current]
   }
 
   object Magnetic {
-    type Flux = Electric.Potential / Time
-    type FieldStrength = Flux / Area
+    type Flux = Electric.Potential#Div[Time]
+    type FieldStrength = Flux#Div[Area]
     type Inductance = Electric.Inductance
   }
 
@@ -65,12 +61,12 @@ package object quantity {
     object Intensity extends BaseQuantity[_9]("luminous intensity", "J")
     type Intensity = Intensity.Base
   }
-  type Illuminance = Luminous.Intensity / Area
+  type Illuminance = Luminous.Intensity#Div[Area]
 
   object Radioactive {
     type Decay = Frequency
-    type Dose = Area / (Decay * Decay)
+    type Dose = Area#Div[(Decay#Mult[Decay])]
   }
 
-  type CatalyticActivity = AmountOfSubstance / Time
+  type CatalyticActivity = AmountOfSubstance#Div[Time]
 }
