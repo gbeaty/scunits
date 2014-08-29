@@ -12,13 +12,13 @@ package object integer {
 
     type BranchNegZeroPos[B, N<:B, Z<:B, P<:B] <: B
 
-    type DimMag[I <: NonNegInt, T <: Dimensions] <: Dimensions
+    type DimMag[B <: BaseQuantityLike, T <: Dimensions] <: Dimensions
   }
 
   trait NonNegInt extends Integer
   trait NonPosInt extends Integer
   trait NonZeroInt extends Integer {
-    type DimMag[I <: NonNegInt, T <: Dimensions] = DNel[I,Self,T]
+    type DimMag[B <: BaseQuantityLike, T <: Dimensions] = DNel[B,Self,T]
   }
   trait NegInt extends NonPosInt with NonZeroInt {
     type BranchNegZeroPos[B, N<:B, Z<:B, P<:B] = N
@@ -56,7 +56,7 @@ package object integer {
     type Neg = _0
     type BranchNegZeroPos[B, N<:B, Z<:B, P<:B] = Z
 
-    type DimMag[I <: NonNegInt, T <: Dimensions] = T
+    type DimMag[B <: BaseQuantityLike, T <: Dimensions] = T
   }
 
   object Ops {
