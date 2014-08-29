@@ -13,12 +13,16 @@ sealed trait DNelLike extends Dimensions {
   type Base <: BaseQuantityLike
   type Mag <: Integer
   type Tail <: Dimensions
-  type Self = DNel[Base,Mag,Tail]
+  type Self = DNel[Base,Mag,Tail]  
+}
+
+trait DNel[B <: BaseQuantityLike, M <: Integer, T <: Dimensions] extends DNelLike {
+  type Base = B
+  type Mag = M
+  type Tail = T
 
   type Mult[Right <: Dimensions] = Right#MultL[Self]
-// Left = Mass(2), Self/Right = Time(1)
-// Branch = _2 - _1 = _1
-// Mass * DNel = DNel#MultL[Mass] = Mass
+
   protected type MultL[Left <: DNelLike] = (Left#Base#Id - Base#Id)#BranchNegZeroPos[
     Dimensions,
     DNel[Left#Base, Left#Mag,       Left#Tail#Mult[Self]], // Take and inc left.
@@ -27,12 +31,6 @@ sealed trait DNelLike extends Dimensions {
   ]
 
   type Neg = DNel[Base,Mag#Neg,Tail#Neg]
-}
-
-trait DNel[B <: BaseQuantityLike, M <: Integer, T <: Dimensions] extends DNelLike {
-  type Base = B
-  type Mag = M
-  type Tail = T
 }
 
 trait DNil extends Dimensions {
