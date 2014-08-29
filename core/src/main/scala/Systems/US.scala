@@ -1,4 +1,4 @@
-package scunits.system
+package scunits.unit
 
 import scunits._
 import scunits.quantity._

@@ -1,10 +1,10 @@
-package scunits.system
+package scunits.unit
 
 import scunits._
 import scunits.quantity._
 
 package object pressure {
-  val pascal = system.si.pascal
+  val pascal = unit.si.pascal
   val mmHg = UnitM[Pressure]("millimeter of mercury", "mm Hg", 133.322387415)
   val mmWater = UnitM[Pressure]("millimeter of water", "mm H2O", 9.80665)
   val psi = UnitM[Pressure]("pounds per square inch", "psi", 6894.757)
@@ -15,7 +15,7 @@ package object pressure {
 }
 
 package object power {
-  val watt = system.si.watt
+  val watt = unit.si.watt
   object hp {
     val i = UnitM[Power]("mechanical horsepower", "hp(I)", 745.699872)
     val m = UnitM[Power]("metric horsepower", "hp(M)", 735.49875)
