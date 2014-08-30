@@ -5,7 +5,7 @@ import scunits.quantity._
 
 package object si {  
 
-  object Prefixes {
+  object Prefix {
     val yocto = new Prefix("yocto", "y", 1e-24)
     val zepto = new Prefix("zepto", "z", 1e-21)
     val atto = new Prefix("atto", "a", 1e-18)

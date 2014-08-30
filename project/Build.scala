@@ -26,14 +26,17 @@ object Ddaq extends Build {
   def project(name: String) = sbt.Project(
     name,
     base = file(name),
-    settings = Defaults.defaultSettings ++ Seq(
+    settings = Defaults.defaultSettings ++ Seq(      
       scalaVersion := scala,
       resolvers ++= commonResolvers,
-      version := appVersion
+      version := appVersion,
+      organization := "org.scunits"
     )
   )
 
-  val core = project("core") 
+  val core = project("core").settings(
+    // publishTo := Some("Sonatype Snapshots Nexus" at "https://oss.sonatype.org/content/repositories/snapshots")
+  )
   val test = project("test").dependsOn(core).settings(
     libraryDependencies ++= testDeps
   )

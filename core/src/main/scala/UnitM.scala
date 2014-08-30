@@ -5,6 +5,7 @@ import scunits.integer._
 import scunits.integer.Ops._
 
 trait UnitM[D <: Dims] {
+  type Dimensions = D
   val name: String
   val symbol: String
 
