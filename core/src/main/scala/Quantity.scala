@@ -41,7 +41,6 @@ package object quantity {
   type Power = Energy#Div[Time]
   type VolumeFlow = Volume#Div[Time]
   type AngularVelocity = DNil#Div[Time]
-  type VolumePerLength = Volume#Div[Length]
 
   object Electric {
     object Current extends BaseQuantity[_8]("electric current", "I")
@@ -70,6 +69,10 @@ package object quantity {
   object Radioactive {
     type Decay = Frequency
     type Dose = Energy#Div[Mass]
+  }
+
+  object Automotive {
+    type DistancePerFuel = Length#Div[Volume]
   }
 
   type CatalyticActivity = AmountOfSubstance#Div[Time]
