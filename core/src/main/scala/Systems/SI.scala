@@ -31,7 +31,7 @@ package object si {
   val metre = UnitM[Length]("meter", "m")
   val gram = UnitM[Mass]("gram", "g")  
   val kelvin = UnitM[Temperature]("kelvin", "K")
-  val celcius = UnitM[Temperature]("celsius", "°C", 1.0, 273.15)
+  val celsius = UnitM[Temperature]("celsius", "°C", 1.0, 273.15)
   val ampere = UnitM[Electric.Current]("ampere", "A")
   val mole = UnitM[AmountOfSubstance]("mole", "mol")
   val candela = UnitM[Luminous.Intensity]("candela", "cd")
