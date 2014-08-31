@@ -12,7 +12,7 @@ scunits is an experimental, extensible library for type-checking dimensional qua
 - Array wrappers (`ArrayM`) for unboxed arrays
 - < 100k jar file size (for now...)
 - No dependencies
-- Elementary algebra on abstract Measure types
+- Elementary algebra on abstract `Measure` types
 
 ## Todo
 - BigInt support

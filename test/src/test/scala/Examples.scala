@@ -18,6 +18,9 @@ class Examples extends Specification {
   // Get the SI prefixes too:
   import scunits.unit.si.Prefix._
 
+  // import implicit conversions:
+  import Scunits._
+
   // Alas, floating point arithmetic is not exact.
   val err = 0.00000001
 
@@ -32,6 +35,9 @@ class Examples extends Specification {
       // In the case of volume this is cubic metres.
       gal !=== oneLitre
       oneLitre ==== cubicMetre(0.001)
+
+      // Values of the same Dims can be added:
+      (gal + oneLitre) must be_> (gal - oneLitre)
 
       // Use Measure.v to access the underlying double,
       gal.v must beCloseTo(litre(3.78541).v, err)
@@ -81,19 +87,17 @@ class Examples extends Specification {
   }
 
   "Algebra" should {
-    "Work" in {
-      // import implicit conversions:
-      import Scunits._
-
-      // Even when dealing with Dims type parameters, some elementary algebra is possible. e.g.:
+    "Work" in {      
+      // Even when dealing with abstract Dims, some elementary algebra is possible. e.g.:
 
       // Implicitly convert Measure[A] * Measure[B / A] to Measure[B]
       def cancelDenominator[A <: Dims, B <: Dims](a: Measure[A], b: Measure[B#Div[A]]): Measure[B] = a * b
       cancelDenominator[Time,Length](second(1.0), metrePerSecond(60.0)) ==== metre(60.0)
+      // Without the implicit conversion, the compiler cannot determine that Measure[A#Mult[B#Div[A]]] = Measure[B]
 
       // Implicitly convert Measure[A] / (Measure[A] / Measure[B]) to Measure[B]
       def cancelNumerator[A <: Dims, B <: Dims](a: Measure[A], b: Measure[A#Div[B]]): Measure[B] = a / b
-      cancelNumerator[Length,Time](metre(60.0), metrePerSecond(60.0)) ==== second(1.0)
+      cancelNumerator[Length,Time](metre(60.0), metrePerSecond(60.0)) ==== second(1.0)      
     }
   }
 }
