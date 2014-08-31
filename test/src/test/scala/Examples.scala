@@ -88,12 +88,12 @@ class Examples extends Specification {
       // Even when dealing with Dims type parameters, some elementary algebra is possible. e.g.:
 
       // Implicitly convert Measure[A] * Measure[B / A] to Measure[B]
-      def cancelDenom[A <: Dims, B <: Dims](a: Measure[A], b: Measure[B#Div[A]]): Measure[B] = a * b
-      cancelDenom[Time,Length](second(1.0), metrePerSecond(60.0)) ==== metre(60.0)
+      def cancelDenominator[A <: Dims, B <: Dims](a: Measure[A], b: Measure[B#Div[A]]): Measure[B] = a * b
+      cancelDenominator[Time,Length](second(1.0), metrePerSecond(60.0)) ==== metre(60.0)
 
       // Implicitly convert Measure[A] / (Measure[A] / Measure[B]) to Measure[B]
-      def cancelNom[A <: Dims, B <: Dims](a: Measure[A], b: Measure[A#Div[B]]): Measure[B] = a / b
-      cancelNom[Length,Time](metre(60.0), metrePerSecond(60.0)) ==== second(1.0)
+      def cancelNumerator[A <: Dims, B <: Dims](a: Measure[A], b: Measure[A#Div[B]]): Measure[B] = a / b
+      cancelNumerator[Length,Time](metre(60.0), metrePerSecond(60.0)) ==== second(1.0)
     }
   }
 }
