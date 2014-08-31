@@ -19,9 +19,4 @@ case class Measure[D <: Dims](v: Double) extends AnyVal {
   def <=[R <: Dims](r: Measure[R]) = v <= r.v
 
   def ===(r: Measure[D]) = v == r.v
-
-  def multDenom[R <: Dims](r: Measure[R#Div[D]]) = Measure[R](v * r.v)
-  def divNom[R <: Dims](r: Measure[D#Div[R]]) = Measure[R](v / r.v)
-
-  // def format(implicit formatter: UnitM[D]) = unit.format(this)
 }
