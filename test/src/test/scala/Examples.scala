@@ -17,6 +17,7 @@ class Examples extends Specification {
   // Get the SI prefixes too:
   import scunits.unit.si.Prefix._
 
+  // Alas, floating point arithmetic is not exact.
   val err = 0.00000001
 
   "Measures" should {

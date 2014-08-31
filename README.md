@@ -8,12 +8,10 @@ scunits is an experimental library for type-checking dimensional quantities and 
 - All measurements are Value Classes wrapping Doubles
 - Users may add new base quantities
 - Dimensions (`Dims`), units (`UnitM`) and measurements (`Measure`) may be composed by multiplication and division
-- All SI prefixes
-- Array wrappers
+- All SI prefixes (kilo, centi, etc.)
+- Array wrappers (`ArrayM`) for unboxed arrays
 - < 100k jar file size (for now...)
 - No dependencies
-
-Unfortunately dimension type signatures are rather unreadable.
 
 ## Todo
 - BigInt support
@@ -21,6 +19,8 @@ Unfortunately dimension type signatures are rather unreadable.
 - Verify compilation times are kept reasonable
 - Dims#Pow, Measure.pow and UnitM.pow functions
 - Logarithmic scale units
+- Find a small, more performant type-level integer library.
+- If possible, make the type signatures readable.
 
 ## Using scunits
 See: https://github.com/gbeaty/scunits/blob/master/test/src/test/scala/Examples.scala

@@ -18,7 +18,9 @@ case class ArrayM[D <: Dims](array: Array[Double])(implicit ct: ClassTag[Measure
   
   def apply(index: Int) = Measure[D](array(index))
   def length = array.length
-  def update(idx: Int, elem: Measure[D]) = array(idx) = elem.v
+  def update(idx: Int, elem: Measure[D]) {
+    array(idx) = elem.v
+  }
 
   def seq: IndexedSeq[Measure[D]] = ???
   protected def newBuilder = new ArrayMBuilder[D]
