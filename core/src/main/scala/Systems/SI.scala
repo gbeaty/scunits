@@ -36,6 +36,7 @@ package object si {
   val mole = UnitM[AmountOfSubstance]("mole", "mol")
   val candela = UnitM[Luminous.Intensity]("candela", "cd")
   val hertz = UnitM[Frequency]("hertz","Hz")
+  val metrePerSecond = UnitM[Speed]("metre per second", "m/s")
   val newton = UnitM[Force]("newton","N")
   val pascal = UnitM[Pressure]("pascal","Pa")
   val joule = UnitM[Energy]("joule","J")

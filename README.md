@@ -2,7 +2,7 @@
 
 (or Yet Another Scala Units Library)
 
-scunits is an experimental library for type-checking dimensional quantities and handling units of measure in scala. Exponents of base quantities are stored at the type-level in recursive list structures similar to shapeless's hlists, but without any run-time instances. To keep things simple, all measurements are stored as Doubles with SI values for their appropriate unit.
+scunits is an experimental, extensible library for type-checking dimensional quantities and handling units of measure in scala. Exponents of base quantities are stored at the type-level in recursive list structures similar to shapeless's hlists, but without any run-time instances. All measurements are stored as Doubles of their appropriate SI unit and only converted to a specific unit when needed.
 
 ## Features
 - All measurements are Value Classes wrapping Doubles
@@ -16,7 +16,7 @@ scunits is an experimental library for type-checking dimensional quantities and 
 ## Todo
 - BigInt support
 - More units
-- Verify compilation times are kept reasonable
+- Verify compilation times are kept reasonable.
 - Dims#Pow, Measure.pow and UnitM.pow functions
 - Logarithmic scale units
 - Find a small, more performant type-level integer library.
