@@ -4,7 +4,7 @@ import scunits._
 import scunits.integer._
 import scunits.integer.Ops._
 
-object Tests {
+object Dimension {
   import scunits.quantity._
   import Electric._
   import Magnetic._

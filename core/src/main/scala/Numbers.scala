@@ -73,13 +73,4 @@ package object integer {
   type _7 = _6#Succ
   type _8 = _7#Succ
   type _9 = _8#Succ
-
-  import Ops._
-
-  implicitly[_0 + _0 =:= _0]
-  implicitly[_0 - _0 =:= _0]
-  implicitly[_1 + _2 =:= _3]
-  implicitly[_1 - _2 =:= _1#Neg]
-  implicitly[_1#Neg + _2 =:= _1]
-  implicitly[_1#Neg + _2#Neg =:= _3#Neg]
 }

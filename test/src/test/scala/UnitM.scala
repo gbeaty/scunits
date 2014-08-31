@@ -16,11 +16,11 @@ class UnitM extends Specification {
       fahrenheit.unapply(fahrenheit(70.0)) must be ~(70.0 +/- err)
     }
     "Compose" in {
-      val mpg2 = mile.div("miles per gallon", "mpg", gallon)
+      val mpg2 = mile / gallon
       mpg2.unapply(mpg2(1.0)) === 1.0
       mpg2(1.0).v must be ~(mpg(1.0).v +/- err)
       
-      val psi2 = poundForce.div("pounds per square inch", "psi", squareInch)
+      val psi2 = poundForce / squareInch
       psi2.unapply(psi2(1.0)) === 1.0
       psi2(1.0).v must be ~(psi(1.0).v +/- err)
     }

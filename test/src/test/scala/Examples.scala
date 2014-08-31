@@ -51,8 +51,8 @@ class Examples extends Specification {
   "Units" should {
     "Compose" in {
       // Suppose we need units for fuel consumption:
-      val kmpL = kilo(metre).div("kilometer per litre", "km/L", litre)
-      val mpg = mile.div("miles per gallon", "mpg", gallon)
+      val kmpL = kilo(metre) / litre
+      val mpg = mile / gallon
       mpg(20.0) ==== kmpL(8.502857022092719)
     }
   }

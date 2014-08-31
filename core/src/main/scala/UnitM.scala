@@ -4,50 +4,39 @@ import scunits.quantity._
 import scunits.integer._
 import scunits.integer.Ops._
 
-trait UnitM[D <: Dims] {
-  type Dimensions = D
-  val name: String
-  val symbol: String
+case class UnitM[D <: Dims](
+  name: Option[String] = None,
+  symbol: Option[String] = None,
+  mult: Double = 1.0,
+  offset: Double = 0.0,
+  prefix: Option[Prefix] = None) {
 
-  def apply(in: Double): Measure[D]
-  def unapply(out: Measure[D]): Double
-}
+  val prefixedMult = prefix.map(_.mult).getOrElse(1.0) * mult
 
-case class BaseUnitM[D <: Dims](name: String, symbol: String) extends UnitM[D] with LinearUnitM[D] {
-  def apply(in: Double) = Measure[D](in)
-  def unapply(out: Measure[D]) = out.v
-  val toSIMult = 1.0
+  def apply(in: Double) = Measure[D](prefixedMult * in + offset)
+  def unapply(out: Measure[D]) = out.v / prefixedMult - offset
+
+  def label(n: String, s: String) = copy[D](name = Some(n), symbol = Some(s))
+  def *[R <: Dims](r: UnitM[R]) = UnitM[D#Mult[R]](mult = prefixedMult * r.prefixedMult)
+  def /[R <: Dims](r: UnitM[R]) = UnitM[D#Div[R]](mult = prefixedMult / r.prefixedMult)
 }
-sealed trait NonSIUnitM[D <: Dims] extends UnitM[D] {
-  def toSI(in: Double): Double
-  def fromSI(out: Double): Double
-  def apply(in: Double) = Measure[D](toSI(in))
-  def unapply(out: Measure[D]) = fromSI(out.v)
-}
-sealed trait LinearUnitM[D <: Dims] extends UnitM[D] {
-  val toSIMult: Double
-  def mult[R <: Dims](n: String, s: String, r: LinearUnitM[R]) = MultUnitM[D#Mult[R]](n, s, toSIMult * r.toSIMult)
-  def div[R <: Dims](n: String, s: String, r: LinearUnitM[R]) = MultUnitM[D#Div[R]](n, s, toSIMult / r.toSIMult)
-}
-case class MultUnitM[D <: Dims](name: String, symbol: String, toSIMult: Double) extends LinearUnitM[D] with NonSIUnitM[D] {
-  def toSI(in: Double) = in * toSIMult
-  def fromSI(out: Double) = out / toSIMult
-}
-case class OffsetUnitM[D <: Dims](name: String, symbol: String, toSIOffset: Double) extends LinearUnitM[D] with NonSIUnitM[D] {
-  final val toSIMult = 1.0
-  def toSI(in: Double) = in + toSIOffset
-  def fromSI(out: Double) = out - toSIOffset
-}
-case class MultOffsetUnitM[D <: Dims](name: String, symbol: String, toSIMult: Double, toSIOffset: Double) extends LinearUnitM[D] with NonSIUnitM[D] {
-  def toSI(in: Double) = (in + toSIOffset) * toSIMult
-  def fromSI(out: Double) = (out / toSIMult) - toSIOffset
+object UnitM {
+  def apply[D <: Dims](name: String, symbol: String): UnitM[D] =
+    UnitM[D](Some(name), Some(symbol), 1.0)
+
+  def apply[D <: Dims](name: String, symbol: String, mult: Double): UnitM[D] =
+    UnitM[D](Some(name), Some(symbol), mult)
+
+  def apply[D <: Dims](name: String, symbol: String, mult: Double, offset: Double): UnitM[D] =
+    UnitM[D](Some(name), Some(symbol), mult, offset)
 }
 
-class Prefix(val name: String, val symbol: String, val mult: Double) {
-  def apply[D <: Dims](u: LinearUnitM[D]) = MultUnitM[D](name + u.name, symbol + u.symbol, mult * u.toSIMult)
-  def apply[D <: Dims](u: LinearUnitM[D], v: Double) = u(mult * v)
-}
+case class Prefix(namePrefix: String, symbolPrefix: String, mult: Double) {
+  def apply[D <: Dims](u: UnitM[D]) = u.copy[D](
+    name = u.name.map(namePrefix + _),
+    symbol = u.symbol.map(symbolPrefix + _),
+    prefix = Some(this)
+  )
 
-trait Formatter extends Function2[Double,UnitM[_],String] {
-  def apply(v: Double, u: UnitM[_]): String
+  def apply[D <: Dims](u: UnitM[D], v: Double) = u(mult * v)
 }
