@@ -17,6 +17,8 @@ class Examples extends Specification {
   // Get the SI prefixes too:
   import scunits.unit.si.Prefix._
 
+  val err = 0.00000001
+
   "Measures" should {
     "Be stored as SI units" in {
       // All measures are case value classes, and are stored as SI units, so comparisons between measures produce expected results.
@@ -26,7 +28,7 @@ class Examples extends Specification {
       l ==== cubicMetre(0.001)
 
       // Use Measure.v to access the underlying double:
-      gal.v must beCloseTo(litre(3.78541).v, 0.00000001)
+      gal.v must beCloseTo(litre(3.78541).v, err)
       
       // Measure types change as you'd expect:
       val litreArea: Measure[Area] = l / metre(0.1)
@@ -40,11 +42,12 @@ class Examples extends Specification {
       centi(metre, 10) ==== metre(0.1)
 
       // You can use prefixes to create new units, e.g.:
-      val centimetre = centi(metre)
-      centimetre(10) ==== metre(0.1)
+      val decimetre = deci(metre)
+      decimetre(10) ==== metre(1)
 
       // Then compose those units:
-      // val myLitre = centimetre.mult("centimetre","cm")(centimetre,centimetre)
+      val myLitre = decimetre * decimetre * decimetre
+      myLitre(1).v must beCloseTo(litre(1).v, err)
     }
   }
 
