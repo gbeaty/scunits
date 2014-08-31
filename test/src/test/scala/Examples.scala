@@ -22,11 +22,14 @@ class Examples extends Specification {
   "Measures" should {
     "Be stored as SI units" in {
       // All measures are case value classes, and are stored as SI units, so comparisons between measures produce expected results.
-      val gal: Measure[Volume] = gallon(1.0)
-      val l: Measure[Volume] = litre(1.0)
       // Measure is the value class which contains the underlying value (Measure.v). Volume is the dimension (Dims).
-      gal !=== l
-      l ==== cubicMetre(0.001)
+      val gal: Measure[Volume] = gallon(1.0)
+      val oneLitre: Measure[Volume] = litre(1.0)      
+
+      // gallon, litre and cubicMetre are all units of measure (UnitMs). They convert inputed Doubles to a base SI value.
+      // In the case of volume this is cubic metres.
+      gal !=== oneLitre
+      oneLitre ==== cubicMetre(0.001)
 
       // Use Measure.v to access the underlying double,
       gal.v must beCloseTo(litre(3.78541).v, err)
@@ -34,15 +37,16 @@ class Examples extends Specification {
       gal.v ==== 0.00378541
 
       // Naturally if we do Measure[A] / Measure[A] we get a dimensionless (DNil) result:
-      val dimless: Measure[DNil] = gal / l
+      val dimless: Measure[DNil] = gal / oneLitre
 
       // Type-level Dims composition is easy:
       implicitly[Volume#Div[Length] =:= Area]
       implicitly[Acceleration#Mult[Mass] =:= Force]
       
       // Dims types change as you'd expect:
-      val litreArea: Measure[Area] = l / metre(0.1)
+      val litreArea: Measure[Area] = oneLitre / metre(0.1)
       litreArea ==== squareMetre(0.01)
+
       // This does not compile:
       // litreArea ==== cubicMetre(0.01)
     }
