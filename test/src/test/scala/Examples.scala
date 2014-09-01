@@ -5,6 +5,7 @@ import org.specs2.mutable._
 class Examples extends Specification {
   // Import Measures, UnitMs, BaseQuantity, etc.
   import scunits._
+  import Scunits._
 
   // Import the pre-defined (SI) base quantities:
   import scunits.quantity._
@@ -16,10 +17,7 @@ class Examples extends Specification {
   import scunits.unit.time._
 
   // Get the SI prefixes too:
-  import scunits.unit.si.Prefix._
-
-  // import implicit conversions:
-  import Scunits._
+  import scunits.unit.si.Prefix._  
 
   // Alas, floating point arithmetic is not exact.
   val err = 0.00000001
@@ -36,7 +34,7 @@ class Examples extends Specification {
       gal !=== oneLitre
       oneLitre ==== cubicMetre(0.001)
 
-      // Values of the same Dims can be added:
+      // Values of the same Dims can be added and subtracted:
       (gal + oneLitre) must be_> (gal - oneLitre)
 
       // Use Measure.v to access the underlying double,
@@ -87,17 +85,23 @@ class Examples extends Specification {
   }
 
   "Algebra" should {
-    "Work" in {      
+    "Work on abstract Measures" in {      
       // Even when dealing with abstract Dims, some elementary algebra is possible. e.g.:
 
+      // import implicit conversions:
+      import Scunits._
+
       // Implicitly convert Measure[A] * Measure[B / A] to Measure[B]
-      def cancelDenominator[A <: Dims, B <: Dims](a: Measure[A], b: Measure[B#Div[A]]): Measure[B] = a * b
+      def cancelDenominator[L <: Dims, R <: Dims](l: Measure[L], r: Measure[R#Div[L]]): Measure[R] = l * r
       cancelDenominator[Time,Length](second(1.0), metrePerSecond(60.0)) ==== metre(60.0)
-      // Without the implicit conversion, the compiler cannot determine that Measure[A#Mult[B#Div[A]]] = Measure[B]
 
       // Implicitly convert Measure[A] / (Measure[A] / Measure[B]) to Measure[B]
       def cancelNumerator[A <: Dims, B <: Dims](a: Measure[A], b: Measure[A#Div[B]]): Measure[B] = a / b
-      cancelNumerator[Length,Time](metre(60.0), metrePerSecond(60.0)) ==== second(1.0)      
+      cancelNumerator[Length,Time](metre(60.0), metrePerSecond(60.0)) ==== second(1.0)
+
+      // A / A = a dimensionless quantity
+      def cancelSelf[A <: Dims](a: Measure[A]): Measure[DNil] = a / a
+      cancelSelf[Length](metre(1.0)) ==== Measure[DNil](1.0)
     }
   }
 }

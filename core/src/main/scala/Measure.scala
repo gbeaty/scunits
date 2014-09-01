@@ -1,22 +1,32 @@
 package scunits
 
+import Scunits._
+
 import scunits.integer._
 import scunits.quantity._
 
+trait Multer[L <: Dims, R <: Dims, A <: Dims] {
+  def apply(l: Measure[L], r: Measure[R]) = Measure[A](l.v * r.v)
+}
+trait Diver[L <: Dims, R <: Dims, A <: Dims] {
+  def apply(l: Measure[L], r: Measure[R]) = Measure[A](l.v / r.v)
+}
+
 case class Measure[D <: Dims](v: Double) extends AnyVal {
+
   def +(m: Measure[D]) = Measure[D](v + m.v)
   def -(m: Measure[D]) = Measure[D](v - m.v)
 
-  def *[R <: Dims](r: Measure[R]) = Measure[D#Mult[R]](v * r.v)
-  def /[R <: Dims](r: Measure[R]) = Measure[D#Div[R]](v / r.v)
+  def *[R <: Dims, A <: Dims](r: Measure[R])(implicit mult: (Measure[D],Measure[R],Mult.type) => Measure[A]) = mult(this, r, Mult)
+  def /[R <: Dims, A <: Dims](r: Measure[R])(implicit div: (Measure[D],Measure[R],Div.type) => Measure[A]) = div(this, r, Div)
 
   def mult(r: Double) = Measure[D](v * r)
   def div(r: Double) = Measure[D](v / r)
 
-  def >[R <: Dims](r: Measure[R]) = v > r.v
-  def >=[R <: Dims](r: Measure[R]) = v >= r.v
-  def <[R <: Dims](r: Measure[R]) = v < r.v
-  def <=[R <: Dims](r: Measure[R]) = v <= r.v
+  def >(r: Measure[D]) = v > r.v
+  def >=(r: Measure[D]) = v >= r.v
+  def <(r: Measure[D]) = v < r.v
+  def <=(r: Measure[D]) = v <= r.v
 
   def ===(r: Measure[D]) = v == r.v
 }

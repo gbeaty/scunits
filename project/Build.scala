@@ -5,7 +5,7 @@ import Keys._
 
 object Ddaq extends Build {
 
-  val appVersion = "0.0.1"
+  val appVersion = "0.0.1-SNAPSHOT"
   val scala = "2.11.2"
 
   val testDeps = Seq(

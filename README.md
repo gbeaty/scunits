@@ -18,7 +18,7 @@ scunits is an experimental, extensible library for type-checking dimensional qua
 - BigInt support
 - More units
 - Verify compilation times are kept reasonable.
-- Dims#Pow, Measure.pow and UnitM.pow functions
+- Type-level rational numbers so `pow` functions are possible.
 - Logarithmic scale units
 - Find a small, more performant type-level integer library.
 - If possible, make the type signatures readable.
@@ -27,4 +27,4 @@ scunits is an experimental, extensible library for type-checking dimensional qua
 See: https://github.com/gbeaty/scunits/blob/master/test/src/test/scala/Examples.scala
 
 ## Getting scunits
-scunits is not curretly in a maven repository. You'll have to `git clone https://github.com/gbeaty/scunits.git`, run `sbt publish-local`, then add `"org.scunits" %% "core" % "0.0.1"` to your project dependencies.
+scunits is not curretly in a maven repository. You'll have to `git clone https://github.com/gbeaty/scunits.git`, run `sbt publish-local`, then add `"org.scunits" %% "core" % "0.0.1-SNAPSHOT"` to your project dependencies.

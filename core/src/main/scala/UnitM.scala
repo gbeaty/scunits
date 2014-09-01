@@ -12,9 +12,9 @@ case class UnitM[D <: Dims](
   prefix: Option[Prefix] = None) {
 
   val prefixedMult = prefix.map(_.mult).getOrElse(1.0) * mult
-
+  
   def apply(in: Double) = Measure[D](prefixedMult * in + offset)
-  def unapply(out: Measure[D]) = out.v / prefixedMult - offset
+  def unapply(out: Measure[D]) = (out.v - offset) / prefixedMult
 
   def label(n: String, s: String) = copy[D](name = Some(n), symbol = Some(s))
   def *[R <: Dims](r: UnitM[R]) = UnitM[D#Mult[R]](mult = prefixedMult * r.prefixedMult)
