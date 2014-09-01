@@ -22,6 +22,7 @@ scunits is an experimental, extensible library for type-checking dimensional qua
 - Logarithmic scale units
 - Find a small, more performant type-level integer library.
 - If possible, make the type signatures readable.
+- Add support for better BaseQuantity composition.
 
 ## Using scunits
 See: https://github.com/gbeaty/scunits/blob/master/test/src/test/scala/Examples.scala
