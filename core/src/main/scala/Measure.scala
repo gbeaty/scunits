@@ -5,13 +5,6 @@ import Scunits._
 import scunits.integer._
 import scunits.quantity._
 
-trait Multer[L <: Dims, R <: Dims, A <: Dims] {
-  def apply(l: Measure[L], r: Measure[R]) = Measure[A](l.v * r.v)
-}
-trait Diver[L <: Dims, R <: Dims, A <: Dims] {
-  def apply(l: Measure[L], r: Measure[R]) = Measure[A](l.v / r.v)
-}
-
 case class Measure[D <: Dims](v: Double) extends AnyVal {
 
   def +(m: Measure[D]) = Measure[D](v + m.v)

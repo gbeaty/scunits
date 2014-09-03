@@ -40,7 +40,7 @@ class Examples extends Specification {
       // Use Measure.v to access the underlying double,
       gal.v must beCloseTo(litre(3.78541).v, err)
       // This value represents the Measure in its SI unit, e.g. one gallon is so many cubic metres:
-      gal.v ==== 0.00378541
+      gal.v ==== 0.00378541178
 
       // Naturally if we do Measure[A] / Measure[A] we get a dimensionless (DNil) result:
       val dimless: Measure[DNil] = gal / oneLitre
@@ -65,7 +65,7 @@ class Examples extends Specification {
 
       // You can use prefixes to create new units of measure (UnitM), e.g.:
       val decimetre = deci(metre)
-      decimetre(10) ==== metre(1)      
+      decimetre(10) ==== metre(1)
     }
   }
 
@@ -79,8 +79,8 @@ class Examples extends Specification {
 
       // Suppose we need UnitMs for fuel consumption:
       val kmpL = kilo(metre) / litre
-      val mpg = mile / gallon
-      mpg(20.0) ==== kmpL(8.502857022092719)
+      val mpg = mile / gallon                          
+      mpg(20.0) ==== kmpL(8.502874157590327)
     }
   }
 
