@@ -4,6 +4,7 @@ import scunits._
 import scunits.quantity._
 import scunits.unit.si._
 import scunits.unit.us._
+import scunits.unit.us.fluid._
 
 import org.specs2.mutable._
 

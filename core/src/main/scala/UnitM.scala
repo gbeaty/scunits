@@ -42,6 +42,13 @@ case class UnitM[D <: Dims](
   def /(r: Int) = UnitM[D](mult = prefixedMult / r)
   def /(r: Short) = UnitM[D](mult = prefixedMult / r)
   def /(r: Byte) = UnitM[D](mult = prefixedMult / r)
+
+  def prefixLabel(pn: String, ps: String) = (name, symbol) match {
+      case (Some(n),Some(s)) => this.label(pn + n, ps + s)
+      case _ => this
+    }
+  def sq = (this * this).prefixLabel("square ", "sq-")
+  def cu = (this * this * this).prefixLabel("cubic", "cu-")
 }
 object UnitM {
   def apply[D <: Dims](name: String, symbol: String): UnitM[D] =

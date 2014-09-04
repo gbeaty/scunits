@@ -12,6 +12,7 @@ class Examples extends Specification {
 
   // Import American, SI and metric units:
   import scunits.unit.us._
+  import scunits.unit.us.fluid._
   import scunits.unit.si._
   import scunits.unit.metric._
   import scunits.unit.time._
@@ -40,7 +41,7 @@ class Examples extends Specification {
       // Use Measure.v to access the underlying double,
       gal.v must beCloseTo(litre(3.78541).v, err)
       // This value represents the Measure in its SI unit, e.g. one gallon is so many cubic metres:
-      gal.v ==== 0.00378541178
+      gal.v ==== 0.003785411784
 
       // Naturally if we do Measure[A] / Measure[A] we get a dimensionless (DNil) result:
       val dimless: Measure[DNil] = gal / oneLitre
