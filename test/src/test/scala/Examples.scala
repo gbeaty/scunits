@@ -7,18 +7,17 @@ class Examples extends Specification {
   import scunits._
   import Scunits._
 
-  // Import the pre-defined (SI) base quantities:
+  // Import the pre-defined base quantities:
   import scunits.quantity._
 
-  // Import American, SI and metric units:
-  import scunits.unit.us._
-  import scunits.unit.us.fluid._
-  import scunits.unit.si._
-  import scunits.unit.metric._
-  import scunits.unit.time._
+  // Import all base SI units, accepted units and prefixes:
+  import scunits.unit.si.all._
 
-  // Get the SI prefixes too:
-  import scunits.unit.si.Prefix._  
+  // Import American units:
+  import scunits.unit.us.all._
+
+  // Default to fluid volumes:
+  import scunits.unit.us.all.Fluid._
 
   // Alas, floating point arithmetic is not exact.
   val err = 0.00000001
@@ -67,6 +66,15 @@ class Examples extends Specification {
       // You can use prefixes to create new units of measure (UnitM), e.g.:
       val decimetre = deci(metre)
       decimetre(10) ==== metre(1)
+
+      // This syntax also works:
+      centi(metre)(10) ==== metre(0.1)
+      // ...but don't use it. Doing this creates an entirely new centimetre unit then creating a Measure of 10 centimetres.
+      // This is a much more costly operation than the centi(metre, 10) example, which really amounts to some Double multiplication.
+
+      // To create a new prefix:
+      val myCenti = UnitPrefix("my-centi","mc",0.01)
+      myCenti(metre, 10) ==== centi(metre, 10)
     }
   }
 

@@ -5,12 +5,12 @@
 scunits is an experimental, extensible library for type-checking dimensional quantities and handling units of measure in scala. Exponents of base quantities are stored at the type-level in recursive list structures similar to shapeless's hlists, but without any run-time instances. All measurements are stored as Doubles of their appropriate SI unit and only converted to a specific unit when needed.
 
 ## Features
-- All measurements (`Measure`) are Value Classes wrapping Doubles
+- All measurements (`Measure`) are Value Classes wrapping Doubles. Performance is identicle to Doubles once the JIT is warm.
 - Users may add new base quantities
 - Dimensions (`Dims`), units (`UnitM`) and measurements (`Measure`) may be composed by multiplication and division
 - All SI prefixes (kilo, centi, etc.)
 - Array wrappers (`ArrayM`) for unboxed arrays
-- < 100k jar file size (for now...)
+- < 200k jar file size (for now...)
 - No dependencies
 - Elementary algebra on abstract `Measure` types
 

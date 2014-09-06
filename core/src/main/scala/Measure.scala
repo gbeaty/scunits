@@ -5,7 +5,7 @@ import Scunits._
 import scunits.integer._
 import scunits.quantity._
 
-case class Measure[D <: Dims](v: Double) extends AnyVal {
+protected case class Measure[D <: Dims](v: Double) extends AnyVal {
 
   def +(m: Measure[D]) = Measure[D](v + m.v)
   def -(m: Measure[D]) = Measure[D](v - m.v)
@@ -15,6 +15,9 @@ case class Measure[D <: Dims](v: Double) extends AnyVal {
 
   def mult(r: Double) = Measure[D](v * r)
   def div(r: Double) = Measure[D](v / r)
+
+  def ×(r: Double) = Measure[D](v * r)
+  def ÷(r: Double) = Measure[D](v / r)
 
   def >(r: Measure[D]) = v > r.v
   def >=(r: Measure[D]) = v >= r.v

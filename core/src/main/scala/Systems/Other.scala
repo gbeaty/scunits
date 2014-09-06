@@ -1,30 +1,24 @@
-package scunits.unit
+package scunits.unit.other
 
 import scunits._
 import scunits.quantity._
+import scunits.unit.si.base._
 
-package object pressure {
-  val pascal = unit.si.pascal
-  val mmHg = UnitM[Pressure]("millimeter of mercury", "mm Hg", 133.322387415)
-  val mmWater = UnitM[Pressure]("millimeter of water", "mm H2O", 9.80665)
-  val psi = UnitM[Pressure]("pounds per square inch", "psi", 6894.757)
-  val torr = UnitM[Pressure]("torr", "torr",  101325.0 / 760.0)
-  val bar = UnitM[Pressure]("bar", "bar", 100000.0)
-  val at = UnitM[Pressure]("standard atmosphere", "at", 0.980665e5)
-  val atm = UnitM[Pressure]("technical atmosphere", "atm", 1.01325e5)
+trait Pressure {
+  val mmHg = (pascal * 133.322387415).label("millimeter of mercury", "mm Hg")
+  val mmWater = (pascal * 9.80665).label("millimeter of water", "mm H2O")
+  val torr = (pascal * (101325.0 / 760.0)).label("torr", "torr")
+  val bar = (pascal * 100000.0).label("bar", "bar")
+  val at = (pascal * 0.980665e5).label("standard atmosphere", "at")
+  val atm = (pascal * 1.01325e5).label("technical atmosphere", "atm")  
 }
 
-package object power {
-  val watt = unit.si.watt
-  object hp {
-    val i = UnitM[Power]("mechanical horsepower", "hp(I)", 745.699872)
-    val m = UnitM[Power]("metric horsepower", "hp(M)", 735.49875)
-    val e = UnitM[Power]("electric horsepower", "hp(E)", 746.0)
-    val s = UnitM[Power]("boiler horsepower", "hp(S)", 9812.5)
-  }
-  // val dBm = UnitM[Power]("")
-}
+package object pressure extends Pressure
 
-package object acceleration {
-  val gee = UnitM[Acceleration]("gee", "g", 9.80665)
+trait Acceleration {
+  val gee = (metrePerSecondSquared * 9.80665).label("gee", "ɡ")
 }
+package object accel extends Acceleration
+
+trait All extends Pressure with Acceleration
+package object all extends All

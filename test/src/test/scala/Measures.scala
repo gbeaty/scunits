@@ -3,8 +3,7 @@ package scunits.test
 import scunits._
 import Scunits._
 import scunits.quantity._
-import scunits.unit.si._
-import scunits.unit.time._
+import scunits.unit.si.base._
 
 import org.specs2.mutable._
 
@@ -61,14 +60,14 @@ class Measures extends Specification {
         div[Length,Time](metre(2.0), metrePerSecond(2.0)) ==== second(1.0)
 
         def div2[L <: Dims, R <: Dims](l: Measure[R#Div[L]], r: Measure[R]): Measure[L#Neg] = l / r
-        div2[Time,Length](metrePerSecond(4.0), metre(2.0)) ==== frequency(2.0)
+        div2[Time,Length](metrePerSecond(4.0), metre(2.0)) ==== hertz(2.0)
       }
       "Cancel DNils" in {
         def div[L <: Dims](l: Measure[L], r: Measure[DNil]): Measure[L] = l / r
         div(second(2.0),coef(2.0)) ==== second(1.0)
 
         def div2[R <: Dims](l: Measure[DNil], r: Measure[R]): Measure[R#Neg] = l / r
-        div2(coef(2.0),second(2.0)) ==== frequency(1.0)
+        div2(coef(2.0),second(2.0)) ==== hertz(1.0)
       }
     }
   }

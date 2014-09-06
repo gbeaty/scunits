@@ -26,7 +26,7 @@ trait DNelConst[B <: BaseQuantityLike, M <: Integer, T <: Dims] extends DNel {
   protected type MultL[Left <: DNel] = (Left#Base#Id - Base#Id)#BranchNegZeroPos[
     Dims,
     DNelConst[Left#Base, Left#Mag,       Left#Tail#Mult[Self]], // Take and inc left.
-    (Left#Mag + Mag)#DimMag[Base,Left#Tail#Mult[Tail]],    // Combine both and inc both.
+    (Left#Mag + Mag)#DimMag[Base,Left#Tail#Mult[Tail]],         // Combine both and inc both.
     DNelConst[Base,      Mag,            Left#Mult[Tail]]       // Take and inc right.
   ]
 

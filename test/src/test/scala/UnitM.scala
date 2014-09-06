@@ -2,9 +2,9 @@ package scunits.test
 
 import scunits._
 import scunits.quantity._
-import scunits.unit.si._
-import scunits.unit.us._
-import scunits.unit.us.fluid._
+import scunits.unit.si.base._
+import scunits.unit.us.all._
+import scunits.unit.us.all.Fluid._
 
 import org.specs2.mutable._
 

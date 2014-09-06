@@ -11,7 +11,7 @@ case class UnitM[D <: Dims](
   symbol: Option[String] = None,
   mult: BigDecimal = 1.0,
   offset: BigDecimal = 0.0,
-  prefix: Option[Prefix] = None) {
+  prefix: Option[UnitPrefix] = None) {
 
   val prefixedMult: BigDecimal = prefix.map(_.mult * mult).getOrElse(mult)
   val prefixedMultDouble = prefixedMult.toDouble
@@ -61,7 +61,7 @@ object UnitM {
     UnitM[D](Some(name), Some(symbol), mult, offset)
 }
 
-case class Prefix(namePrefix: String, symbolPrefix: String, mult: BigDecimal) {
+case class UnitPrefix(namePrefix: String, symbolPrefix: String, mult: BigDecimal) {
   val doubleMult = mult.toDouble
   def apply[D <: Dims](u: UnitM[D]) = u.copy[D](
     name = u.name.map(namePrefix + _),
