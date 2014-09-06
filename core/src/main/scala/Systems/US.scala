@@ -1,13 +1,12 @@
-package scunits.unit.us
+package scunits.system.us
 
 import scala.math.BigDecimal
 
 import scunits._
 import scunits.quantity._
-import scunits.unit.si.base._
 
 class FootBased(metresPerFoot: BigDecimal) {
-  val foot = (metre * metresPerFoot).label("foot","ft")
+  val foot = UnitM[Length]("foot","ft",metresPerFoot)
 
   val link = (foot * 33/50).label("link","li")
   val rod = (foot * 16.5).label("rod","rd")
@@ -31,17 +30,17 @@ class FootBased(metresPerFoot: BigDecimal) {
   val cubicYard = yard.cu
   val acreFoot = (acre * foot).label("acre-foot","acre-ft")
 
-  val psi = (pascal * 6894.757293168).label("pounds per square inch","psi")
+  val psi = UnitM[Pressure]("pounds per square inch","psi",6894.757293168)
 
-  val mph = (mile / hour).label("miles per hour","mph")
-  val fps = (foot / second).label("feet per second","fps")
+  val mph = UnitM[Speed]("miles per hour","mph",0.44704)
+  val fps = UnitM[Speed]("feet per second","fps",0.3048)
 }
 class InternationalFoot extends FootBased(0.3048)
 class SurveyFoot extends FootBased(0.30480061)
 
 package object volume {
   trait Fluid {
-    val minim = (cubicMetre * 6.1611519921875e-8).label("minim","min")
+    val minim = UnitM[Volume]("minim","min",6.1611519921875e-8)
     val dram = (minim * 60).label("fluid dram","fl dr")
     val teaspoon = (minim * 80).label("teaspoon","tsp")
     val tablespoon = (teaspoon * 3).label("tablespoon","Tbsp")
@@ -57,26 +56,25 @@ package object volume {
     val hogshead = (gallon * 63).label("hogshead","hogshead")
   }
   trait Dry {
-    val cubicInch: UnitM[Length]
-    val pint = (cubicMetre * 0.0005506104713575).label("pint","pt")
+    val pint = UnitM[Volume]("pint","pt",0.0005506104713575)
     val quart = (pint * 2).label("quart","qt")
     val gallon = (quart * 4).label("gallon","gal")
     val peck = (gallon * 2).label("peck","pk")
     val bushel = (peck * 4).label("bushel","bu")
-    val barrel = (cubicInch * 7056).label("barrel","bbl")
+    // val barrel = (cubicInch * 7056).label("barrel","bbl")
   }
 }
 
 trait Nautical {
-  val fathom = (metre * 1.8288).label("fathom","ftm")
+  val fathom = UnitM[Length]("fathom","ftm",1.8288)
   val cable = (fathom * 120).label("cable","cb")
-  val nauticalMile = (metre * 1852).label("nautical mile","nmi")
-  val knot = (nauticalMile / hour).label("knot","kt")
+  val nauticalMile = UnitM[Length]("nautical mile","nmi",1852)
+  val knot = UnitM[Speed]("knot","kt",0.514444444)
 }
 
-package object mass {
+object Mass {
   trait Avoirdupois {
-    val grain = (gram * 0.06479891).label("grain","gr")
+    val grain = UnitM[Mass]("grain","gr",0.06479891)
     val dram = (grain * (27 + 11/32)).label("dram","dr")
     val ounce = (dram * 16).label("ounce","oz")
     val pound = (ounce * 16).label("pound","lb")
@@ -86,7 +84,7 @@ package object mass {
     val longTon = (longHundredweight * 20).label("long ton","long ton")
   }
   trait Troy {
-    val grain = (gram * 0.06479891).label("troy grain","gr")
+    val grain = UnitM[Mass]("troy grain","gr",0.06479891)
     val pennyweight = (grain * 24).label("pennyweight","dwt")
     val ounce = (pennyweight * 20).label("troy ounce","oz t")
     val pound = (ounce * 12).label("troy pound","lb t")
@@ -95,24 +93,23 @@ package object mass {
 
 trait Base {
   val fahrenheit = UnitM[Temperature]("fahrenheit","°F", 5.0/9.0, 459.67)
-  val poundForce = (newton * 4.4482216152605).label("pound force", "lbf")
-  val BTU = (joule * 1055.056).label("British thermal unit","BTU")
-  val calorie = (joule * 4.184).label("calorie","cal")
-  val hand = (metre * 0.1016).label("hand","h")
-  val lbft = (newtonMetre * 1.3558179483314004).label("pound-foot","lb-ft")
+  val poundForce = UnitM[Force]("pound force", "lbf",4.4482216152605)
+  val BTU = UnitM[Energy]("British thermal unit","BTU",1055.056)
+  val calorie = UnitM[Energy]("calorie","cal",4.184)
+  val hand = UnitM[Length]("hand","h",0.1016)
+  val lbft = UnitM[Torque]("pound-foot","lb-ft",1.3558179483314004)
   val bhp = Horsepower.mechanical
   object Horsepower {
-    val mechanical = ((lbft * 33000) / minute).label("mechnical horsepower","hp(I)")
-    val electric = (watt * 746).label("electric horsepower","hp(E)")
-    val boiler = (watt * 9812.5).label("boiler horsepower","hp(S)")
+    val mechanical = UnitM[Power]("mechnical horsepower","hp(I)",745.699881448)
+    val electric = UnitM[Power]("electric horsepower","hp(E)",746)
+    val boiler = UnitM[Power]("boiler horsepower","hp(S)",9812.5)
   }
-  val mpg = ((metre / squareMetre) * 425143.707).label("miles per gallon","mpg")
+  val mpg = UnitM[Automotive.DistancePerFuel]("miles per gallon","mpg",425143.707)
 }
 
-trait All extends InternationalFoot with Nautical with mass.Avoirdupois with Base {
+trait All extends InternationalFoot with Mass.Avoirdupois with Nautical with Base {
   object Survey extends SurveyFoot
   object Fluid extends volume.Fluid
   object Dry extends volume.Fluid
-  object Troy extends mass.Troy
+  object Troy extends Mass.Troy
 }
-package object all extends All

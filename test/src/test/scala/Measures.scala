@@ -3,7 +3,7 @@ package scunits.test
 import scunits._
 import Scunits._
 import scunits.quantity._
-import scunits.unit.si.base._
+import scunits.si._
 
 import org.specs2.mutable._
 

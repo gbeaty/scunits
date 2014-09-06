@@ -16,9 +16,8 @@ scunits is an experimental, extensible library for type-checking dimensional qua
 
 ## Todo
 - BigDecimal support for Measures.
-- More units
+- Unit conversion tests
 - Verify compilation times are kept reasonable.
-- Type-level rational numbers so `pow` functions are possible.
 - Logarithmic scale units
 - Find a small, more performant type-level integer library.
 - If possible, make the type signatures readable.

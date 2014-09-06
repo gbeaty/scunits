@@ -1,24 +1,18 @@
-package scunits.unit.other
+package scunits.system.other
 
 import scunits._
-import scunits.quantity._
-import scunits.unit.si.base._
 
 trait Pressure {
-  val mmHg = (pascal * 133.322387415).label("millimeter of mercury", "mm Hg")
-  val mmWater = (pascal * 9.80665).label("millimeter of water", "mm H2O")
-  val torr = (pascal * (101325.0 / 760.0)).label("torr", "torr")
-  val bar = (pascal * 100000.0).label("bar", "bar")
-  val at = (pascal * 0.980665e5).label("standard atmosphere", "at")
-  val atm = (pascal * 1.01325e5).label("technical atmosphere", "atm")  
+  val mmHg = UnitM[quantity.Pressure]("millimeter of mercury", "mm Hg", 133.322387415)
+  val mmWater = UnitM[quantity.Pressure]("millimeter of water", "mm H2O", 9.80665)
+  val torr = UnitM[quantity.Pressure]("torr", "torr",101325.0 / 760.0)
+  val bar = UnitM[quantity.Pressure]("bar", "bar", 100000.0)
+  val at = UnitM[quantity.Pressure]("standard atmosphere", "at", 0.980665e5)
+  val atm = UnitM[quantity.Pressure]("technical atmosphere", "atm", 1.01325e5)
 }
-
-package object pressure extends Pressure
 
 trait Acceleration {
-  val gee = (metrePerSecondSquared * 9.80665).label("gee", "ɡ")
+  val gee = UnitM[quantity.Acceleration]("gee", "ɡ", 9.80665)
 }
-package object accel extends Acceleration
 
 trait All extends Pressure with Acceleration
-package object all extends All

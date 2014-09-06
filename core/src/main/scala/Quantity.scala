@@ -42,6 +42,7 @@ package object quantity {
   type VolumeFlow = Volume#Div[Time]
   type AngularVelocity = DNil#Div[Time]
   type AngularMomentum = Energy#Mult[Time]
+  type Torque = Force#Mult[Length]
 
   object Electric {
     object Current extends BaseQuantity[_8]("electric current", "I")

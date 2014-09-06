@@ -2,7 +2,6 @@ package scunits.test
 
 import scunits._
 import scunits.quantity._
-import scunits.unit.acceleration.gee
 
 import org.specs2.mutable._
 

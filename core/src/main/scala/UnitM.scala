@@ -24,6 +24,8 @@ case class UnitM[D <: Dims](
   // def unapply(out: Measure[D]) = (out.v - doubleOffset) / prefixedMultDouble
 
   def label(n: String, s: String) = copy[D](name = Some(n), symbol = Some(s))
+  def rename(n: String) = copy[D](name = Some(n))
+
   def *[R <: Dims](r: UnitM[R]) = UnitM[D#Mult[R]](mult = prefixedMult * r.prefixedMult)
   def /[R <: Dims](r: UnitM[R]) = UnitM[D#Div[R]](mult = prefixedMult / r.prefixedMult)
 

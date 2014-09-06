@@ -1,4 +1,4 @@
-package scunits.unit.si
+package scunits.system.si
 
 import scunits._
 import scunits.quantity._
@@ -68,20 +68,15 @@ trait Base {
   val cubicMetre = UnitM[Volume]("cubic metre", "m^3")  
 }
 
-package object base extends Base
-package object prefix extends Prefix
-
 trait Accepted {
-  import base._
-  val litre = (cubicMetre / 1000).label("litre","L")
-  val tonne = (gram * 1000000).label("tonne","t")
-  val electronVolt = (joule * 1.60217656535e-19).label("electron volt","eV")
-  val dalton = (gram * 1.66053892173e-24).label("dalton","Da")
-  val astroUnit = (metre * 1.495978706916e11).label("astronomical unit","au")
-  val speedOfLight = (metrePerSecond * 299792458).label("speed of light","c")
-  val reducedPlankConstant = (joule * second * 1.0545716818e34).label("reduced plank constant","ħ")
-  val electronMass = (gram * 9.109382616e-28).label("electron mass","me")    
+  val litre = UnitM[Volume]("litre","L",0.001)
+  val tonne = UnitM[Volume]("tonne","t",1000000.0)
+  val electronVolt = UnitM[Electric.Potential]("electron volt","eV",1.60217656535e-19)
+  val dalton = UnitM[Mass]("dalton","Da",1.66053892173e-24)
+  val astroUnit = UnitM[Length]("astronomical unit","au",1.495978706916e11)
+  val speedOfLight = UnitM[Speed]("speed of light","c",299792458)
+  val reducedPlankConstant = UnitM[Power]("reduced plank constant","ħ",1.0545716818e34)
+  val electronMass = UnitM[Mass]("electron mass","me",9.109382616e-28)
 }
 
-package object accepted extends Accepted
-package object all extends Base with Prefix with Accepted
+trait All extends Base with Prefix with Accepted

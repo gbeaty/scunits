@@ -11,13 +11,13 @@ class Examples extends Specification {
   import scunits.quantity._
 
   // Import all base SI units, accepted units and prefixes:
-  import scunits.unit.si.all._
+  import scunits.si._
 
   // Import American units:
-  import scunits.unit.us.all._
+  import scunits.us._
 
   // Default to fluid volumes:
-  import scunits.unit.us.all.Fluid._
+  import scunits.us.Fluid._
 
   // Alas, floating point arithmetic is not exact.
   val err = 0.00000001
