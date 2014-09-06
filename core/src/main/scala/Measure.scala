@@ -13,11 +13,8 @@ protected case class Measure[D <: Dims](v: Double) extends AnyVal {
   def *[R <: Dims, A <: Dims](r: Measure[R])(implicit mult: (Measure[D],Measure[R],Mult.type) => Measure[A]) = mult(this, r, Mult)
   def /[R <: Dims, A <: Dims](r: Measure[R])(implicit div: (Measure[D],Measure[R],Div.type) => Measure[A]) = div(this, r, Div)
 
-  def mult(r: Double) = Measure[D](v * r)
-  def div(r: Double) = Measure[D](v / r)
-
-  def ×(r: Double) = Measure[D](v * r)
-  def ÷(r: Double) = Measure[D](v / r)
+  def *(r: Double) = Measure[D](v * r)
+  def /(r: Double) = Measure[D](v / r)
 
   def >(r: Measure[D]) = v > r.v
   def >=(r: Measure[D]) = v >= r.v
