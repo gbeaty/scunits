@@ -18,7 +18,7 @@ package object quantity {
   object AmountOfSubstance extends BaseQuantity[_4]("mole", "N")    
   // object Angle extends BaseQuantity[_5]("angle", "")
   // object SolidAngle extends BaseQuantity[_6]("solid angle", "")
-  object Info extends BaseQuantity[_7]("bit", "b")
+  object Info extends BaseQuantity[_7]("info", "")
 
   type Length = Length.Base
   type Time = Time.Base
@@ -43,6 +43,8 @@ package object quantity {
   type AngularVelocity = DNil#Div[Time]
   type AngularMomentum = Energy#Mult[Time]
   type Torque = Force#Mult[Length]
+
+  type InfoRate = Info#Div[Time]
 
   object Electric {
     object Current extends BaseQuantity[_8]("electric current", "I")
