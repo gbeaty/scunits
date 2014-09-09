@@ -4,9 +4,6 @@ class Mult[L <: Dims, R, E <: Dims]
 class Div[L <: Dims, R, E <: Dims]
 
 trait LowPriorityImplicits {
-  object Mult
-  object Div
-
   implicit def multDims[L <: Dims, R <: Dims] = new Mult[L,R,L#Mult[R]]
   implicit def divDims[L <: Dims, R <: Dims] = new Div[L,R,L#Div[R]]
 }
