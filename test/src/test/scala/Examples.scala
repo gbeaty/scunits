@@ -22,11 +22,11 @@ class Examples extends Specification {
   import scunits.us.Fluid._
 
   "Measures" should {
-    "Be stored as SI units" in {
+    "Work" in {
       // All measures are case value classes, and are stored as SI units, so comparisons between measures produce expected results.
       // Measure is the value class which contains the underlying value (Measure.v). Volume is the dimension (Dims).
       val gal: Measure[Volume] = gallon(1.0)
-      val oneLitre: Measure[Volume] = litre(1.0)      
+      val oneLitre: Measure[Volume] = litre(1.0)
 
       // gallon, litre and cubicMetre are all units of measure (UnitMs). They convert inputed Doubles to a base SI value.
       // In the case of volume this is cubic metres.
@@ -54,6 +54,12 @@ class Examples extends Specification {
 
       // This does not compile:
       // litreArea ==== cubicMetre(0.01)
+
+      // Automagically recognize and convert inverse units:
+      val massPerVolumeOfWater = pound(8.33) / gallon(1.0)
+      val volumePerMassOfWater = gallon(1.0) / pound(8.33)
+      massPerVolumeOfWater   ==== volumePerMassOfWater
+      massPerVolumeOfWater.v !=== volumePerMassOfWater.v
     }
   }
 
@@ -90,6 +96,10 @@ class Examples extends Specification {
       val kmpL = kilo(metre) / litre
       val mpg = mile / gallon                          
       mpg(20.0) ==== kmpL(8.50287414860544)
+
+      // But distance traveled per fuel used is a poor way to represent gas milage. Fuel used per distance is better.
+      // Invert a UnitM with .inv:
+      // val gpm: UnitM[Volume#Div[Length]] = mpg.inv(1.0)
     }
   }
 
@@ -130,7 +140,7 @@ class Examples extends Specification {
 
       // Under the hood, UnitM.apply converts a number to a base unit for their dimension.
       // Generally this is SI units, but the SI sadly lacks a base quantity for apples.
-      // The base unit of apples is ... one apple:
+      // We'll use one apple as the base unit for apples:
       val apple = UnitM[Apple]("apple","a",1)
       apple(1) ==== Measure[Apple](1)
       // So we don't really need the apple UnitM, but I like to have it in case the base unit of Apple changes.
@@ -146,7 +156,7 @@ class Examples extends Specification {
       bushel(1) * meanAppleMass ==== gram(18900)
 
       // I'm looking for a way to make base quantities more composable, so there can't be collisions between their IDs.
-      // If anyone has any suggestions, please let me know.
+      // If anyone has any suggestions on how to do this, please let me know.
     }
   }
 }

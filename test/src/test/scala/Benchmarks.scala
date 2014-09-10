@@ -1,6 +1,7 @@
 package scunits.test
 
 import scunits._
+import Scunits._
 import scunits.quantity._
 import scunits.us._
 
@@ -44,7 +45,7 @@ class Benchmarks extends Specification {
     val doubles = Vector.fill(cycles)(util.Random.nextDouble)
     val measures = doubles.map(Measure[Acceleration](_))
     val boxes = doubles.map(Boxed(_))
-    val valueClasses = doubles.map(ValueClass(_))    
+    val valueClasses = doubles.map(ValueClass(_))
 
     doubles.foldLeft(0.0)(_+_)
     measures.foldLeft(Measure[Acceleration](0.0))(_+_)

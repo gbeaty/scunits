@@ -2,17 +2,18 @@
 
 (or Yet Another Scala Units Library)
 
-scunits is an experimental, extensible library for type-checking dimensional quantities and handling units of measure in scala. Exponents of base quantities are stored at the type-level in recursive list structures similar to shapeless's hlists, but without any run-time instances. All measurements are stored as Doubles of their appropriate SI unit and only converted to a specific unit when needed.
+scunits is an experimental, extensible library for type-checking dimensional quantities and handling units of measure in scala. Exponents of base quantities (mass, time, etc.) are stored at the type-level in recursive list structures similar to shapeless's hlists, but without any run-time instances. All measurements are stored as Doubles of their appropriate SI unit and only converted to a specific unit when needed.
 
 ## Features
+- Type safe comparisons, arithmetic, algebra, and more.
 - All measurements (`Measure`) are Value Classes wrapping Doubles. Performance is identical to Doubles once the JIT is warm.
-- Users may add new base quantities
+- New base quantities may be added.
 - Dimensions (`Dims`), units (`UnitM`) and measurements (`Measure`) may be composed by multiplication and division
 - All SI prefixes (kilo, centi, etc.)
 - Array wrappers (`ArrayM`) for unboxed arrays
+- Implicit, type-safe operations between inverted `Measures`.
 - < 200k jar file size (for now...)
 - No dependencies
-- Elementary algebra on abstract `Measure` types
 
 ## Todo
 - Other numeric (BigDecimal, Int, etc.) support for Measures.

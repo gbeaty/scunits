@@ -22,4 +22,6 @@ protected case class Measure[D <: Dims](v: Double) extends AnyVal {
   def <=(r: Measure[D]) = v <= r.v
 
   def ===(r: Measure[D]) = v == r.v
+
+  def inv = Measure[D#Neg](1.0 / v)
 }

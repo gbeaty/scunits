@@ -9,7 +9,7 @@ import scunits.us.Fluid._
 import org.specs2.mutable._
 
 class UnitM extends Specification {
-  val err = 0.0001
+  val err = 0.001
   "Units of measurement" should {
     "Apply and unapply measurements" in {
       metre.unapply(metre(1.0)) === 1.0

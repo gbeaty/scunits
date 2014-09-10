@@ -26,6 +26,8 @@ case class UnitM[D <: Dims](
   def label(n: String, s: String) = copy[D](name = Some(n), symbol = Some(s))
   def rename(n: String) = copy[D](name = Some(n))
 
+  def inv = UnitM[D#Neg](mult = 1 / mult)
+
   def *[R <: Dims](r: UnitM[R]) = UnitM[D#Mult[R]](mult = prefixedMult * r.prefixedMult)
   def /[R <: Dims](r: UnitM[R]) = UnitM[D#Div[R]](mult = prefixedMult / r.prefixedMult)
 

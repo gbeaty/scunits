@@ -23,6 +23,9 @@ class Measures extends Specification {
     "Divide" in {
       m1 / m2 ==== coef(0.5)
     }
+    "Automatically invert" in {
+      m2.inv ==== m2
+    }
   }
 
   "Abstract measures" should {    

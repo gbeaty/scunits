@@ -37,6 +37,9 @@ trait Base {
   val candela = UnitM[Luminous.Intensity]("candela", "cd")
   val hertz = UnitM[Frequency]("hertz","Hz")
 
+  import Scunits._
+  val test = metre(1.0) + metre(1.0)
+
   val minute = (second * 60.0).label("second","s")
   val hour = (minute * 60.0).label("hour","hr")
 
