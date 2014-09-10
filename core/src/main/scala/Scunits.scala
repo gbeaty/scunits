@@ -22,4 +22,6 @@ object Scunits extends LowPriorityImplicits {
   implicit def divSelf[L <: Dims](l: Measure[L], r: Measure[L], op: Div.type) = Measure[DNil](l.v / r.v)  
   
   val coef = UnitM[DNil]("","")
+
+  implicit def toCoef(d: Double) = Measure[DNil](d)
 }
