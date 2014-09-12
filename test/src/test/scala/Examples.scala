@@ -23,8 +23,10 @@ class Examples extends Specification {
 
   "Measures" should {
     "Work" in {
-      // All measures are case value classes, and are stored as SI units, so comparisons between measures produce expected results.
-      // Measure is the value class which contains the underlying value (Measure.v). Volume is the dimension (Dims).
+      // All measures are case value classes, and are stored as SI units,
+      // so comparisons between measures produce expected results.
+      // Measure is the value class which contains the underlying value (Measure.v).
+      // Volume is the dimension, which is represented by the Dims type.
       val gal: Measure[Volume] = gallon(1.0)
       val oneLitre: Measure[Volume] = litre(1.0)
 
@@ -59,6 +61,7 @@ class Examples extends Specification {
       val massPerVolumeOfWater = pound(8.33) / gallon(1.0)
       val volumePerMassOfWater = gallon(1.0) / pound(8.33)
       massPerVolumeOfWater   ==== volumePerMassOfWater
+      // Their values will be different because Frequency is dimensionally different from Time:
       massPerVolumeOfWater.v !=== volumePerMassOfWater.v
     }
   }
@@ -86,6 +89,7 @@ class Examples extends Specification {
 
   "Units" should {
     "Compose" in {
+      // Units of measure are represented by UnitMs in scunits.
       // Any UnitM can be composed by multiplication or division with other UnitMs:
       val decimetre = deci(metre)
       val myLitre = decimetre * decimetre * decimetre
@@ -99,25 +103,34 @@ class Examples extends Specification {
 
       // But distance traveled per fuel used is a poor way to represent gas milage. Fuel used per distance is better.
       // Invert a UnitM with .inv:
-      // val gpm: UnitM[Volume#Div[Length]] = mpg.inv(1.0)
+      val gpm: UnitM[Volume#Div[Length]] = mpg.inv
+      mpg(20.0) ==== gpm(1.0 / 20.0)
     }
   }
 
-  "Algebra" should {
-    "Work on abstract Measures" in {      
-      // Even when dealing with abstract Dims, some elementary algebra is possible. e.g.:
+  "Dimensions" should {
+    "Be composable" in {
+      // Dimensions are represented by the type Dims, and are stored as lists of base quantities.
+      // They exist only at the type-level, and have no run-time representation.
 
-      // Implicitly convert Measure[A] * Measure[B / A] to Measure[B]
-      def cancelDenominator[L <: Dims, R <: Dims](l: Measure[L], r: Measure[R#Div[L]]): Measure[R] = l * r
-      cancelDenominator[Time,Length](second(1.0), metrePerSecond(60.0)) ==== metre(60.0)
+      // Dims can be DNels (non-empty list), which are non-nil dimensions:
+      def sq[D <: DNel](in: Measure[D]) = in * in
+      // So this will compile:
+      sq(metre(2.0)) ==== squareMetre(4.0)
+      // ...but this won't:
+      // sq(coef(2.0)) ==== coef(4.0)
 
-      // Implicitly convert Measure[A] / (Measure[A] / Measure[B]) to Measure[B]
-      def cancelNumerator[A <: Dims, B <: Dims](a: Measure[A], b: Measure[A#Div[B]]): Measure[B] = a / b
-      cancelNumerator[Length,Time](metre(60.0), metrePerSecond(60.0)) ==== second(1.0)
+      // ...or DNil, which are empty lists of Dims and represent dimensionless quantites:
+      val dnil: Measure[DNil] = 5.0
 
-      // A / A = a dimensionless quantity
-      def cancelSelf[A <: Dims](a: Measure[A]): Measure[DNil] = a / a
-      cancelSelf[Length](metre(1.0)) ==== Measure[DNil](1.0)
+      // Use #Neg to find the reciprocal of a Dims:
+      val hz: Measure[Time#Neg] = hertz(5.0)
+
+      // Dims compose as you might expect:
+      val sqm: Measure[Length#Mult[Length]] = metre(2.0) * metre(2.0)
+      sqm ==== squareMetre(4.0)
+      val m: Measure[Area#Div[Length]] = sqm / metre(4.0)
+      m ==== metre(1.0)      
     }
   }
 
@@ -157,6 +170,27 @@ class Examples extends Specification {
 
       // I'm looking for a way to make base quantities more composable, so there can't be collisions between their IDs.
       // If anyone has any suggestions on how to do this, please let me know.
+    }
+  }
+
+  "Algebra" should {
+    "Work on abstract Measures" in {      
+      // Even when dealing with abstract Dims, some elementary algebra is possible. e.g.:
+
+      // Implicitly convert Measure[A] * Measure[B / A] to Measure[B]
+      def cancelDenominator[L <: Dims, R <: Dims](l: Measure[L], r: Measure[R#Div[L]]): Measure[R] = l * r
+      cancelDenominator[Time,Length](second(1.0), metrePerSecond(60.0)) ==== metre(60.0)
+
+      // Implicitly convert Measure[A] / (Measure[A] / Measure[B]) to Measure[B]
+      def cancelNumerator[A <: Dims, B <: Dims](a: Measure[A], b: Measure[A#Div[B]]): Measure[B] = a / b
+      cancelNumerator[Length,Time](metre(60.0), metrePerSecond(60.0)) ==== second(1.0)
+
+      // A / A = a dimensionless quantity
+      def cancelSelf[A <: Dims](a: Measure[A]): Measure[DNil] = a / a
+      cancelSelf[Length](metre(1.0)) ==== Measure[DNil](1.0)
+
+      // More complex algebra does not work, yet:
+      // def abOverAc[A <: Dims, B <: Dims, C <: Dims](l: Measure[A#Mult[B]], r: Measure[A#Mult[C]]): Measure[B#Div[A]] = l / r
     }
   }
 }
