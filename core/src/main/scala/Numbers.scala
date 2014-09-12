@@ -7,8 +7,9 @@ package object integer {
     type Succ <: Integer
     type Add[N <: Integer] <: Integer
     type Pred <: Integer
-    type Sub[N <: Integer] <: Integer    
+    type Sub[N <: Integer] <: Integer
     type Neg <: Integer
+    type Mult[R <: Integer] <: Integer
 
     type BranchNegZeroPos[B, N<:B, Z<:B, P<:B] <: B
 
@@ -26,8 +27,8 @@ package object integer {
   trait PosInt extends NonNegInt with NonZeroInt{
     type BranchNegZeroPos[B, N<:B, Z<:B, P<:B] = P
   }
-
-  type Count = SuccInt[_]
+  // 4 * 2 = 2 + 3 * 2 = 2 + 2 + 2 * 2
+  // 4#Mult[2] = 2#Add[3#Mult[2]]
 
   class SuccInt[P <: NonNegInt] extends PosInt {
     type Self = SuccInt[P]
@@ -36,6 +37,7 @@ package object integer {
     type Pred = P
     type Sub[N <: Integer] = P#Sub[N]#Succ
     type Neg = P#Neg#Pred
+    type Mult[R <: Integer] = R#Add[Pred#Mult[R]]
   }
 
   class PredInt[S <: NonPosInt] extends NegInt {
@@ -45,6 +47,7 @@ package object integer {
     type Pred = PredInt[PredInt[S]]
     type Sub[N <: Integer] = S#Sub[N]#Pred
     type Neg = S#Neg#Succ
+    type Mult[R <: Integer] = R#Sub[Succ#Mult[R]]
   }
 
   final class _0 extends NonNegInt with NonPosInt {
@@ -54,6 +57,7 @@ package object integer {
     type Pred = PredInt[_0]
     type Sub[N <: Integer] = N#Neg
     type Neg = _0
+    type Mult[R <: Integer] = _0
     type BranchNegZeroPos[B, N<:B, Z<:B, P<:B] = Z
 
     type DimMag[B <: BaseQuantityLike, T <: Dims] = T
@@ -62,6 +66,7 @@ package object integer {
   object Ops {
     type +[L <: Integer, R <: Integer] = L#Add[R]
     type -[L <: Integer, R <: Integer] = L#Sub[R]
+    type *[L <: Integer, R <: Integer] = L#Mult[R]
   }
 
   type _1 = _0#Succ
