@@ -16,6 +16,13 @@ class UnitM extends Specification {
       mile.unapply(mile(1.0)) === 1.0
       fahrenheit.unapply(fahrenheit(70.0)) must be ~(70.0 +/- err)
     }
+    "Have working offsets" in {
+      val off = UnitM[Temperature]("","",2.0,100.0)
+      val base = UnitM[Temperature]("","")
+      off(0.0) ==== base(200.0)
+      off(100.0) ==== base(400.0)
+      off.unapply(base(400.0)) ==== 100.0
+    }
     "Compose" in {
       val mpg2 = mile / gallon
       mpg2.unapply(mpg2(1.0)) === 1.0
