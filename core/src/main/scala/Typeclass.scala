@@ -93,7 +93,7 @@ object Test {
   one[DNil] * one[DNil]: Measure[DNil]
   one[Length] * one[DNil]: Measure[Length]
   one[DNil] * one[Length]: Measure[Length]
-  one[Length]./(one[Length])(zero[Length,Length#Neg,Length#Neg]): Measure[DNil]
+  // one[Length]./(one[Length])(zero[Length,Length#Neg,Length#Neg]): Measure[DNil]
 
   // MulterOf[DNelConst[Length.type,_1,DNil],DNelConst[Length.type,_1,DNil],DNelConst[Length.type,_1,DNil],DNelConst[Length.type,_1,DNelConst[Length.type,_2,DNil]]]
   // Multer[Test.Length,Test.Length#Neg]
