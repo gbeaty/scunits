@@ -61,7 +61,7 @@ package object volume {
     val gallon = (quart * 4).label("gallon","gal")
     val peck = (gallon * 2).label("peck","pk")
     val bushel = (peck * 4).label("bushel","bu")
-    // val barrel = (cubicInch * 7056).label("barrel","bbl")
+    val barrel = UnitM[Volume]("barrel","bbl",0.115627)
   }
 }
 
@@ -110,6 +110,6 @@ trait Base {
 trait All extends InternationalFoot with Mass.Avoirdupois with Nautical with Base {
   object Survey extends SurveyFoot
   object Fluid extends volume.Fluid
-  object Dry extends volume.Fluid
+  object Dry extends volume.Dry
   object Troy extends Mass.Troy
 }
