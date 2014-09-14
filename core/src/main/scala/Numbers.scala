@@ -12,19 +12,28 @@ package object integer {
     type Mult[R <: Integer] <: Integer
 
     type BranchNegZeroPos[B, N<:B, Z<:B, P<:B] <: B
+    type IfZero[B,T <: B,E[_ <: NonZeroInt] <: B] <: B
 
     type DimMag[B <: BaseQuantityLike, T <: Dims] <: Dims
   }
 
-  trait NonNegInt extends Integer
-  trait NonPosInt extends Integer
+  trait NonNegInt extends Integer {
+    override type Self <: NonNegInt
+  }
+  trait NonPosInt extends Integer {
+    override type Self <: NonPosInt
+  }
   trait NonZeroInt extends Integer {
+    override type Self <: NonZeroInt
     type DimMag[B <: BaseQuantityLike, T <: Dims] = DNelConst[B,Self,T]
+    type IfZero[B,T <: B,E[_ <: NonZeroInt] <: B] = E[Self]
   }
   trait NegInt extends NonPosInt with NonZeroInt {
+    override type Self <: NegInt
     type BranchNegZeroPos[B, N<:B, Z<:B, P<:B] = N
   }
   trait PosInt extends NonNegInt with NonZeroInt{
+    override type Self <: PosInt
     type BranchNegZeroPos[B, N<:B, Z<:B, P<:B] = P
   }
   // 4 * 2 = 2 + 3 * 2 = 2 + 2 + 2 * 2
@@ -59,6 +68,7 @@ package object integer {
     type Neg = _0
     type Mult[R <: Integer] = _0
     type BranchNegZeroPos[B, N<:B, Z<:B, P<:B] = Z
+    type IfZero[B,T <: B,E[_ <: NonZeroInt] <: B] = T
 
     type DimMag[B <: BaseQuantityLike, T <: Dims] = T
   }
