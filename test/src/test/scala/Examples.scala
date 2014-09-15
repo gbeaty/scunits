@@ -3,14 +3,8 @@ package scunits.test
 import org.specs2.mutable._
 
 class Examples extends Specification {
-  // Import Measures, UnitMs, BaseQuantity, etc.
+  // Main import, grabs everything you usually need except specific units:
   import scunits._
-
-  // import implicit conversions:
-  import Scunits._
-
-  // Import the pre-defined base quantities:
-  import scunits.quantity._
 
   // Import all base SI units, accepted units and prefixes:
   import scunits.si._

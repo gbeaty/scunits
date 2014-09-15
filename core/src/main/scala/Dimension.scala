@@ -3,6 +3,14 @@ package scunits
 import scunits.integer._
 import scunits.integer.Ops._
 
+sealed trait BaseQuantityLike {
+  type Id <: NonNegInt
+  type Base = DNelConst[this.type, _1, DNil]
+}
+class BaseQuantity[I <: NonNegInt](val name: String, val symbol: String) extends BaseQuantityLike {
+  type Id = I
+}
+
 trait Dims extends TList {
   type Neg <: Dims
   type Mult[Right <: Dims] <: Dims

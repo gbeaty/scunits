@@ -5,7 +5,6 @@ import scunits.integer._
 import scunits.integer.Ops._
 
 object Dimension {
-  import scunits.quantity._
   import Electric._
   import Magnetic._
   import Radioactive._

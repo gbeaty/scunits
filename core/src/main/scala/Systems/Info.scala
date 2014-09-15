@@ -3,10 +3,9 @@ package scunits.system.info
 import scala.math._
 
 import scunits._
-import scunits.quantity._
 
 trait Bits {
-  val bit = UnitM[quantity.Info]("bit","b")
+  val bit = UnitM[scunits.Info]("bit","b")
   val byte = (bit * 8).label("byte","B")
 
   val bps = UnitM[InfoRate]("bit per second", "bps")

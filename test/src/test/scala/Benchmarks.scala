@@ -1,8 +1,6 @@
 package scunits.test
 
 import scunits._
-import Scunits._
-import scunits.quantity._
 import scunits.us._
 
 import org.specs2.mutable._

@@ -1,11 +1,8 @@
 package scunits
 
-import Scunits._
-
 import scunits.integer._
-import scunits.quantity._
 
-protected case class Measure[D <: Dims](v: Double) extends AnyVal {
+case class Measure[D <: Dims](v: Double) extends AnyVal {
 
   def +(m: Measure[D]) = Measure[D](v + m.v)
   def -(m: Measure[D]) = Measure[D](v - m.v)

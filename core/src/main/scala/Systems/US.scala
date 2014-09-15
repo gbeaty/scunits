@@ -3,7 +3,6 @@ package scunits.system.us
 import scala.math.BigDecimal
 
 import scunits._
-import scunits.quantity._
 
 class FootBased(metresPerFoot: BigDecimal) {
   val foot = UnitM[Length]("foot","ft",metresPerFoot)

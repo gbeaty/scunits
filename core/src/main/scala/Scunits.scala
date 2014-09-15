@@ -1,4 +1,5 @@
-package scunits
+import scunits._
+import scunits.integer._
 
 trait LowPriorityImplicits {
   object Mult
@@ -7,7 +8,7 @@ trait LowPriorityImplicits {
   implicit def divDims[L <: Dims,R <: Dims](l: Measure[L], r: Measure[R], op: Div.type) = Measure[L#Div[R]](l.v / r.v)
 }
 
-object Scunits extends LowPriorityImplicits {
+package object scunits extends LowPriorityImplicits {
   implicit def ordering[D <: Dims] = new Ordering[Measure[D]] {
     def compare(l: Measure[D], r: Measure[D]) = if(l < r) -1 else if(l > r) 1 else 0
   }
@@ -28,4 +29,74 @@ object Scunits extends LowPriorityImplicits {
   val coef = UnitM[DNil]("","")
 
   implicit def toCoef(d: Double) = Measure[DNil](d)
+
+  object Length extends BaseQuantity[_0]("length", "L")
+  object Time extends BaseQuantity[_1]("time", "T")
+  object Mass extends BaseQuantity[_2]("mass", "M")
+  object Temperature extends BaseQuantity[_3]("temperature", "Θ")
+  object AmountOfSubstance extends BaseQuantity[_4]("mole", "N")    
+  // object Angle extends BaseQuantity[_5]("angle", "")
+  // object SolidAngle extends BaseQuantity[_6]("solid angle", "")
+  object Info extends BaseQuantity[_7]("info", "")
+
+  type Length = Length.Base
+  type Time = Time.Base
+  type Mass = Mass.Base
+  type Temperature = Temperature.Base
+  type AmountOfSubstance = AmountOfSubstance.Base
+  type Angle = DNil // type Angle = Angle.Base
+  type SolidAngle = DNil // type SolidAngle = SolidAngle.Base
+  type Info = Info.Base
+
+  type Area = Length#Mult[Length]
+  type Volume = Area#Mult[Length]
+  type Density = Mass#Div[Volume]
+  type Speed = Length#Div[Time]
+  type Acceleration = Speed#Div[Time]
+  type Frequency = DNil#Div[Time]
+  type Force = Mass#Mult[Acceleration]
+  type Pressure = Force#Div[Area]
+  type Energy = Force#Mult[Length]
+  type Power = Energy#Div[Time]
+  type VolumeFlow = Volume#Div[Time]
+  type AngularVelocity = DNil#Div[Time]
+  type AngularMomentum = Energy#Mult[Time]
+  type Torque = Force#Mult[Length]
+
+  type InfoRate = Info#Div[Time]
+
+  object Electric {
+    object Current extends BaseQuantity[_8]("electric current", "I")
+    type Current = Current.Base
+    type Charge = Current#Mult[Time]
+    type Potential = Power#Div[Current]
+    type Capacitance = Charge#Div[Potential]
+    type Resistance = Potential#Div[Current]
+    type Conductance = Current#Div[Potential]
+    type Inductance = Magnetic.Flux#Div[Current]
+  }
+
+  object Magnetic {
+    import Electric.Current
+    type Flux = Electric.Potential#Mult[Time]
+    type FieldStrength = Flux#Div[Area]
+    type Inductance = Electric.Inductance
+  }
+
+  object Luminous {
+    object Intensity extends BaseQuantity[_9]("luminous intensity", "J")
+    type Intensity = Intensity.Base
+  }
+  type Illuminance = Luminous.Intensity#Div[Area]
+
+  object Radioactive {
+    type Decay = Frequency
+    type Dose = Energy#Div[Mass]
+  }
+
+  object Automotive {
+    type DistancePerFuel = Length#Div[Volume]
+  }
+
+  type CatalyticActivity = AmountOfSubstance#Div[Time]
 }

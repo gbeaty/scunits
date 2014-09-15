@@ -1,8 +1,6 @@
 package scunits.system
 
 import scunits._
-import Scunits._
-import scunits.quantity._
 
 trait Planck {
   // Base units:

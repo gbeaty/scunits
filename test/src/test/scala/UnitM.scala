@@ -1,7 +1,6 @@
 package scunits.test
 
 import scunits._
-import scunits.quantity._
 import scunits.si._
 import scunits.us._
 import scunits.us.Fluid._

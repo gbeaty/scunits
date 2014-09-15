@@ -1,7 +1,6 @@
 package scunits.system.si
 
 import scunits._
-import scunits.quantity._
 
 trait Prefix {
   val yocto = new UnitPrefix("yocto", "y", 1e-24)
@@ -36,9 +35,6 @@ trait Base {
   val mole = UnitM[AmountOfSubstance]("mole", "mol")
   val candela = UnitM[Luminous.Intensity]("candela", "cd")
   val hertz = UnitM[Frequency]("hertz","Hz")
-
-  import Scunits._
-  val test = metre(1.0) + metre(1.0)
 
   val minute = (second * 60.0).label("second","s")
   val hour = (minute * 60.0).label("hour","hr")

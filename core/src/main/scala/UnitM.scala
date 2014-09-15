@@ -1,6 +1,5 @@
 package scunits
 
-import scunits.quantity._
 import scunits.integer._
 import scunits.integer.Ops._
 
