@@ -1,4 +1,4 @@
-package scunits4
+package scunits.typeclass
 
 import scunits.BaseQuantityLike
 import scunits.integer._
@@ -139,14 +139,17 @@ trait MulterOps extends MultNil {
 
 object DListOps extends RemoveDimOps with HasAllOps with MulterOps with AdderOps with RemoveQuantOps with IsZeroOps
 
-case class Measure[D <: DList](v: Double) extends AnyVal {
+case class TCMeasure[D <: DList](v: Double) extends AnyVal {
   type Dims = D
-  def ===(r: Measure[D]) = v == r.v
-  def *[R <: DList](r: Measure[R])(implicit m: Multer[D,R]) = Measure[m.Out](v * r.v)
-  def /[R <: DList](r: Measure[R])(implicit m: Multer[D,R#Neg]) = Measure[m.Out](v / r.v)
+  def ===(r: TCMeasure[D]) = v == r.v
+  def *[R <: DList](r: TCMeasure[R])(implicit m: Multer[D,R]) = TCMeasure[m.Out](v * r.v)
+  def /[R <: DList](r: TCMeasure[R])(implicit m: Multer[D,R#Neg]) = TCMeasure[m.Out](v / r.v)
 
-  def +[R <: DList](r: Measure[R])(implicit a: Adder[D,R]) = Measure[D](v + r.v)
-  def -[R <: DList](r: Measure[R])(implicit a: Adder[D,R]) = Measure[D](v - r.v)
+  def +[R <: DList](r: TCMeasure[R])(implicit a: Adder[D,R]) = TCMeasure[D](v + r.v)
+  def -[R <: DList](r: TCMeasure[R])(implicit a: Adder[D,R]) = TCMeasure[D](v - r.v)
+
+  def ×(r: Double) = TCMeasure[D](v * r)
+  def ÷(r: Double) = TCMeasure[D](v / r)
 }
 
 class Length extends BaseQuantity[Length]
@@ -158,7 +161,7 @@ object Test {
   def remDim[M <: Dim, In <: DList](implicit i: RemoveDim[M,In]) = new RemovedDim[M,In,i.Rem]
   def hasAll[M <: DList, In <: DList](implicit i: HasAll[M, In]) = i
   def remQuant[Q <: Quantity, In <: DList](implicit rq: RemoveQuant[Q,In]) = new RemovedQuant[Q,In,rq.Exp,rq.Rem]
-  def m[D <: DList] = Measure[D](1)
+  def m[D <: DList] = TCMeasure[D](1)
   def z[I <: Integer](implicit z: Zero[I]) = z
   def nz[I <: Integer](implicit nz: NotZero[I]) = nz
 
@@ -203,16 +206,16 @@ object Test {
   m[Mass :: Length :: DNil] + m[Length :: Mass :: DNil]
   // m[Time :: Length :: DNil] + m[Length :: Mass :: DNil]
 
-  m[DNil] * m[Length]: Measure[Length]
-  m[Length] * m[DNil]: Measure[Length]
-  m[Length] * m[Length]: Measure[(Length^_2) :: DNil]
-  m[Length :: Mass :: DNil] * m[Length]: Measure[(Length^_2) :: Mass :: DNil]
-  m[Length :: Mass :: DNil] * m[Mass]: Measure[Length :: (Mass^_2) :: DNil]
-  m[Length :: Mass :: DNil] * m[Length :: Mass :: DNil]: Measure[(Length^_2) :: (Mass^_2) :: DNil]
-  m[Length :: DNil] * m[Mass :: DNil]: Measure[Length :: Mass :: DNil]
-  m[Mass :: Length :: DNil] * m[Length :: Mass :: Time :: DNil]: Measure[(Mass^_2) :: (Length^_2) :: Time :: DNil]
+  m[DNil] * m[Length]: TCMeasure[Length]
+  m[Length] * m[DNil]: TCMeasure[Length]
+  m[Length] * m[Length]: TCMeasure[(Length^_2) :: DNil]
+  m[Length :: Mass :: DNil] * m[Length]: TCMeasure[(Length^_2) :: Mass :: DNil]
+  m[Length :: Mass :: DNil] * m[Mass]: TCMeasure[Length :: (Mass^_2) :: DNil]
+  m[Length :: Mass :: DNil] * m[Length :: Mass :: DNil]: TCMeasure[(Length^_2) :: (Mass^_2) :: DNil]
+  m[Length :: DNil] * m[Mass :: DNil]: TCMeasure[Length :: Mass :: DNil]
+  m[Mass :: Length :: DNil] * m[Length :: Mass :: Time :: DNil]: TCMeasure[(Mass^_2) :: (Length^_2) :: Time :: DNil]
 
-  m[Length] / m[DNil]: Measure[Length]
-  m[DNil]./(m[Length]): Measure[(Length^_1#Neg) :: DNil]
-  m[Length] / m[Length]: Measure[DNil]
+  m[Length] / m[DNil]: TCMeasure[Length]
+  m[DNil]./(m[Length])(multLeftNil): TCMeasure[(Length^_1#Neg) :: DNil]
+  m[Length] / m[Length]: TCMeasure[DNil]
 }
