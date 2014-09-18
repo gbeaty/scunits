@@ -1,7 +1,5 @@
 package scunits
 
-import scunits.integer._
-
 case class Measure[D <: Dims](v: Double) extends AnyVal {
 
   def +(m: Measure[D]) = Measure[D](v + m.v)
