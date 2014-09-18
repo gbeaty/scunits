@@ -37,14 +37,15 @@ trait ComparableWith[W <: ComparableWith[W]] extends Comparable {
 
 sealed trait Quantity {
   type Id <: Integer
-  type CompareAbstract[R <: AbstractQuantity] <: Compared
-  type CompareSi[R <: SiBaseQuantity] <: Compared
-  type CompareNonSi[R <: NonSiBaseQuantity] <: Compared
+  type CompareAbstract[L <: AbstractQuantity] <: Compared
+  type CompareSi[L <: SiBaseQuantity] <: Compared
+  type CompareNonSi[L <: NonSiBaseQuantity] <: Compared
 }
 sealed trait AbstractQuantity extends Quantity
 sealed trait AbstractQuantityOf[I <: Integer] extends AbstractQuantity {
   type Id = I
   type Compare[R <: Quantity] = R#CompareAbstract[AbstractQuantityOf[I]]
+
   type CompareAbstract[L <: AbstractQuantity] = L#Id#Compare[Id]
   type CompareSi[L <: BaseQuantity] = Greater
   type CompareNonSi[R <: NonSiBaseQuantity] = Greater
@@ -58,10 +59,11 @@ sealed trait SiBaseQuantityOf[I <: Integer] extends SiBaseQuantity {
   type Compare[R <: Quantity] = R#CompareSi[SiBaseQuantityOf[I]]  
   type CompareSi[L <: SiBaseQuantity] = L#Id#Compare[Id]
 }
-trait NonSiBaseQuantity extends BaseQuantity
-trait NonSiBaseQuantityOf[I <: Integer] extends BaseQuantity {
+sealed trait NonSiBaseQuantity extends BaseQuantity
+sealed trait NonSiBaseQuantityOf[I <: Integer] extends BaseQuantity {
   type Id = I
   type CompareSi[L <: SiBaseQuantity] = Less
+  type CompareNonSi[L <: NonSiBaseQuantity] = L#Id#Compare[Id]
 }
 
 /*
