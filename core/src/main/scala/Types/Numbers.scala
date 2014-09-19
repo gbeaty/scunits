@@ -75,16 +75,16 @@ class PredInt[S <: NonPosInt] extends NegInt {
   type Neg = S#Neg#Succ
 }
 
-final class _0 extends NonNegInt with NonPosInt {
-  type This = _0
+final class i0 extends NonNegInt with NonPosInt {
+  type This = i0
   type IsZero = True
-  type Succ = SuccInt[_0]
+  type Succ = SuccInt[i0]
   type Add[N <: Integer] = N
   type AddNN[N <: NonNegInt] = N
   type AddNP[N <: NonPosInt] = N
-  type Pred = PredInt[_0]
+  type Pred = PredInt[i0]
   type Sub[N <: Integer] = N#Neg
-  type Neg = _0
+  type Neg = i0
   type BranchNegZeroPos[B, N<:B, Z<:B, P<:B] = Z
   type Comp = Equal
 

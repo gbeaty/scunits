@@ -1,6 +1,6 @@
 package scunits2
 
-/*case class Measure[D <: Dims](v: Double) extends AnyVal {
+case class Measure[D <: Dims](v: Double) extends AnyVal {
 
   def +(m: Measure[D]) = Measure[D](v + m.v)
   def -(m: Measure[D]) = Measure[D](v - m.v)
@@ -19,4 +19,4 @@ package scunits2
   def ===(r: Measure[D]) = v == r.v
 
   def inv = Measure[D#Neg](1.0 / v)
-}*/
+}

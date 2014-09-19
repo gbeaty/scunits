@@ -5,15 +5,15 @@ package object types {
   // IntOps:
   type +[L <: Integer, R <: Integer] = L#Add[R]
   type -[L <: Integer, R <: Integer] = L#Sub[R]
-  type _1 = _0#Succ
-  type _2 = _1#Succ
-  type _3 = _2#Succ
-  type _4 = _3#Succ
-  type _5 = _4#Succ
-  type _6 = _5#Succ
-  type _7 = _6#Succ
-  type _8 = _7#Succ
-  type _9 = _8#Succ
+  type i1 = i0#Succ
+  type i2 = i1#Succ
+  type i3 = i2#Succ
+  type i4 = i3#Succ
+  type i5 = i4#Succ
+  type i6 = i5#Succ
+  type i7 = i6#Succ
+  type i8 = i7#Succ
+  type i9 = i8#Succ
 
   // CompareOps:
   type ==[L <: Comparable, R <: L#With] = L#Compare[R]#IsEqual

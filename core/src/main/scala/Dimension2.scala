@@ -2,10 +2,9 @@ package scunits2
 
 import scunits.types._
 
-sealed trait Quantity
+trait Quantity
 trait BaseQuantity extends Quantity
-sealed trait DefaultQuantity extends BaseQuantity
-trait QNil extends TNil[Quantity]
+trait DefaultQuantity extends BaseQuantity
 
 object DefaultQuantities {
   trait Length extends DefaultQuantity
@@ -17,40 +16,44 @@ object DefaultQuantities {
   trait Current extends DefaultQuantity
   trait Intensity extends DefaultQuantity
 
-  type ToZero[_] = _0
-
-  val all = new (Length :: Time :: Mass :: Temperature :: AmountOfSubstance :: Current :: Intensity :: Info :: QNil)
-  val dimless = new (all.This ^ all.MapTo[Integer,ToZero])
+  type All = Length :: Time :: Mass :: Temperature :: AmountOfSubstance :: Current :: Intensity :: Info :: QNil
+  type Dimless = All#Dimless
 }
 
 trait Dims {
-  type Quants <: TListOf[Quantity]
-  type Exps <: TListOf[Integer]
+  type Quants <: QList
+  type Exps <: DList
 
-  type Mult[R <: DimsOf[Quants]] = Quants ^ Exps#ZipMap[R#Exps,+]
-  type Div[R <: DimsOf[Quants]] = Quants ^ Exps#ZipMap[R#Exps,-]
+  type Mult[R <: DimsOf[Quants]] = Quants ^ Exps#Mult[R#Exps]
+  type Div[R <: DimsOf[Quants]] = Quants ^ Exps#Mult[R#Exps#Neg]
 
   type SetExp[I <: Integer,E <: Integer] = Quants ^ Exps#Set[I,E]
 
   protected type NegFunc[I <: Integer] = I#Neg
-  type Neg = Quants ^ Exps#Map[NegFunc]
+  type Neg = Quants ^ Exps#Neg
 }
-trait DimsOf[Q <: TListOf[Quantity]] extends Dims {
+trait DimsOf[Q <: QList] extends Dims {
   type Quants = Q
 }
-class ^[L <: TListOf[Quantity], R <: TListOf[Integer]] extends DimsOf[L] {
+class ^[L <: QList, R <: DList] extends DimsOf[L] {
   type Exps = R
 }
 
-package object default {  
-  
-  type DimOf[I <: Integer] = DefaultQuantities.dimless.SetExp[I,_1]
-  type Length            = DimOf[_1]
-  type Time              = DimOf[_2]
-  type Mass              = DimOf[_3]
-  type Temperature       = DimOf[_4]
-  type AmountOfSubstance = DimOf[_5]
-  type Current           = DimOf[_6]
-  type Intensity         = DimOf[_7]
-  type Info              = DimOf[_8]
+trait DimsConverter[QI <: QList,I <: DList] {
+  type QuantsIn = QI
+  type Indexes = I
+  type QuantsOut <: QList
+  type Apply[EI <: DList] <: DList
+}
+
+package object default {
+  type DimOf[I <: Integer] = DefaultQuantities.Dimless#Set[I,i1]
+  type Length            = DimOf[i1]
+  type Time              = DimOf[i2]
+  type Mass              = DimOf[i3]
+  type Temperature       = DimOf[i4]
+  type AmountOfSubstance = DimOf[i5]
+  type Current           = DimOf[i6]
+  type Intensity         = DimOf[i7]
+  type Info              = DimOf[i8]
 }

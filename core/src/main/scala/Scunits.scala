@@ -30,14 +30,14 @@ package object scunits extends LowPriorityImplicits {
 
   implicit def toCoef(d: Double) = Measure[DNil](d)
 
-  object Length extends BaseQuantity[_0]("length", "L")
-  object Time extends BaseQuantity[_1]("time", "T")
-  object Mass extends BaseQuantity[_2]("mass", "M")
-  object Temperature extends BaseQuantity[_3]("temperature", "Θ")
-  object AmountOfSubstance extends BaseQuantity[_4]("mole", "N")    
-  // object Angle extends BaseQuantity[_5]("angle", "")
-  // object SolidAngle extends BaseQuantity[_6]("solid angle", "")
-  object Info extends BaseQuantity[_7]("info", "")
+  object Length extends BaseQuantity[i0]("length", "L")
+  object Time extends BaseQuantity[i1]("time", "T")
+  object Mass extends BaseQuantity[i2]("mass", "M")
+  object Temperature extends BaseQuantity[i3]("temperature", "Θ")
+  object AmountOfSubstance extends BaseQuantity[i4]("mole", "N")    
+  // object Angle extends BaseQuantity[i5]("angle", "")
+  // object SolidAngle extends BaseQuantity[i6]("solid angle", "")
+  object Info extends BaseQuantity[i7]("info", "")
 
   type Length = Length.Base
   type Time = Time.Base
@@ -66,7 +66,7 @@ package object scunits extends LowPriorityImplicits {
   type InfoRate = Info#Div[Time]
 
   object Electric {
-    object Current extends BaseQuantity[_8]("electric current", "I")
+    object Current extends BaseQuantity[i8]("electric current", "I")
     type Current = Current.Base
     type Charge = Current#Mult[Time]
     type Potential = Power#Div[Current]
@@ -84,7 +84,7 @@ package object scunits extends LowPriorityImplicits {
   }
 
   object Luminous {
-    object Intensity extends BaseQuantity[_9]("luminous intensity", "J")
+    object Intensity extends BaseQuantity[i9]("luminous intensity", "J")
     type Intensity = Intensity.Base
   }
   type Illuminance = Luminous.Intensity#Div[Area]

@@ -1,16 +1,59 @@
 package scunits.types
 
-trait QList
-trait QNel {
+trait QList {
+  type Dimless <: DList  
+}
+trait QNel extends QList {
   type Head <: scunits2.Quantity
   type Tail <: QList
+
+  type Dimless = i0 ::: Tail#Dimless
+
 }
-trait QNelOf[L <: scunits2.Quantity,R <: QList] extends QNel {
+trait ::[L <: scunits2.Quantity,R <: QList] extends QNel {
   type Head = L
   type Tail = R
 }
-trait QNil extends QList
+trait QNil extends QList {
+  type Dimless = DNil
+}
 
+trait DList {
+  type Set[I <: Integer, To <: Integer] <: DList
+  type Neg <: DList
+  
+  type Mult[R <: DList] = Op[R,+]
+  type Div[R <: DList] = Op[R,-]
+  type Op[R <: DList, O[_ <: Integer, _ <: Integer] <: Integer] <: DList
+  protected type OpNel[L <: DNel, O[_ <: Integer, _ <: Integer] <: Integer] <: DNel
+  protected type OpNil[O[_ <: Integer, _ <: Integer] <: Integer] <: DList
+  // type Zeros[N <: Integer] = N#IsPos#If[DList, i0 ::: Zeros[N#Pred], DNil]
+}
+trait DNel extends DList {  
+  type Head <: Integer
+  type Tail <: DList
+  type This = Head ::: Tail
+
+  type Neg = Head#Neg ::: Tail#Neg
+  type Set[I <: Integer, To <: Integer] = I#IsPos#If[DList, Head ::: Tail#Set[I#Pred,To], To ::: Tail]
+  
+  type Op[R <: DList, O[_ <: Integer, _ <: Integer] <: Integer] = R#OpNel[This,O]
+  protected type OpNel[L <: DNel, O[_ <: Integer, _ <: Integer] <: Integer] = O[L#Head, Head] ::: L#Tail#Op[Tail,O]
+  protected type OpNil[O[_ <: Integer, _ <: Integer] <: Integer] = O[i0,Head] ::: Tail  
+}
+trait :::[H <: Integer, T <: DList] extends DNel {
+  type Head = H
+  type Tail = T
+}
+trait DNil extends DList {
+  type Set[I <: Integer, To <: Integer] = DNil//I#IsPos#If[DList, i0 ::: DNil#Set[I#Pred,To], To ::: DNil]
+  type Neg = DNil
+  type Op[R <: DList, O[_ <: Integer, _ <: Integer] <: Integer] = R#OpNil[O]
+  protected type OpNel[L <: DNel, O[_ <: Integer, _ <: Integer] <: Integer] = L#Head ::: L#Tail
+  protected type OpNil[O[_ <: Integer, _ <: Integer] <: Integer] = DNil
+}
+
+/*
 trait TList {
   type Base
   type This <: TListOf[Base]
@@ -66,50 +109,4 @@ class TNil[B] extends TListOf[B] {
   type Set[I <: Integer,V <: Base] = This
 
   type Test[N <: Base] = This
-}
-
-class TesterOf[A] {
-  final type Do[N <: A] = N
-  type Do2[A] = A
-}
-class AbTester {
-  type A
-  type Do[N <: A] = N
-}
-class AliasTester {
-  type A = Int
-  type Do[N <: A] = N
-}
-class AbTester3 extends AbTester {
-  type A = Int
-}
-class CoTester[A] {
-  type Do[N <: A] = A
-}
-final class SubTester extends TesterOf[Int]
-
-class TestContainer[A] {
-  class Contained {
-    type Do[N <: A] = N
-  }
-}
-
-object Test {
-  // type TestOf = TesterOf[Int]#Do[Int]
-  val testerOf = new TesterOf[Int]
-  type inTest = testerOf.Do[Int]
-  // type AbTest = (AbTester{type A=Int})#Do[Int]  
-  type AliasTest = AliasTester#Do[Int]
-  // type AbTest3 = AbTester3#Do[Int]
-  // type subTest = SubTester#Do[Int]
-  // type CoTest = CoTester[Int]#Do[Int]
-
-  val intContainer = new TestContainer[Int]
-  val inContained = new intContainer.Contained
-  // type ContainerTest = intContainer.Contained#Do[Int]
-  type ContainedTest = inContained.Do[Int]
-
-  object ContainerObj extends TestContainer[Int] {
-    type ObjTest = Contained#Do[Int]
-  }
-}
+}*/
