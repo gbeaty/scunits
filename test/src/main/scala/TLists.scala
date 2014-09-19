@@ -19,12 +19,6 @@ object TListTests {
 
   type JustA = A :: TNil[Base]  
 
-  // Of tests:
-  // type OfTest = ABC#Of[MetaBase]
-  // type TNTest = TNil[Integer]#Test[TNil[Integer]]
-  case class Eq[L,R <: L]()
-  Eq[INil#Test[INil],INil]
-  // val a: INil#This = 1
   implicitly[ABC#Of[MetaBase] =:= (A :: B :: C :: TNil[MetaBase])]
 
   // Map tests:
@@ -75,9 +69,6 @@ object TListTests {
   implicitly[OneTwo#Append[OneTwoThree] =:= (_1 :: _2 :: _1 :: _2 :: _3 :: INil)]
 
   // Set tests:
-  // val a: INil#Set[_0,_1] = 1
-  // type AppendTest = INil#Append[INil]
-  // type SetTest = INil#Set[_0,_1]
   implicitly[INil#Set[_0,_1] =:= INil]
   implicitly[INil#Set[_1,_1] =:= INil]
   implicitly[INil#Set[_1#Neg,_1] =:= INil]
@@ -85,5 +76,4 @@ object TListTests {
   implicitly[OneTwo#Set[_1,_3] =:= (_1 :: _3 :: INil)]
   implicitly[OneTwo#Set[_2,_3] =:= OneTwo]
   implicitly[ToEight#Set[_0,_1] =:= ToEight]
-  // type ToEightTest = ToEight#Set[_0,_1]
 }

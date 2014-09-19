@@ -1,7 +1,19 @@
 package scunits.types
 
+trait QList
+trait QNel {
+  type Head <: scunits2.Quantity
+  type Tail <: QList
+}
+trait QNelOf[L <: scunits2.Quantity,R <: QList] extends QNel {
+  type Head = L
+  type Tail = R
+}
+trait QNil extends QList
+
 trait TList {
   type Base
+  type This <: TListOf[Base]
   type Size <: NonNegInt
   type Of[BB >: Base] <: TListOf[BB]
   type Map[F[_ <: Base] <: Base] = MapTo[Base,F]
@@ -16,14 +28,14 @@ trait TList {
   type Set[I <: Integer,V <: Base] <: TListOf[Base]
 }
 trait TListOf[B] extends TList {
-  type Base = B
+  final type Base = B
 }
 trait TNel extends TList {
   type Head <: Base
   type Tail <: TListOf[Base]
 }
 trait TNelOf[B] extends TListOf[B] with TNel
-trait ::[L <: R#Base, R <: TList] extends TNelOf[R#Base] {    
+class ::[L <: R#Base, R <: TList] extends TNelOf[R#Base] {    
   type Head = L
   type Tail = R#Of[R#Base]
 
@@ -40,10 +52,7 @@ trait ::[L <: R#Base, R <: TList] extends TNelOf[R#Base] {
   type Append[R <: TListOf[Base]] = Head :: Tail#Append[R]
   type Set[I <: Integer,V <: Base] = I#IsZero#If[TListOf[Base], V :: Tail, Head :: Tail#Set[I#Pred,V]]
 }
-trait TNelConst[B,H <: B,T <: TListOf[B]] extends (H :: T) {
-  override type Base = B
-}
-trait TNil[B] extends TListOf[B] {
+class TNil[B] extends TListOf[B] {
   type This = TNil[B]
   type Size = _0
   type MapTo[BB,F[_ <: B]] = TNil[BB]
@@ -56,5 +65,51 @@ trait TNil[B] extends TListOf[B] {
   type Append[R <: TListOf[Base]] = R
   type Set[I <: Integer,V <: Base] = This
 
-  type Test[N <: TNil[B]] = This
+  type Test[N <: Base] = This
+}
+
+class TesterOf[A] {
+  final type Do[N <: A] = N
+  type Do2[A] = A
+}
+class AbTester {
+  type A
+  type Do[N <: A] = N
+}
+class AliasTester {
+  type A = Int
+  type Do[N <: A] = N
+}
+class AbTester3 extends AbTester {
+  type A = Int
+}
+class CoTester[A] {
+  type Do[N <: A] = A
+}
+final class SubTester extends TesterOf[Int]
+
+class TestContainer[A] {
+  class Contained {
+    type Do[N <: A] = N
+  }
+}
+
+object Test {
+  // type TestOf = TesterOf[Int]#Do[Int]
+  val testerOf = new TesterOf[Int]
+  type inTest = testerOf.Do[Int]
+  // type AbTest = (AbTester{type A=Int})#Do[Int]  
+  type AliasTest = AliasTester#Do[Int]
+  // type AbTest3 = AbTester3#Do[Int]
+  // type subTest = SubTester#Do[Int]
+  // type CoTest = CoTester[Int]#Do[Int]
+
+  val intContainer = new TestContainer[Int]
+  val inContained = new intContainer.Contained
+  // type ContainerTest = intContainer.Contained#Do[Int]
+  type ContainedTest = inContained.Do[Int]
+
+  object ContainerObj extends TestContainer[Int] {
+    type ObjTest = Contained#Do[Int]
+  }
 }

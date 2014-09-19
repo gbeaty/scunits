@@ -8,6 +8,8 @@ object Ddaq extends Build {
   val appVersion = "0.0.1-SNAPSHOT"
   val scala = "2.11.2"
 
+  scalacOptions ++= Seq("-feature","-explaintypes")
+
   val testDeps = Seq(
     "org.specs2" %% "specs2" % "2.4" % "test"
   )
