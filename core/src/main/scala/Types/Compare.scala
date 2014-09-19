@@ -35,36 +35,78 @@ trait ComparableWith[W <: ComparableWith[W]] extends Comparable {
   type With = W  
 }
 
-sealed trait Quantity {
-  type Id <: Integer
-  type CompareAbstract[L <: AbstractQuantity] <: Compared
-  type CompareSi[L <: SiBaseQuantity] <: Compared
-  type CompareNonSi[L <: NonSiBaseQuantity] <: Compared
-}
-sealed trait AbstractQuantity extends Quantity
-sealed trait AbstractQuantityOf[I <: Integer] extends AbstractQuantity {
-  type Id = I
-  type Compare[R <: Quantity] = R#CompareAbstract[AbstractQuantityOf[I]]
+sealed trait Quantity
+trait BaseQuantity extends Quantity
+sealed trait DefaultQuantity extends BaseQuantity
+trait QNil extends TNil[Quantity]
 
-  type CompareAbstract[L <: AbstractQuantity] = L#Id#Compare[Id]
-  type CompareSi[L <: BaseQuantity] = Greater
-  type CompareNonSi[R <: NonSiBaseQuantity] = Greater
+object Dims {
+  trait Length extends DefaultQuantity
+  trait Time extends DefaultQuantity
+  trait Mass extends DefaultQuantity
+  trait Temperature extends DefaultQuantity
+  trait AmountOfSubstance extends DefaultQuantity
+  trait Info extends DefaultQuantity
+  trait Current extends DefaultQuantity
+  trait Intensity extends DefaultQuantity
+
+  trait Dims {
+    type Quants <: TListOf[Quantity]
+    type Exps <: TListOf[Integer]
+
+    type Mult[R <: DimsOf[Quants]] = Quants ^ Exps#ZipMap[R#Exps,+]
+    type Div[R <: DimsOf[Quants]] = Quants ^ Exps#ZipMap[R#Exps,-]
+  }
+  trait DimsOf[Q <: TListOf[Quantity]] extends Dims {
+    type Quants = Q
+  }
+  trait ^[L <: TListOf[Quantity], R <: TListOf[Integer]] extends DimsOf[L] {
+    type Exps = R
+  }
+
+  object DefaultQuantities extends 
+    (Length :: Time :: Mass :: Temperature :: AmountOfSubstance :: Current :: Intensity :: Info :: QNil) {
+    type ToZero[_] = _0
+    type Dimless = MapTo[Integer,ToZero]
+    trait Test[A]
+    trait DimOf[I <: Integer] extends Test[Dimless#Set[I,_1]]
+    // type DimOf[I <: Integer] = Dimless#Set[I,_1]
+    // type TT = Dimless#Set[_1,_1]
+
+    /*type Length = DimOf[_0]
+    type Time = DimOf[_1]
+    type Mass = DimOf[_2]
+    type Temperature = DimOf[_3]
+    type AmountOfSubstance = DimOf[_4]
+    type Current = DimOf[_5]
+    type Intensity = DimOf[_6]
+    type Info = DimOf[_7]*/
+    // type Length = Dimless#Set[_0,_1]
+    // val a: Dimless#Set[_0,_1] = 1
+  }
 }
-sealed trait BaseQuantity extends Quantity {
-  type CompareAbstract[L <: AbstractQuantity] = Less
+
+/*trait Quantity
+trait BaseQuantity extends Quantity
+trait SiBaseQuantity extends Quantity
+trait AbstractQuantity extends Quantity
+
+trait QuantList extends TListOf[BaseQuantity]
+trait ExpList extends TListOf[Integer]
+
+trait Dimms {
+  type Quant <: TListOf[BaseQuantity]
+  type Exp <: TListOf[Integer]
+
+  type Mult[R <: DimsOf[Quant]] = Quant ^ Exp#ZipMap[R#Exp,+]
+  type Div[R <: DimsOf[Quant]] = Quant ^ Exp#ZipMap[R#Exp,-]
 }
-sealed trait SiBaseQuantity extends BaseQuantity
-sealed trait SiBaseQuantityOf[I <: Integer] extends SiBaseQuantity {
-  type Id = I
-  type Compare[R <: Quantity] = R#CompareSi[SiBaseQuantityOf[I]]  
-  type CompareSi[L <: SiBaseQuantity] = L#Id#Compare[Id]
+trait DimsOf[Q <: TListOf[BaseQuantity]] extends Dimms {
+  type Quant = Q
 }
-sealed trait NonSiBaseQuantity extends BaseQuantity
-sealed trait NonSiBaseQuantityOf[I <: Integer] extends BaseQuantity {
-  type Id = I
-  type CompareSi[L <: SiBaseQuantity] = Less
-  type CompareNonSi[L <: NonSiBaseQuantity] = L#Id#Compare[Id]
-}
+trait ^[L <: TListOf[BaseQuantity], R <: TListOf[Integer]] extends DimsOf[L] {
+  type Exp = R
+}*/
 
 /*
 scunits = AB
@@ -77,4 +119,19 @@ ABC  * ABE  = ABCE,   needs Order[CE]
 ABCE * ABDF = ABCDEF, needs Order[CDEF]
 
 ABCE * ABDF = Ordered[A^2 B^2] Unordered[C E D F]
+
+ABCD
+AB  EF
+*/
+
+/*
+Quant[Index]
+scunits = A=1
+libA    = A=1,B=2
+libB    = A=1,C=2
+
+Index[Quant]
+scunits = 1=A
+libA    = 1=A,2=B
+libB    = 1=A,2=C
 */
