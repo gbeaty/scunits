@@ -35,7 +35,7 @@ trait NonPosInt extends Integer {
   type IsPos = False
   type Pred <: NegInt
   type AddNP[N <: NonPosInt] <: NonPosInt
-  type PadDList[T <: Integer] = T ::: DNil
+  type PadDList[T <: Integer] = T *: DNil
 }
 trait NonZeroInt extends Integer {
   type IsZero = False
@@ -54,7 +54,7 @@ trait PosInt extends NonNegInt with NonZeroInt {
   type BranchNegZeroPos[B, N<:B, Z<:B, P<:B] = P
   type Comp = Greater
   type AddNN[N <: NonNegInt] <: PosInt
-  type PadDList[T <: Integer] = i0 ::: Pred#PadDList[T]
+  type PadDList[T <: Integer] = i0 *: Pred#PadDList[T]
 }
 
 class SuccInt[P <: NonNegInt] extends PosInt {

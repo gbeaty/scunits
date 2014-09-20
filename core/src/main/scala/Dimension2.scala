@@ -6,7 +6,7 @@ trait Quantity
 trait BaseQuantity extends Quantity
 trait DefaultQuantity extends BaseQuantity
 
-object DefaultQuantities {
+trait DefaultQuantities {
   trait Length extends DefaultQuantity
   trait Time extends DefaultQuantity
   trait Mass extends DefaultQuantity
@@ -39,7 +39,7 @@ class ^[L <: QList, R <: DList] extends DimsOf[L] {
   type Exps = R
 }
 
-trait DimsConverter[QI <: QList,I <: DList] {
+class DimsConverter[QI <: QList,I <: DList] {
   type QuantsIn = QI
   type Indexes = I
   type QuantsOut <: QList
@@ -47,7 +47,7 @@ trait DimsConverter[QI <: QList,I <: DList] {
 }
 
 package object default {
-  type DimOf[I <: NonNegInt] = DefaultQuantities.Dimless#Set[I,i1]
+  type DimOf[I <: NonNegInt] = DefaultQuantities#Dimless#Set[I,i1]
   type Length            = DimOf[i1]
   type Time              = DimOf[i2]
   type Mass              = DimOf[i3]
@@ -56,4 +56,40 @@ package object default {
   type Current           = DimOf[i6]
   type Intensity         = DimOf[i7]
   type Info              = DimOf[i8]
+
+  type Area = Length#Mult[Length]
+  type Volume = Area#Mult[Length]
+  type Density = Mass#Div[Volume]
+  type Speed = Length#Div[Time]
+  type Acceleration = Speed#Div[Time]
+  type Frequency = DNil#Div[Time]
+  type Force = Mass#Mult[Acceleration]
+  type Pressure = Force#Div[Area]
+  type Energy = Force#Mult[Length]
+  type Power = Energy#Div[Time]
+  type VolumeFlow = Volume#Div[Time]
+  type AngularVelocity = DNil#Div[Time]
+  type AngularMomentum = Energy#Mult[Time]
+  type Torque = Force#Mult[Length]
+  type InfoRate = Info#Div[Time]
+
+  // Electric:
+  type Charge = Current#Mult[Time]
+  type Potential = Power#Div[Current]
+  type Capacitance = Charge#Div[Potential]
+  type Resistance = Potential#Div[Current]
+  type Conductance = Current#Div[Potential]
+  type Inductance = Flux#Div[Current]
+
+  // Magnetic:
+  type Flux = Potential#Mult[Time]
+  type FieldStrength = Flux#Div[Area]
+
+  // Radioactive:
+  type Decay = Frequency
+  type Dose = Energy#Div[Mass]
+
+  type Illuminance = Intensity#Div[Area]
+
+  type CatalyticActivity = AmountOfSubstance#Div[Time]
 }
