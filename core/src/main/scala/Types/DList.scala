@@ -17,7 +17,12 @@ trait DList {
 }
 trait DNel extends DList {  
   type Head <: Integer
-  type Tail <: DList
+  type Tail <: DList  
+}
+
+trait *:[H <: Integer, T <: DList] extends DNel {
+  type Head = H
+  type Tail = T
   type This = Head *: Tail
 
   type Neg = Head#Neg *: Tail#Neg
@@ -29,11 +34,6 @@ trait DNel extends DList {
 
   type IsPadding = Head#IsZero && Tail#IsPadding
   type TruncZeros = IsPadding#If[DList, DNil, Head *: Tail#TruncZeros]
-}
-
-trait *:[H <: Integer, T <: DList] extends DNel {
-  type Head = H
-  type Tail = T
 }
 trait DNil extends DList {
   type SetInt[I <: Integer, To <: Integer] = To#IsZero#If[DList,DNil,I#PadDList[To]]

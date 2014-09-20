@@ -23,19 +23,19 @@ trait Dims {
   type Quants <: QList
   type Exps <: DList
 
-  type Mult[R <: DimsOf[Quants]] = Quants ^ Exps#Mult[R#Exps]
-  type Div[R <: DimsOf[Quants]] = Quants ^ Exps#Mult[R#Exps#Neg]
-
-  type SetExp[I <: Integer,E <: Integer] = Quants ^ Exps#Set[I,E]
-
-  protected type NegFunc[I <: Integer] = I#Neg
-  type Neg = Quants ^ Exps#Neg
+  type Mult[R <: Dims] <: DimsOf[Quants]
+  type Div[R <: Dims] <: DimsOf[Quants]
+  type Neg <: DimsOf[Quants]
 }
 trait DimsOf[Q <: QList] extends Dims {
   type Quants = Q
 }
 class ^[L <: QList, R <: DList] extends DimsOf[L] {
   type Exps = R
+
+  type Mult[R <: Dims] = Quants ^ Exps#Mult[R#Exps]
+  type Div[R <: Dims] = Quants ^ Exps#Mult[R#Exps#Neg]
+  type Neg = Quants ^ Exps#Neg
 }
 
 class DimsConverter[QI <: QList,I <: DList] {
@@ -48,16 +48,16 @@ class DimsConverter[QI <: QList,I <: DList] {
 package object default {
   type DimsOf[D <: DList]    = DefaultQuantities#All ^ D
   type DimOf[I <: NonNegInt] = DimsOf[DNil#Set[I,i1]]
-  
+
   type Dimless           = DimsOf[DNil]
-  type Length            = DimOf[i1]
-  type Time              = DimOf[i2]
-  type Mass              = DimOf[i3]
-  type Temperature       = DimOf[i4]
-  type AmountOfSubstance = DimOf[i5]
-  type Current           = DimOf[i6]
-  type Intensity         = DimOf[i7]
-  type Info              = DimOf[i8]
+  type Length            = DimOf[i0]
+  type Time              = DimOf[i1]
+  type Mass              = DimOf[i2]
+  type Temperature       = DimOf[i3]
+  type AmountOfSubstance = DimOf[i4]
+  type Current           = DimOf[i5]
+  type Intensity         = DimOf[i6]
+  type Info              = DimOf[i7]
 
   type Area = Length#Mult[Length]
   type Volume = Area#Mult[Length]

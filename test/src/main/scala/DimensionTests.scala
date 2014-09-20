@@ -2,23 +2,20 @@ package scunits.test
 
 import scunits._
 import scunits.types._
+import scunits.default._
 
 object Dimension {
-  import Electric._
-  import Magnetic._
-  import Radioactive._
-
-  // Test DNil
-  implicitly[scunits.DNil#Mult[scunits.DNil] =:= scunits.DNil]
-  implicitly[Length#Mult[scunits.DNil] =:= Length]
-  implicitly[scunits.DNil#Mult[Length] =:= Length]
-  implicitly[Length#Div[scunits.DNil] =:= Length]
-  implicitly[scunits.DNil#Div[Length] =:= Length#Neg]
+  // Test Dimless
+  implicitly[Dimless#Mult[Dimless] =:= Dimless]
+  implicitly[Length#Mult[Dimless] =:= Length]
+  implicitly[Dimless#Mult[Length] =:= Length]
+  implicitly[Length#Div[Dimless] =:= Length]
+  implicitly[Dimless#Div[Length] =:= Length#Neg]
 
   // Test simple division
   implicitly[Area#Div[Length] =:= Length]
-  implicitly[Area#Div[Area] =:= scunits.DNil]
-  implicitly[Inductance#Div[Inductance] =:= scunits.DNil]
+  implicitly[Area#Div[Area] =:= Dimless]
+  implicitly[Inductance#Div[Inductance] =:= Dimless]
   implicitly[Force#Div[Acceleration] =:= Mass]
 
   // Test associativity

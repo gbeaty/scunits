@@ -1,9 +1,11 @@
 package scunits.types
 
+import scunits._
+
 object DListTests {
-  trait A extends scunits2.Quantity
-  trait B extends scunits2.Quantity
-  trait C extends scunits2.Quantity
+  trait A extends Quantity
+  trait B extends Quantity
+  trait C extends Quantity
   type BC = B :: C :: QNil
   type ABC = A :: BC
 
@@ -34,7 +36,6 @@ object DListTests {
   implicitly[DNil#Mult[DNil] =:= DNil]
   implicitly[i012#Mult[i3003] =:= (i3 *: i1 *: i2 *: i3 *: DNil)]
   implicitly[i3003#Neg#Mult[i3003] =:= DNil]
-  
 
   // Test Div:
   implicitly[i012#Div[DNil] =:= i012]
