@@ -47,7 +47,7 @@ trait DimsConverter[QI <: QList,I <: DList] {
 }
 
 package object default {
-  type DimOf[I <: Integer] = DefaultQuantities.Dimless#Set[I,i1]
+  type DimOf[I <: NonNegInt] = DefaultQuantities.Dimless#Set[I,i1]
   type Length            = DimOf[i1]
   type Time              = DimOf[i2]
   type Mass              = DimOf[i3]

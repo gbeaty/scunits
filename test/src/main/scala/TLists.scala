@@ -7,39 +7,39 @@ object DListTests {
   type BC = B :: C :: QNil
   type ABC = A :: BC
 
-  type ZZ = i0 ::: i0 ::: DNil
-  type ZZZ = i0 ::: ZZ
-  type Z12 = i0 ::: i1 ::: i2 ::: DNil
-  type ZZ12 = i0 ::: Z12
-  type Two = i2 ::: DNil
-
-  // Test Dimless:
-  implicitly[BC#Dimless =:= ZZ]
+  type i00 = i0 ::: i0 ::: DNil
+  type i11 = i1 ::: i1 ::: DNil
+  type i111 = i1 ::: i11
+  type i012 = i0 ::: i1 ::: i2 ::: DNil
+  type i0012 = i0 ::: i012
+  type i3003 = i3 ::: i0 ::: i0 ::: i3 ::: DNil
 
   // Test Neg:
   implicitly[DNil#Neg =:= DNil]
-  implicitly[ZZ#Neg =:= ZZ]
-  implicitly[Z12#Neg =:= (i0 ::: i1#Neg ::: i2#Neg ::: DNil)]
+  implicitly[i012#Neg =:= (i0 ::: i1#Neg ::: i2#Neg ::: DNil)]
+
+  // Test TruncZeros:
+  implicitly[i00#TruncZeros =:= DNil]
+  implicitly[(i1 ::: i0 ::: i2 ::: i0 ::: DNil)#TruncZeros =:= (i1 ::: i0 ::: i2 ::: DNil)]
 
   // Test Set:
-  implicitly[ZZ#Set[i0,i0] =:= ZZ]
-  implicitly[ZZ#Set[i0,i1] =:= (i1 ::: i0 ::: DNil)]
-  implicitly[ZZ#Set[i1,i3] =:= (i0 ::: i3 ::: DNil)]
-  implicitly[ZZ#Set[i2,i1] =:= ZZ]
-  // implicitly[ZZ#Set[i4,i4] =:= (i0 ::: i0 ::: i0 ::: i4 ::: DNil)]
+  implicitly[DNil#Set[i0,i1] =:= (i1 ::: DNil)]
+  implicitly[DNil#Set[i1,i3] =:= (i0 ::: i3 ::: DNil)]
+  implicitly[DNil#Set[i2,i1] =:= (i0 ::: i0 ::: i1 ::: DNil)]
+  implicitly[DNil#Set[i4,i4] =:= (i0 ::: i0 ::: i0 ::: i0 ::: i4 ::: DNil)]
 
   // Test Mult:
-  implicitly[ZZ#Mult[DNil] =:= ZZ]
-  implicitly[DNil#Mult[ZZ] =:= ZZ]
-  implicitly[ZZ#Mult[ZZ] =:= ZZ]
-  implicitly[Z12#Mult[ZZ12] =:= (i0 ::: i1 ::: i3 ::: i2 ::: DNil)]
-  implicitly[ZZ#Mult[Z12] =:= Z12]
+  implicitly[i11#Mult[DNil] =:= i11]
+  implicitly[DNil#Mult[i11] =:= i11]
+  implicitly[DNil#Mult[DNil] =:= DNil]
+  implicitly[i012#Mult[i3003] =:= (i3 ::: i1 ::: i2 ::: i3 ::: DNil)]
+  implicitly[i3003#Neg#Mult[i3003] =:= DNil]
+  
 
   // Test Div:
-  implicitly[Z12#Div[DNil] =:= Z12]
-  implicitly[DNil#Div[ZZ] =:= ZZ]
-  implicitly[ZZ#Div[ZZ] =:= ZZ]
-  implicitly[Z12#Div[Z12] =:= ZZZ]
-  implicitly[Z12#Div[ZZ12] =:= (i0 ::: i1 ::: i1 ::: i2#Neg ::: DNil)]
-  implicitly[ZZ#Div[Z12] =:= Z12#Neg]
+  implicitly[i012#Div[DNil] =:= i012]
+  implicitly[DNil#Div[DNil] =:= DNil]
+  implicitly[i012#Div[i012] =:= DNil]
+  implicitly[i012#Div[i3003] =:= (i3#Neg ::: i1 ::: i2 ::: i3#Neg ::: DNil)]
+  implicitly[DNil#Div[i012] =:= i012#Neg]
 }

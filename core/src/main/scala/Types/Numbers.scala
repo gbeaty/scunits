@@ -7,7 +7,7 @@ trait Integer extends ComparableWith[Integer] {
   type IsZero <: Bool
   type IsPos <: Bool
   type IsNeg <: Bool
-  type Succ <: Integer
+  type Succ <: Integer  
   
   type Add[N <: Integer] <: Integer
   type AddNN[N <: NonNegInt] <: Integer
@@ -18,21 +18,24 @@ trait Integer extends ComparableWith[Integer] {
   type Neg <: Integer
 
   type BranchNegZeroPos[B, N<:B, Z<:B, P<:B] <: B
-  type DimMag[B <: BaseQuantityLike, T <: Dims] <: Dims
+  type DimMag[B <: BaseQuantityLike, T <: Dims] <: Dims  
 
   type Compare[R <: Integer] = (This#Sub[R])#Comp
   type Comp <: Compared
+
+  type PadDList[T <: Integer] <: DList
 }
 
 trait NonNegInt extends Integer {
   type IsNeg = False
   type Succ <: PosInt
-  type AddNN[N <: NonNegInt] <: NonNegInt
+  type AddNN[N <: NonNegInt] <: NonNegInt  
 }
 trait NonPosInt extends Integer {
   type IsPos = False
   type Pred <: NegInt
   type AddNP[N <: NonPosInt] <: NonPosInt
+  type PadDList[T <: Integer] = T ::: DNil
 }
 trait NonZeroInt extends Integer {
   type IsZero = False
@@ -51,6 +54,7 @@ trait PosInt extends NonNegInt with NonZeroInt {
   type BranchNegZeroPos[B, N<:B, Z<:B, P<:B] = P
   type Comp = Greater
   type AddNN[N <: NonNegInt] <: PosInt
+  type PadDList[T <: Integer] = i0 ::: Pred#PadDList[T]
 }
 
 class SuccInt[P <: NonNegInt] extends PosInt {
@@ -86,7 +90,7 @@ final class i0 extends NonNegInt with NonPosInt {
   type Sub[N <: Integer] = N#Neg
   type Neg = i0
   type BranchNegZeroPos[B, N<:B, Z<:B, P<:B] = Z
-  type Comp = Equal
+  type Comp = Equal  
 
   type DimMag[B <: BaseQuantityLike, T <: Dims] = T
 }

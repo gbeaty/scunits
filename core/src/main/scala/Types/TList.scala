@@ -19,7 +19,9 @@ trait QNil extends QList {
 }
 
 trait DList {
-  type Set[I <: Integer, To <: Integer] <: DList
+  type Set[I <: NonNegInt, To <: NonZeroInt] = SetInt[I,To]
+  protected type SetInt[I <: Integer, To <: Integer] <: DList
+
   type Neg <: DList
   
   type Mult[R <: DList] = Op[R,+]
@@ -27,7 +29,9 @@ trait DList {
   type Op[R <: DList, O[_ <: Integer, _ <: Integer] <: Integer] <: DList
   protected type OpNel[L <: DNel, O[_ <: Integer, _ <: Integer] <: Integer] <: DNel
   protected type OpNil[O[_ <: Integer, _ <: Integer] <: Integer] <: DList
-  // type Zeros[N <: Integer] = N#IsPos#If[DList, i0 ::: Zeros[N#Pred], DNil]
+
+  type IsPadding <: Bool
+  type TruncZeros <: DList
 }
 trait DNel extends DList {  
   type Head <: Integer
@@ -35,22 +39,36 @@ trait DNel extends DList {
   type This = Head ::: Tail
 
   type Neg = Head#Neg ::: Tail#Neg
-  type Set[I <: Integer, To <: Integer] = I#IsPos#If[DList, Head ::: Tail#Set[I#Pred,To], To ::: Tail]
+  type SetInt[I <: Integer, To <: Integer] = I#IsPos#If[DList, Head ::: Tail#Set[I#Pred,To], (To ::: Tail)]
   
-  type Op[R <: DList, O[_ <: Integer, _ <: Integer] <: Integer] = R#OpNel[This,O]
+  type Op[R <: DList, O[_ <: Integer, _ <: Integer] <: Integer] = R#OpNel[This,O]#TruncZeros
   protected type OpNel[L <: DNel, O[_ <: Integer, _ <: Integer] <: Integer] = O[L#Head, Head] ::: L#Tail#Op[Tail,O]
-  protected type OpNil[O[_ <: Integer, _ <: Integer] <: Integer] = O[i0,Head] ::: Tail  
+  protected type OpNil[O[_ <: Integer, _ <: Integer] <: Integer] = O[i0,Head] ::: Tail#OpNil[O]
+
+  type IsPadding = Head#IsZero && Tail#IsPadding
+  type TruncZeros = IsPadding#If[DList, DNil, Head ::: Tail#TruncZeros]
 }
+/*
+10200-#TruncZeros = 102 = Head ::: Tail#TruncZeros
+ 0200-#TruncZeros = 02  = Head ::: Tail#TruncZeros
+  200-#TruncZeros = 2   = Head ::: Tail#TruncZeros
+   00-#TruncZeros = -   = 
+    0-#TruncZeros = -
+*/
 trait :::[H <: Integer, T <: DList] extends DNel {
   type Head = H
   type Tail = T
 }
 trait DNil extends DList {
-  type Set[I <: Integer, To <: Integer] = DNil//I#IsPos#If[DList, i0 ::: DNil#Set[I#Pred,To], To ::: DNil]
+  type SetInt[I <: Integer, To <: Integer] = To#IsZero#If[DList,DNil,I#PadDList[To]]
   type Neg = DNil
+
   type Op[R <: DList, O[_ <: Integer, _ <: Integer] <: Integer] = R#OpNil[O]
   protected type OpNel[L <: DNel, O[_ <: Integer, _ <: Integer] <: Integer] = L#Head ::: L#Tail
   protected type OpNil[O[_ <: Integer, _ <: Integer] <: Integer] = DNil
+
+  type IsPadding = True
+  type TruncZeros = DNil
 }
 
 /*
