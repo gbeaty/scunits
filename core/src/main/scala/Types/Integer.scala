@@ -18,7 +18,6 @@ trait Integer extends ComparableWith[Integer] {
   type Neg <: Integer
 
   type BranchNegZeroPos[B, N<:B, Z<:B, P<:B] <: B
-  type DimMag[B <: BaseQuantityLike, T <: Dims] <: Dims  
 
   type Compare[R <: Integer] = (This#Sub[R])#Comp
   type Comp <: Compared
@@ -39,7 +38,6 @@ trait NonPosInt extends Integer {
 }
 trait NonZeroInt extends Integer {
   type IsZero = False
-  type DimMag[B <: BaseQuantityLike, T <: Dims] = DNelConst[B,This,T]
 }
 trait NegInt extends NonPosInt with NonZeroInt {
   type IsNeg = True
@@ -91,6 +89,4 @@ final class i0 extends NonNegInt with NonPosInt {
   type Neg = i0
   type BranchNegZeroPos[B, N<:B, Z<:B, P<:B] = Z
   type Comp = Equal  
-
-  type DimMag[B <: BaseQuantityLike, T <: Dims] = T
 }

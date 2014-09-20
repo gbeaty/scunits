@@ -1,5 +1,7 @@
 package scunits
 
+import scunits.types._
+
 import scala.math.BigDecimal
 
 case class UnitM[D <: Dims](
