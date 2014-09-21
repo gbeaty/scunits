@@ -1,6 +1,8 @@
 package scunits
 
-case class Measure[D <: Dims](v: Double) extends AnyVal {
+import scunits.types._
+
+case class Measure[D <: Dims](v: Double) extends AnyVal with Ordered[Measure[D]] {
 
   def +(m: Measure[D]) = Measure[D](v + m.v)
   def -(m: Measure[D]) = Measure[D](v - m.v)
@@ -11,10 +13,7 @@ case class Measure[D <: Dims](v: Double) extends AnyVal {
   def ×(r: Double) = Measure[D](v * r)
   def ÷(r: Double) = Measure[D](v / r)
 
-  def >(r: Measure[D]) = v > r.v
-  def >=(r: Measure[D]) = v >= r.v
-  def <(r: Measure[D]) = v < r.v
-  def <=(r: Measure[D]) = v <= r.v
+  def compare(that: Measure[D]) = if(v < that.v) -1 else if(v > that.v) 1 else 0
 
   def ===(r: Measure[D]) = v == r.v
 

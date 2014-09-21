@@ -27,7 +27,7 @@ class Measures extends Specification {
     }
   }
 
-  "Abstract measures" should {    
+  /*"Abstract measures" should {    
     "Add" in {
       def add[L <: Dims](l: Measure[L], r: Measure[L]): Measure[L] = l + r
       add(m1,m2) ==== metre(3.0)
@@ -72,5 +72,5 @@ class Measures extends Specification {
         div2(coef(2.0),second(2.0)) ==== hertz(1.0)
       }
     }
-  }
+  }*/
 }

@@ -32,7 +32,7 @@ class Examples extends Specification {
       gal.v ==== 0.003785411784
 
       // Naturally if we do Measure[A] / Measure[A] we get a dimensionless (DNil) result:
-      val dimless: Measure[DNil] = gal / oneLitre
+      val dimless: Measure[Dimless] = gal / oneLitre
 
       // Type-level Dims composition is easy:
       implicitly[Volume#Div[Length] =:= Area]
@@ -98,18 +98,18 @@ class Examples extends Specification {
 
   "Dimensions" should {
     "Be composable" in {
-      // Dimensions are represented by the type Dims, and are stored as lists of base quantities.
+      // Dimensions are represented by the type Dims.
+      // These are lists of base quantities and a list of their exponents.
       // They exist only at the type-level, and have no run-time representation.
+      def sq[D <: Dims](in: Measure[D]) = in * in
 
-      // Dims can be DNels (non-empty list), which are non-nil dimensions:
-      def sq[D <: DNel](in: Measure[D]) = in * in
       // So this will compile:
       sq(metre(2.0)) ==== squareMetre(4.0)
       // ...but this won't:
       // sq(coef(2.0)) ==== coef(4.0)
 
-      // ...or DNil, which are empty lists of Dims and represent dimensionless quantites:
-      val dnil: Measure[DNil] = 5.0
+      // ...or Dimless, which represents dimensionless quantities:
+      val dnil: Measure[Dimless] = 5.0
 
       // Use #Neg to find the reciprocal of a Dims:
       val hz: Measure[Time#Neg] = hertz(5.0)

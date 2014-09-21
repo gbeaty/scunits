@@ -26,4 +26,8 @@ package object types {
   // BoolOps:
   type ||[L <: Bool, R <: Bool] = L#Or[R]
   type &&[L <: Bool, R <: Bool] = L#And[R]
+
+  // DimsOps:
+  type *[L <: Dims, R <: DimsOf[L#Quants]] = L#Mult[R]
+  type /[L <: Dims, R <: DimsOf[L#Quants]] = L#Div[R]
 }

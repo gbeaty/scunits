@@ -104,7 +104,7 @@ trait Base {
     val electric = UnitM[Power]("electric horsepower","hp(E)",746)
     val boiler = UnitM[Power]("boiler horsepower","hp(S)",9812.5)
   }
-  // val mpg = UnitM[Automotive.DistancePerFuel]("miles per gallon","mpg",425143.707)
+  val mpg = UnitM[DistancePerFuelUsed]("miles per gallon","mpg",425143.707)
 }
 
 trait All extends InternationalFoot with Mass.Avoirdupois with Nautical with Base {

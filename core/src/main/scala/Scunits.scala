@@ -1,6 +1,6 @@
 import scunits._
-import scunits.default._
+import scunits.types._
 
-package object scunits {
-  val coef = UnitM[Dimless](mult = 1.0)
+package object scunits {  
+  implicit def invertMeasure[D <: Dims](m: Measure[D]) = m.inv  
 }
