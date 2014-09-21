@@ -17,7 +17,6 @@ trait Integer extends ComparableWith[Integer] {
   type Sub[N <: Integer] <: Integer
   type Neg <: Integer
 
-  type BranchNegZeroPos[B, N<:B, Z<:B, P<:B] <: B
 
   type Compare[R <: Integer] = (This#Sub[R])#Comp
   type Comp <: Compared
@@ -42,14 +41,12 @@ trait NonZeroInt extends Integer {
 trait NegInt extends NonPosInt with NonZeroInt {
   type IsNeg = True
   type Succ <: NonPosInt
-  type BranchNegZeroPos[B, N<:B, Z<:B, P<:B] = N
   type Comp = Less
   type AddNP[N <: NonPosInt] <: NegInt
 }
 trait PosInt extends NonNegInt with NonZeroInt {
   type IsPos = True
   type Pred <: NonNegInt
-  type BranchNegZeroPos[B, N<:B, Z<:B, P<:B] = P
   type Comp = Greater
   type AddNN[N <: NonNegInt] <: PosInt
   type PadDList[T <: Integer] = i0 *: Pred#PadDList[T]
@@ -87,6 +84,5 @@ final class i0 extends NonNegInt with NonPosInt {
   type Pred = PredInt[i0]
   type Sub[N <: Integer] = N#Neg
   type Neg = i0
-  type BranchNegZeroPos[B, N<:B, Z<:B, P<:B] = Z
   type Comp = Equal  
 }
