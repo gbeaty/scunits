@@ -25,6 +25,8 @@ object TestTypes {
   object ABCDn extends Quantities {
     type Quants = ABCDn
   }
+  type BCDn = ABCDn#Tail
+  type CDn = BCDn#Tail
   type Zn = Z :: QNil
   object Zn extends Quantities {
     type Quants = Zn
