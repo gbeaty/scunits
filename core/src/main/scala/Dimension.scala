@@ -11,13 +11,13 @@ class BaseQuantity[I <: NonNegInt](val name: String, val symbol: String) extends
   type Id = I
 }
 
-trait Dims extends TList {
+trait Dims {
   type Neg <: Dims
   type Mult[Right <: Dims] <: Dims
   protected type MultL[Left <: DNel] <: Dims
   type Div[Right <: Dims] = Mult[Right#Neg]
 }
-trait DNel extends Dims with TNel {
+trait DNel extends Dims {
   type Base <: BaseQuantityLike
   type Mag <: Integer
   type Tail <: Dims
@@ -26,7 +26,7 @@ trait DNel extends Dims with TNel {
   type Head = Base
 }
 
-trait DNelConst[B <: BaseQuantityLike, M <: Integer, T <: Dims] extends DNel with TNelOf[B] {
+trait DNelConst[B <: BaseQuantityLike, M <: Integer, T <: Dims] extends DNel {
   override type Head = B
   type Base = B
   type Mag = M
@@ -44,7 +44,7 @@ trait DNelConst[B <: BaseQuantityLike, M <: Integer, T <: Dims] extends DNel wit
   type Neg = DNelConst[Base,Mag#Neg,Tail#Neg]
 }
 
-trait DNil extends Dims with TNil {
+trait DNil extends Dims {
   type Neg = DNil
   type Mult[Right <: Dims] = Right
   protected type MultL[Left <: DNel] = Left
