@@ -9,11 +9,11 @@ trait DefaultQuantities extends Quantities {
   
   type Time              = DimOf[i0]
   type Info              = DimOf[i1]
-  type Length            = DimOf[i2]  
+  type Length            = DimOf[i2]
   type Mass              = DimOf[i3]
-  type Temperature       = DimOf[i4]  
+  type Temperature       = DimOf[i4]
   type Current           = DimOf[i5]
-  type Intensity         = DimOf[i6]  
+  type Intensity         = DimOf[i6]
   type AmountOfSubstance = DimOf[i7]
 
   type Area = Length * Length
