@@ -21,12 +21,12 @@ class QuantFoundAt[Qs <: QList, Q <: Quantity, A <: Integer] extends QuantFound[
 }
 
 object Converter { 
-  implicit def quantSearch[Qs <: QNel, Q <: Quantity, I <: Integer](implicit i: QuantFoundAt[Qs#Tail,Q,I#Pred]) =
+  implicit def quantSearch[Qs <: QNel, Q <: Quantity, I <: Integer](implicit i: QuantFoundAt[Qs#Tail,Q,I#pred]) =
       new QuantFoundAt[Qs,Q,I] 
   implicit def quantFound[Qs <: QNelOfHead[Q], Q <: Quantity] = new QuantFoundAt[Qs,Q,i0]
 
-  implicit def indexConverterBuild[F <: QNel, T <: QList]
-    (implicit i: QuantFound[T,F#Head], c: IndexConverter[F#Tail,T]) = new IndexConverterConst[F,T,i.At -: c.Is]
+  implicit def indexConverterBuild[F <: QNel, T <: QList, I <: Integer]
+    (implicit i: QuantFoundAt[T,F#Head,I], c: IndexConverter[F#Tail,T]) = new IndexConverterConst[F,T,I -: c.Is]
 
   implicit def indexConverterBuilt[T <: QList] = new IndexConverterConst[QNil,T,INil]
 }

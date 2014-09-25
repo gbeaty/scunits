@@ -2,87 +2,87 @@ package scunits.types
 
 import scunits._
 
-trait Integer extends ComparableWith[Integer] {
+trait Integer extends ComparableTo[Integer] {
   type This <: Integer
-  type IsZero <: Bool
-  type IsPos <: Bool
-  type IsNeg <: Bool
-  type Succ <: Integer  
+  type isZero <: Bool
+  type isPos <: Bool
+  type isNeg <: Bool
+  type succ <: Integer  
   
-  type Add[N <: Integer] <: Integer
-  type AddNN[N <: NonNegInt] <: Integer
-  type AddNP[N <: NonPosInt] <: Integer
+  type add[N <: Integer] <: Integer
+  type addNN[N <: NonNegInt] <: Integer
+  type addNP[N <: NonPosInt] <: Integer
 
-  type Pred <: Integer
-  type Sub[N <: Integer] <: Integer
-  type Neg <: Integer
+  type pred <: Integer
+  type sub[N <: Integer] <: Integer
+  type neg <: Integer
 
 
-  type Compare[R <: Integer] = (This#Sub[R])#Comp
-  type Comp <: Compared
+  type compare[R <: Integer] = (This#sub[R])#comp
+  type comp <: Compared
 
   type PadDList[T <: Integer] <: DList
 }
 
 trait NonNegInt extends Integer {
-  type IsNeg = False
-  type Succ <: PosInt
-  type AddNN[N <: NonNegInt] <: NonNegInt  
+  type isNeg = False
+  type succ <: PosInt
+  type addNN[N <: NonNegInt] <: NonNegInt  
 }
 trait NonPosInt extends Integer {
-  type IsPos = False
-  type Pred <: NegInt
-  type AddNP[N <: NonPosInt] <: NonPosInt
+  type isPos = False
+  type pred <: NegInt
+  type addNP[N <: NonPosInt] <: NonPosInt
   type PadDList[T <: Integer] = T *: DNil
 }
 trait NonZeroInt extends Integer {
-  type IsZero = False
+  type isZero = False
 }
 trait NegInt extends NonPosInt with NonZeroInt {
-  type IsNeg = True
-  type Succ <: NonPosInt
-  type Comp = Less
-  type AddNP[N <: NonPosInt] <: NegInt
+  type isNeg = True
+  type succ <: NonPosInt
+  type comp = Less
+  type addNP[N <: NonPosInt] <: NegInt
 }
 trait PosInt extends NonNegInt with NonZeroInt {
-  type IsPos = True
-  type Pred <: NonNegInt
-  type Comp = Greater
-  type AddNN[N <: NonNegInt] <: PosInt
-  type PadDList[T <: Integer] = i0 *: Pred#PadDList[T]
+  type isPos = True
+  type pred <: NonNegInt
+  type comp = Greater
+  type addNN[N <: NonNegInt] <: PosInt
+  type PadDList[T <: Integer] = i0 *: pred#PadDList[T]
 }
 
 class SuccInt[P <: NonNegInt] extends PosInt {
   type This = SuccInt[P]
-  type Succ = SuccInt[SuccInt[P]]
-  type Add[N <: Integer] = P#Add[N]#Succ
-  type AddNN[N <: NonNegInt] = P#AddNN[N]#Succ
-  type AddNP[N <: NonPosInt] = Add[N]
-  type Pred = P
-  type Sub[N <: Integer] = P#Sub[N]#Succ
-  type Neg = P#Neg#Pred
+  type succ = SuccInt[SuccInt[P]]
+  type add[N <: Integer] = P#add[N]#succ
+  type addNN[N <: NonNegInt] = P#addNN[N]#succ
+  type addNP[N <: NonPosInt] = add[N]
+  type pred = P
+  type sub[N <: Integer] = P#sub[N]#succ
+  type neg = P#neg#pred
 }
 
 class PredInt[S <: NonPosInt] extends NegInt {
   type This = PredInt[S]
-  type Succ = S
-  type Add[N <: Integer] = S#Add[N]#Pred
-  type AddNN[N <: NonNegInt] = Add[N]
-  type AddNP[N <: NonPosInt] = S#AddNP[N]#Pred 
-  type Pred = PredInt[PredInt[S]]
-  type Sub[N <: Integer] = S#Sub[N]#Pred
-  type Neg = S#Neg#Succ
+  type succ = S
+  type add[N <: Integer] = S#add[N]#pred
+  type addNN[N <: NonNegInt] = add[N]
+  type addNP[N <: NonPosInt] = S#addNP[N]#pred 
+  type pred = PredInt[PredInt[S]]
+  type sub[N <: Integer] = S#sub[N]#pred
+  type neg = S#neg#succ
 }
 
 final class i0 extends NonNegInt with NonPosInt {
   type This = i0
-  type IsZero = True
-  type Succ = SuccInt[i0]
-  type Add[N <: Integer] = N
-  type AddNN[N <: NonNegInt] = N
-  type AddNP[N <: NonPosInt] = N
-  type Pred = PredInt[i0]
-  type Sub[N <: Integer] = N#Neg
-  type Neg = i0
-  type Comp = Equal  
+  type isZero = True
+  type succ = SuccInt[i0]
+  type add[N <: Integer] = N
+  type addNN[N <: NonNegInt] = N
+  type addNP[N <: NonPosInt] = N
+  type pred = PredInt[i0]
+  type sub[N <: Integer] = N#neg
+  type neg = i0
+  type comp = Equal  
 }

@@ -12,6 +12,7 @@ object SearchTests {
   val inOfB = index[ABCDn,B,i1]
   val inOfC = index[ABCDn,C,i2]
   val inOfD = index[ABCDn,D,i3]
+  val t = index[ABn,B,i1]
 
   val a: inOfA.At = new i0
   val b: inOfB.At = new i1
@@ -22,8 +23,11 @@ object ConverterTests {
     import Converter._
     implicit val aToAb = converter(Aq,ABq)//(indexConverterBuild[An,ABn])
     implicit val bToAb = converter(Bq,ABq)(
-      indexConverterBuild[Bn,ABn](
-        quantSearch[ABn,B,i1], indexConverterBuilt[ABn]))
+      indexConverterBuild[Bn,ABn,i1]/*(
+        quantSearch[ABn,B,i1], indexConverterBuilt[ABn])*/)
+
+    // implicitly[QuantFound[ABn,Bn#Head]]
+    implicitly[IndexConverterConst[Bq.Quants,ABq.Quants,i1 -: INil]]
   }
   import TestConverters._
 

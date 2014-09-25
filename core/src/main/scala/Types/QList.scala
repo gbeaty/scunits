@@ -13,7 +13,7 @@ trait QNel extends QList {
   type Head <: Quantity
   type Tail <: QList
   type Self = Head :: Tail
-  type Size = Tail#Size#Succ
+  type Size = Tail#Size#succ
 
   type MapHeadOrElse[F[_ <: Quantity] <: QList, Else <: QList] = F[Head]
 

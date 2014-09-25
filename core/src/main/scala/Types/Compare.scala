@@ -1,36 +1,36 @@
 package scunits.types
 
 trait Compared {
-  type IsLess <: Bool
-  type IsEqual <: Bool
-  type IsGreater <: Bool
+  type isLess <: Bool
+  type isEqual <: Bool
+  type isGreater <: Bool
 
-  type IsLessOrEqual = IsLess || IsEqual
-  type IsGreaterOrEqual = IsGreater || IsEqual
+  type isLessOrEqual = isLess || isEqual
+  type isGreaterOrEqual = isGreater || isEqual
 }
 trait EqualOrLess extends Compared
 trait EqualOrGreater extends Compared
 trait NotEqual extends Compared
 trait Less extends EqualOrLess with NotEqual {
-  type IsLess = True
-  type IsEqual = False
-  type IsGreater = False
+  type isLess = True
+  type isEqual = False
+  type isGreater = False
 }
 trait Equal extends EqualOrLess with EqualOrGreater {
-  type IsLess = False
-  type IsEqual = True
-  type IsGreater = False
+  type isLess = False
+  type isEqual = True
+  type isGreater = False
 }
 trait Greater extends EqualOrGreater with NotEqual {
-  type IsLess = False
-  type IsEqual = False
-  type IsGreater = True
+  type isLess = False
+  type isEqual = False
+  type isGreater = True
 }
 
 trait Comparable {
-  type With <: ComparableWith[With]
-  type Compare[R <: With] <: Compared
+  type to <: ComparableTo[to]
+  type compare[R <: to] <: Compared
 }
-trait ComparableWith[W <: ComparableWith[W]] extends Comparable {
-  type With = W  
+trait ComparableTo[W <: ComparableTo[W]] extends Comparable {
+  type to = W  
 }

@@ -6,47 +6,47 @@ import scunits.default._
 
 object DefaultTests {
   // Test Dimless
-  implicitly[Dimless#Mult[Dimless] =:= Dimless]
-  implicitly[Length#Mult[Dimless] =:= Length]
-  implicitly[Dimless#Mult[Length] =:= Length]
-  implicitly[Length#Div[Dimless] =:= Length]
-  implicitly[Dimless#Div[Length] =:= Length#Neg]
+  implicitly[Dimless#mult[Dimless] =:= Dimless]
+  implicitly[Length#mult[Dimless] =:= Length]
+  implicitly[Dimless#mult[Length] =:= Length]
+  implicitly[Length#div[Dimless] =:= Length]
+  implicitly[Dimless#div[Length] =:= Length#neg]
 
   // Test simple division
-  implicitly[Area#Div[Length] =:= Length]
-  implicitly[Area#Div[Area] =:= Dimless]
-  implicitly[Inductance#Div[Inductance] =:= Dimless]
-  implicitly[Force#Div[Acceleration] =:= Mass]
+  implicitly[Area#div[Length] =:= Length]
+  implicitly[Area#div[Area] =:= Dimless]
+  implicitly[Inductance#div[Inductance] =:= Dimless]
+  implicitly[Force#div[Acceleration] =:= Mass]
 
   // Test associativity
-  implicitly[Area#Mult[Length] =:= Length#Mult[Area]]
-  implicitly[Flux#Mult[Power] =:= Power#Mult[Flux]]
-  implicitly[Time#Mult[Mass] =:= Mass#Mult[Time]]
+  implicitly[Area#mult[Length] =:= Length#mult[Area]]
+  implicitly[Flux#mult[Power] =:= Power#mult[Flux]]
+  implicitly[Time#mult[Mass] =:= Mass#mult[Time]]
 
   // Length
-  implicitly[Area#Div[Length] =:= Length]
-  implicitly[Volume#Div[Length] =:= Area]
-  implicitly[Volume#Div[Area] =:= Length]
-  implicitly[Density#Mult[Volume] =:= Mass]
-  implicitly[Speed#Div[Length] =:= Frequency]
-  implicitly[Energy#Div[Length] =:= Force]
+  implicitly[Area#div[Length] =:= Length]
+  implicitly[Volume#div[Length] =:= Area]
+  implicitly[Volume#div[Area] =:= Length]
+  implicitly[Density#mult[Volume] =:= Mass]
+  implicitly[Speed#div[Length] =:= Frequency]
+  implicitly[Energy#div[Length] =:= Force]
 
   // Power and energy
-  implicitly[Power#Mult[Time] =:= Energy]
-  implicitly[Energy#Div[Time] =:= Power]
-  implicitly[Acceleration#Mult[Time] =:= Speed]
+  implicitly[Power#mult[Time] =:= Energy]
+  implicitly[Energy#div[Time] =:= Power]
+  implicitly[Acceleration#mult[Time] =:= Speed]
 
   // Electricity
-  implicitly[Conductance#Mult[Time] =:= Capacitance]
-  implicitly[Potential#Div[Resistance] =:= Current]
-  implicitly[Resistance#Mult[Current] =:= Potential]
-  implicitly[Conductance#Mult[Flux] =:= Charge]
-  implicitly[Flux#Div[Inductance] =:= Current]
+  implicitly[Conductance#mult[Time] =:= Capacitance]
+  implicitly[Potential#div[Resistance] =:= Current]
+  implicitly[Resistance#mult[Current] =:= Potential]
+  implicitly[Conductance#mult[Flux] =:= Charge]
+  implicitly[Flux#div[Inductance] =:= Current]
 
   // Magnetism
-  implicitly[Flux#Div[Area] =:= FieldStrength]
-  implicitly[Flux#Div[Time] =:= Potential]
+  implicitly[Flux#div[Area] =:= FieldStrength]
+  implicitly[Flux#div[Time] =:= Potential]
   
   // Radioactivity
-  implicitly[Dose#Div[Length] =:= Acceleration]
+  implicitly[Dose#div[Length] =:= Acceleration]
 }

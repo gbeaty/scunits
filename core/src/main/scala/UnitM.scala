@@ -10,6 +10,7 @@ case class UnitM[D <: Dims](
   mult: BigDecimal = 1.0,
   offset: BigDecimal = 0.0,
   prefix: Option[UnitPrefix] = None) {
+  type dims = D
 
   val prefixedMult: BigDecimal = prefix.map(_.mult * mult).getOrElse(mult)
   val prefixedMultDouble = prefixedMult.toDouble
@@ -24,10 +25,10 @@ case class UnitM[D <: Dims](
   def label(n: String, s: String) = copy[D](name = Some(n), symbol = Some(s))
   def rename(n: String) = copy[D](name = Some(n))
 
-  def inv = UnitM[D#Neg](mult = 1 / mult)
+  def inv = UnitM[D#neg](mult = 1 / mult)
 
-  def *[R <: Dims](r: UnitM[R]) = UnitM[D#Mult[R]](mult = prefixedMult * r.prefixedMult)
-  def /[R <: Dims](r: UnitM[R]) = UnitM[D#Div[R]](mult = prefixedMult / r.prefixedMult)
+  def *[R <: Dims](r: UnitM[R]) = UnitM[D#mult[R]](mult = prefixedMult * r.prefixedMult)
+  def /[R <: Dims](r: UnitM[R]) = UnitM[D#div[R]](mult = prefixedMult / r.prefixedMult)
 
   def *(r: BigDecimal) = UnitM[D](mult = prefixedMult * r)
   def *(r: Double) = UnitM[D](mult = prefixedMult * r)
