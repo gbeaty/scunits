@@ -17,27 +17,76 @@ object TestTypes {
   type Z = Z.type
 
   type ABn = A :: B :: QNil
-  object ABn extends Quantities {
+  object ABq extends Quantities {
     type Quants = ABn
+    type A = DimOf[i0]
+    type B = DimOf[i1]
   }
+  type ABq = ABq.type
+
   type ABCn = A :: B :: C :: QNil
-  object ABCn extends Quantities {
+  object ABCq extends Quantities {
     type Quants = ABCn
+    type A = DimOf[i0]
+    type B = DimOf[i1]
+    type C = DimOf[i2]
   }
+  type ABCq = ABCq.type
+
   type ABDn = A :: B :: D :: QNil
-  object ABDn extends Quantities {
+  object ABDq extends Quantities {
     type Quants = ABDn
+    type A = DimOf[i0]
+    type B = DimOf[i1]
+    type D = DimOf[i2]
   }
+  type ABDq = ABDq.type
+
   type ABCDn = A :: B :: C :: D :: QNil
-  object ABCDn extends Quantities {
+  object ABCDq extends Quantities {
     type Quants = ABCDn
+    type A = DimOf[i0]
+    type B = DimOf[i1]
+    type C = DimOf[i2]
+    type D = DimOf[i3]
   }
-  type BCDn = ABCDn#Tail
-  type CDn = BCDn#Tail
+  type ABCDq = ABCDq.type
+
+  type An = A :: QNil
+  object Aq extends Quantities {
+    type Quants = An
+    type A = DimOf[i0]
+  }
+  type Aq = Aq.type
+
+  type Bn = B :: QNil
+  object Bq extends Quantities {
+    type Quants = Bn
+    type B = DimOf[i0]
+  }
+  type Bq = Bn
+
+  type BCn = B :: C :: QNil
+  object BCq extends Quantities {
+    type Quants = BCn
+    type B = DimOf[i0]
+    type C = DimOf[i1]
+  }
+  type BCq = BCn
+
+  type Cn = C :: QNil
+  object Cq extends Quantities {
+    type Quants = Cn
+    type C = DimOf[i0]
+  }
+  type Cq = Cn
+
   type Zn = Z :: QNil
-  object Zn extends Quantities {
+  object Zq extends Quantities {
     type Quants = Zn
+    type Z = DimOf[i0]
   }
+  type Zq = Zq.type
 
   type i00 = i0 *: i0 *: DNil
   type i11 = i1 *: i1 *: DNil
@@ -52,31 +101,4 @@ object TestTypes {
 
   type Rev4 = i3 -: i2 -: i1 -: i0 -: INil
   type Rev2 = i1 -: i0 -: INil
-
-  trait Nilq extends Quantities {
-    type Quants = QNil
-  }
-  object Nilq extends Nilq
-
-  trait ABq extends Quantities {
-    type Quants = (A.type :: B.type :: QNil)
-    type A = DimOf[i0]
-    type B = DimOf[i1]
-  }
-  object ABq extends ABq
-
-  trait ABCq extends Quantities {
-    type Quants = (A.type :: B.type :: C.type :: QNil)
-    type A = DimOf[i0]
-    type B = DimOf[i1]
-    type C = DimOf[i2]
-  }
-  object ABCq extends ABCq
-
-  trait DEq extends Quantities {
-    type Quants = (D.type :: E.type :: QNil)
-    type D = DimOf[i0]
-    type E = DimOf[i1]
-  }
-  object DEq extends DEq
 }

@@ -15,8 +15,6 @@ object AmountOfSubstance extends BaseQuantity
 object Current extends BaseQuantity
 object Intensity extends BaseQuantity
 
-class QuantConverter[From <: QList, Ids <: DList]
-
 trait Quantities {
   type Quants <: QList
 

@@ -3,28 +3,34 @@ package scunits.types
 import scunits._
 import TestTypes._
 
-object ConverterTests {
+object SearchTests {
   import Converter._
-  def index[A <: QList, Q <: Quantity, I <: NonNegInt](implicit i: QuantIndex[A,Q] { type Index = I }) = i
+  def index[A <: QList, Q <: Quantity, I <: Integer](implicit i: QuantFoundAt[A,Q,I]) = i
 
-  index[ABCDn,A,i0]
-  index[ABCDn,B,i1]
-  index[ABCDn,C,i2]
-  index[ABCDn,D,i3]
+  val qf: QuantFoundAt[ABCDn,B,i1] = quantSearch[ABCDn,B,i1]
+  val inOfA = index[ABCDn,A,i0]
+  val inOfB = index[ABCDn,B,i1]
+  val inOfC = index[ABCDn,C,i2]
+  val inOfD = index[ABCDn,D,i3]
+
+  val a: inOfA.At = new i0
+  val b: inOfB.At = new i1
 }
 
-object MeasureTests {
-  implicit val nilToAb = converter[Nilq,ABq]
+object ConverterTests {
+  object TestConverters {
+    import Converter._
+    implicit val aToAb = converter(Aq,ABq)(indexConverterBuild[An,ABn,i0])
+    // implicit val abdToAbcd = converter(ABDq,ABCDq)(indexConverterBuild[ABDn,ABCDn,i0])
+  }
+  import TestConverters._
 
-  val nilOne = Measure[Nilq.Dimless](1.0)
-  val abOne = Measure[ABq.Dimless](1.0)
-  nilOne * nilOne
-  abOne * abOne
-  abOne === (nilOne * abOne)
+  implicitly[aToAb.Apply[Aq.Dimless] =:= ABq.Dimless]
+  // val a: aToAb.Is = 1
 
-  /*Measure[TestNilq.Dimless#Mult[MeasureTests.nilToAb.Apply[TestNilq.Dimless]]]  
-  Measure[TestABq.Dimless]
-
-  Measure[^[QNil,MeasureTests.nilToAb.Exps[DNil]#OpNil[[L <: Integer, R <: Integer]L#Add[R]]]]
-  Measure[^[::[TestA.type,::[TestB.type,QNil]],DNil]]*/
+  val aOne = Measure[Aq.A](1.0)
+  val abOne = Measure[ABq.A](1.0)
+  // Measure[aToAb.Apply[Aq.A]](1.0) === abOne
+  // aOne === abOne
+  // val a: aToAb.Exps[i1 *: DNil] = 1
 }

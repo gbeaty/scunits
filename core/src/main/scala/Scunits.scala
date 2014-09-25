@@ -2,11 +2,12 @@ import scunits._
 import scunits.types._
 
 package object scunits {
-  implicit def invertMeasure[D <: Dims](m: Measure[D]) = m.inv  
+  implicit def invertMeasure[D <: Dims](m: Measure[D]) = m.inv
 
-  import Converter._
-  @annotation.implicitNotFound(msg = "Cannot generate a Converter of type ${From} -> ${To}. Consider creating one manually.")
-  def converter[From <: Quantities, To <: Quantities](implicit cb: Converter[From#Quants, To#Quants]) = cb
+  implicit def convert[F <: QList, T <: QList, D <: DimsOf[F]](m: Measure[D])(implicit c: Converter[F,T]) =
+    Measure[c.Apply[D]](m.v)
 
-  implicit def identityConverter[A <: QList] = new Converter[A,A]
+  import Converter._  
+  @annotation.implicitNotFound(msg = "Cannot generate a Converter of type ${F} -> ${T}. Consider creating one manually.")
+  def converter[F <: Quantities, T <: Quantities, C <: Converter[F#Quants,T#Quants]](f: F, t: T)(implicit c: C) = c
 }
