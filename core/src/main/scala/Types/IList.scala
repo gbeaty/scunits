@@ -2,20 +2,20 @@ package scunits.types
 
 import scunits._
 
-trait Indexes {
-  type ConvertDims[E <: DList] = ConvertingDims[E,E]#TruncZeros
+trait IList {
+  type ConvertDims[E <: DList] = ConvertingDims[E,DNil]#TruncZeros
   protected type ConvertingDims[E <: DList, Res <: DList] <: DList
 }
-trait IndexNel extends Indexes {
+trait INel extends IList {
   type Head <: Integer
-  type Tail <: Indexes
+  type Tail <: IList
 }
-trait -:[L <: Integer, R <: Indexes] extends IndexNel {
+trait -:[L <: Integer, R <: IList] extends INel {
   type Head = L
   type Tail = R
 
   protected type ConvertingDims[E <: DList, Res <: DList] = Tail#ConvertingDims[E#Tail, Res#Set[Head,E#Head]]  
 }
-trait INil extends Indexes {
+trait INil extends IList {
   protected type ConvertingDims[E <: DList, Res <: DList] = Res
 }

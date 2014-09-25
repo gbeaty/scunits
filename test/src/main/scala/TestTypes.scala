@@ -91,6 +91,7 @@ object TestTypes {
   type i00 = i0 *: i0 *: DNil
   type i11 = i1 *: i1 *: DNil
   type i111 = i1 *: i11
+  type i12 = i1 *: i2 *: DNil
   type i21 = i2 *: i1 *: DNil
   type i012 = i0 *: i1 *: i2 *: DNil
   type i102 = i1 *: i0 *: i2 *: DNil
@@ -101,4 +102,5 @@ object TestTypes {
 
   type Rev4 = i3 -: i2 -: i1 -: i0 -: INil
   type Rev2 = i1 -: i0 -: INil
+  type Skip1 = i1 -: INil
 }

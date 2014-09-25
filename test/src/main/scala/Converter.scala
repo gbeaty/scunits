@@ -20,13 +20,24 @@ object SearchTests {
 object ConverterTests {
   object TestConverters {
     import Converter._
-    implicit val aToAb = converter(Aq,ABq)(indexConverterBuild[An,ABn,i0])
-    // implicit val abdToAbcd = converter(ABDq,ABCDq)(indexConverterBuild[ABDn,ABCDn,i0])
+    implicit val aToAb = converter(Aq,ABq)//(indexConverterBuild[An,ABn])
+    implicit val bToAb = converter(Bq,ABq)(
+      indexConverterBuild[Bn,ABn](
+        quantSearch[ABn,B,i1], indexConverterBuilt[ABn]))
   }
   import TestConverters._
 
+  implicitly[aToAb.Is =:= (i0 -: INil)]
   implicitly[aToAb.Apply[Aq.Dimless] =:= ABq.Dimless]
-  // val a: aToAb.Is = 1
+
+  implicitly[bToAb.Is =:= (i1 -: INil)]
+  implicitly[bToAb.Apply[Bq.Dimless] =:= ABq.Dimless]
+  implicitly[bToAb.Apply[Bq.B] =:= ABq.B]
+  
+  // val b1: bToAb.Apply[Bq.B] = 1
+  // val b2: ABq.B = 1
+  // ^[::[TestTypes.A.type,::[TestTypes.B.type,QNil]],*:[i1,*:[i1,DNil]]]
+  // ^[::[TestTypes.A.type,::[TestTypes.B.type,QNil]],*:[i0,*:[i1,DNil]]]
 
   val aOne = Measure[Aq.A](1.0)
   val abOne = Measure[ABq.A](1.0)
