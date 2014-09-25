@@ -70,14 +70,15 @@ class RemovedDim[D <: Dim, In <: DList, R <: DList] extends RemoveDim[D,In] {
   type Rem = R
 }
 trait RemoveDimOps {
-  implicit def removeDimSkip[D <: Dim, In <: DNel, R <: DList](implicit h: RemovedDim[D,In#Tail,R]) = new RemovedDim[D,In,DNelConst[In#Quant,In#Exp,R]]
-  implicit def removeDimMatch[D <: Dim, In <: DNelOfTo[D#Quant, D#Exp]] = new RemovedDim[D,In,In#Tail]
+  implicit def removeDimSkip[D <: Dim, In <: DNel, R <: DList](implicit h: RemovedDim[D,In#Tail,R]):
+    RemovedDim[D,In,DNelConst[In#Quant,In#Exp,R]] = null
+  implicit def removeDimMatch[D <: Dim, In <: DNelOfTo[D#Quant, D#Exp]]: RemovedDim[D,In,In#Tail] = null
 }
 
 class HasAll[L <: DList, In <: DList]
 trait HasAllOps {
-  implicit def hasAllMatch[L <: DNel, In <: DList](implicit h: RemoveDim[L#Head,In], ha: HasAll[L#Tail,In]) = new HasAll[L,In]
-  implicit def hasAllEnd[In <: DList] = new HasAll[DNil,In]
+  implicit def hasAllMatch[L <: DNel, In <: DList](implicit h: RemoveDim[L#Head,In], ha: HasAll[L#Tail,In]): HasAll[L,In] = null
+  implicit def hasAllEnd[In <: DList]: HasAll[DNil,In] = null
 }
 
 class RemoveQuant[Q <: Quantity, In <: DList] {
@@ -89,27 +90,26 @@ class RemovedQuant[Q <: Quantity, In <: DList, E <: Integer, R <: DList] extends
   type Rem = R
 }
 trait RemoveQuantSkip {
-  implicit def removeQuantSkip[Q <: Quantity, In <: DNel](implicit rq: RemoveQuant[Q,In#Tail]) =
-    new RemovedQuant[Q,In,rq.Exp,DNelConst[In#Quant,In#Exp,rq.Rem]]
+  implicit def removeQuantSkip[Q <: Quantity, In <: DNel](implicit rq: RemoveQuant[Q,In#Tail]):
+    RemovedQuant[Q,In,rq.Exp,DNelConst[In#Quant,In#Exp,rq.Rem]] = null
 }
 trait RemoveQuantOps extends RemoveQuantSkip {
-  implicit def removeQuantNil[Q <: Quantity] = new RemovedQuant[Q,DNil,_0,DNil]
-  implicit def removeQuantMatch[Q <: Quantity, In <: DNelOf[Q]] = new RemovedQuant[Q,In,In#Exp,In#Tail]  
+  implicit def removeQuantNil[Q <: Quantity]: RemovedQuant[Q,DNil,_0,DNil] = null
+  implicit def removeQuantMatch[Q <: Quantity, In <: DNelOf[Q]]: RemovedQuant[Q,In,In#Exp,In#Tail] = null
 }
 
 class Adder[L <: DList, R <: DList]
 trait AdderOps {
-  implicit def adderMatch[L <: DNel, R <: DNel](implicit lr: HasAll[L,R], rl: HasAll[R,L]) =
-    new Adder[L,R]
-  implicit val adderNil = new Adder[DNil,DNil]
+  implicit def adderMatch[L <: DNel, R <: DNel](implicit lr: HasAll[L,R], rl: HasAll[R,L]): Adder[L,R] = null
+  implicit val adderNil: Adder[DNil,DNil] = null
 }
 
 class IsZero[I <: Integer]
 class Zero[I <: Integer] extends IsZero[I]
 class NotZero[I <: Integer] extends IsZero[I]
 trait IsZeroOps {
-  implicit val isZero = new Zero[_0]
-  implicit def notZero[I <: NonZeroInt] = new NotZero[I]
+  implicit val isZero: Zero[_0] = null
+  implicit def notZero[I <: NonZeroInt]: NotZero[I] = null
 }
 
 class Multer[L <: DList, R <: DList] { type Out <: DList }
@@ -117,24 +117,24 @@ class Multing[L <: DList, R <: DList, O <: DList] extends Multer[L,R] {
   type Out = O
 }
 trait MultSkip {
-  implicit def multSkip[L <: DNel, R <: DNel](implicit m: Multer[L#Tail,R]) =
-    new Multing[L,R,DNelConst[L#Quant, L#Exp, m.Out]]
+  implicit def multSkip[L <: DNel, R <: DNel](implicit m: Multer[L#Tail,R]):
+    Multing[L,R,DNelConst[L#Quant, L#Exp, m.Out]] = null
 }
 trait MultMatch extends MultSkip {
   implicit def multAdd[L <: DNel, R <: DNel, RE <: Integer, RR <: DList]
-    (implicit r: RemovedQuant[L#Quant,R,RE,RR], m: Multer[L#Tail,RR], iz: NotZero[L#Exp+RE]) =
-      new Multing[L, R, DNelConst[L#Quant, L#Exp + RE, m.Out]]
+    (implicit r: RemovedQuant[L#Quant,R,RE,RR], m: Multer[L#Tail,RR], iz: NotZero[L#Exp+RE]):
+      Multing[L, R, DNelConst[L#Quant, L#Exp + RE, m.Out]] = null
 
   implicit def multCancel[L <: DNel, R <: DNel, RE <: Integer, RR <: DList]
-    (implicit r: RemovedQuant[L#Quant,R,RE,RR], m: Multer[L#Tail,RR], iz: Zero[L#Exp+RE]) =
-      new Multing[L, R, m.Out]
+    (implicit r: RemovedQuant[L#Quant,R,RE,RR], m: Multer[L#Tail,RR], iz: Zero[L#Exp+RE]):
+      Multing[L, R, m.Out] = null
 }
 trait MultNil extends MultMatch {
-  implicit def multLeftNil[R <: DNel] = new Multing[DNil,R,R]
-  implicit def multRightNil[L <: DNel] = new Multing[L,DNil,L]
+  implicit def multLeftNil[R <: DNel]: Multing[DNil,R,R] = null
+  implicit def multRightNil[L <: DNel]: Multing[L,DNil,L] = null
 }
 trait MulterOps extends MultNil {
-  implicit val multNil = new Multing[DNil,DNil,DNil] 
+  implicit val multNil: Multing[DNil,DNil,DNil] = null
 }
 
 object DListOps extends RemoveDimOps with HasAllOps with MulterOps with AdderOps with RemoveQuantOps with IsZeroOps
