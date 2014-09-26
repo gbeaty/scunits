@@ -3,12 +3,12 @@ package scunits.types
 import scunits._
 
 class Converter[F <: QList, T <: QList] {
-  type Exps[FE <: DList] <: DList
-  type Apply[D <: DimsOf[F]] = T ^ Exps[D#Exps]
+  type exps[FE <: DList] <: DList
+  type Apply[D <: DimsOf[F]] = T ^ exps[D#exps]
 }
 class IndexConverter[F <: QList, T <: QList] extends Converter[F,T] {
   type Is <: IList
-  type Exps[FE <: DList] = Is#ConvertDims[FE]
+  type exps[FE <: DList] = Is#ConvertDims[FE]
 }
 class IndexConverterConst[F <: QList, T <: QList, I <: IList] extends IndexConverter[F,T] {
   type Is = I

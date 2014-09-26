@@ -17,7 +17,6 @@ trait Integer extends ComparableTo[Integer] {
   type sub[N <: Integer] <: Integer
   type neg <: Integer
 
-
   type compare[R <: Integer] = (This#sub[R])#comp
   type comp <: Compared
 
