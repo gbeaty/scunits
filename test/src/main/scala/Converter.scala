@@ -23,10 +23,11 @@ object SearchTests {
 object ConverterTests {
   object TestConverters {
     import Converter._
-    implicit val aToAb = converter(Aq,ABq)//(indexConverterBuild[An,ABn])
-    implicit val bToAb = converter(Bq,ABq)//(indexConverterBuild[Bn,ABn,i1])
-    implicit val bToAbc = converter(Bq,ABCq)//(indexConverterBuild[Bn,ABCn,i1])
-    implicit val cToAbc = converter(Cq,ABCq)//(indexConverterBuild[Cn,ABCn,i2])
+    implicit val aToAb = converter(Aq,ABq)
+    implicit val bToAb = converter(Bq,ABq)
+    implicit val bToAbc = converter(Bq,ABCq)
+    implicit val cToAbc = converter(Cq,ABCq)
+    implicit val bcToAbcd = converter(BCq,ABCDq)
   }
   import TestConverters._
 
@@ -39,7 +40,9 @@ object ConverterTests {
 
   val aOne = Measure[Aq.A](1.0)
   val abOne = Measure[ABq.A](1.0)
+  val bcOne = Measure[BCq.B#mult[BCq.C]](1.0)
 
   Measure[aToAb.Apply[Aq.A]](1.0) === abOne
   aToAb(aOne) === abOne
+  bcToAbcd(bcOne) === Measure[ABCDq.B#mult[ABCDq.C]](1.0)
 }
