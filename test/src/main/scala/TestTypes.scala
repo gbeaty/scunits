@@ -18,73 +18,73 @@ object TestTypes {
 
   type ABn = A :: B :: QNil
   object ABq extends Quantities {
-    type Quants = ABn
-    type A = DimOf[i0]
-    type B = DimOf[i1]
+    type quants = ABn
+    type A = dimOf[i0]
+    type B = dimOf[i1]
   }
   type ABq = ABq.type
 
   type ABCn = A :: B :: C :: QNil
   object ABCq extends Quantities {
-    type Quants = ABCn
-    type A = DimOf[i0]
-    type B = DimOf[i1]
-    type C = DimOf[i2]
+    type quants = ABCn
+    type A = dimOf[i0]
+    type B = dimOf[i1]
+    type C = dimOf[i2]
   }
   type ABCq = ABCq.type
 
   type ABDn = A :: B :: D :: QNil
   object ABDq extends Quantities {
-    type Quants = ABDn
-    type A = DimOf[i0]
-    type B = DimOf[i1]
-    type D = DimOf[i2]
+    type quants = ABDn
+    type A = dimOf[i0]
+    type B = dimOf[i1]
+    type D = dimOf[i2]
   }
   type ABDq = ABDq.type
 
   type ABCDn = A :: B :: C :: D :: QNil
   object ABCDq extends Quantities {
-    type Quants = ABCDn
-    type A = DimOf[i0]
-    type B = DimOf[i1]
-    type C = DimOf[i2]
-    type D = DimOf[i3]
+    type quants = ABCDn
+    type A = dimOf[i0]
+    type B = dimOf[i1]
+    type C = dimOf[i2]
+    type D = dimOf[i3]
   }
   type ABCDq = ABCDq.type
 
   type An = A :: QNil
   object Aq extends Quantities {
-    type Quants = An
-    type A = DimOf[i0]
+    type quants = An
+    type A = dimOf[i0]
   }
   type Aq = Aq.type
 
   type Bn = B :: QNil
   object Bq extends Quantities {
-    type Quants = Bn
-    type B = DimOf[i0]
+    type quants = Bn
+    type B = dimOf[i0]
   }
   type Bq = Bn
 
   type BCn = B :: C :: QNil
   object BCq extends Quantities {
-    type Quants = BCn
-    type B = DimOf[i0]
-    type C = DimOf[i1]
+    type quants = BCn
+    type B = dimOf[i0]
+    type C = dimOf[i1]
   }
   type BCq = BCn
 
   type Cn = C :: QNil
   object Cq extends Quantities {
-    type Quants = Cn
-    type C = DimOf[i0]
+    type quants = Cn
+    type C = dimOf[i0]
   }
   type Cq = Cn
 
   type Zn = Z :: QNil
   object Zq extends Quantities {
-    type Quants = Zn
-    type Z = DimOf[i0]
+    type quants = Zn
+    type Z = dimOf[i0]
   }
   type Zq = Zq.type
 

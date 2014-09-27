@@ -9,5 +9,5 @@ package object scunits {
 
   import Converter._  
   @annotation.implicitNotFound(msg = "Cannot generate a Converter of type ${F} -> ${T}. Consider creating one manually.")
-  def converter[F <: Quantities, T <: Quantities, Is <: IList](f: F, t: T)(implicit c: IndexConverterConst[F#Quants,T#Quants,Is]) = c
+  def converter[F <: Quantities, T <: Quantities, Is <: IList](f: F, t: T)(implicit c: IndexConverterConst[F#quants,T#quants,Is]) = c
 }
