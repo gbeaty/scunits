@@ -9,5 +9,5 @@ object IndexesTests {
   implicitly[Rev4#ConvertDims[i0012] =:= i21]
   implicitly[Rev4#ConvertDims[i1234] =:= i4321]
   implicitly[Rev4#ConvertDims[i4321] =:= i1234]
-  implicitly[Skip1#ConvertDims[i1 *: DNil] =:= (i0 *: i1 *: DNil)]
+  implicitly[Skip1#ConvertDims[i1 *: ENil] =:= (i0 *: i1 *: ENil)]
 }

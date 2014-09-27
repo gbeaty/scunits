@@ -5,7 +5,7 @@ import TestTypes._
 
 object SearchTests {
   import Converter._
-  def index[A <: QList, Q <: Quantity, I <: Integer](implicit i: QuantFoundAt[A,Q,I]) = i
+  def index[A <: QList, Q <: BaseQuantity, I <: Integer](implicit i: QuantFoundAt[A,Q,I]) = i
 
   val qf: QuantFoundAt[ABCDn,B,i1] = quantSearch[ABCDn,B,i1]
   val inOfA = index[ABCDn,A,i0]
@@ -22,12 +22,10 @@ object ConverterTests {
   object TestConverters {
     import Converter._
     implicit val aToAb = converter(Aq,ABq)//(indexConverterBuild[An,ABn])
-    implicit val bToAb = converter(Bq,ABq)(
-      indexConverterBuild[Bn,ABn,i1]/*(
-        quantSearch[ABn,B,i1], indexConverterBuilt[ABn])*/)
+    implicit val bToAb = converter(Bq,ABq)(indexConverterBuild[Bn,ABn,i1])
 
     // implicitly[QuantFound[ABn,Bn#Head]]
-    implicitly[IndexConverterConst[Bq.Quants,ABq.Quants,i1 -: INil]]
+    // implicitly[IndexConverterConst[Bq.Quants,ABq.Quants,i1 -: INil]]
   }
   import TestConverters._
 

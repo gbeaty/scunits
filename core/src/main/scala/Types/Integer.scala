@@ -20,7 +20,7 @@ trait Integer extends ComparableTo[Integer] {
   type compare[R <: Integer] = (This#sub[R])#comp
   type comp <: Compared
 
-  type PadDList[T <: Integer] <: DList
+  type PadEList[T <: Integer] <: EList
 }
 
 trait NonNegInt extends Integer {
@@ -32,7 +32,7 @@ trait NonPosInt extends Integer {
   type isPos = False
   type pred <: NegInt
   type addNP[N <: NonPosInt] <: NonPosInt
-  type PadDList[T <: Integer] = T *: DNil
+  type PadEList[T <: Integer] = T *: ENil
 }
 trait NonZeroInt extends Integer {
   type isZero = False
@@ -48,7 +48,7 @@ trait PosInt extends NonNegInt with NonZeroInt {
   type pred <: NonNegInt
   type comp = Greater
   type addNN[N <: NonNegInt] <: PosInt
-  type PadDList[T <: Integer] = i0 *: pred#PadDList[T]
+  type PadEList[T <: Integer] = i0 *: pred#PadEList[T]
 }
 
 class SuccInt[P <: NonNegInt] extends PosInt {

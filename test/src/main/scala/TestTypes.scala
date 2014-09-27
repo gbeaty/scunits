@@ -88,17 +88,17 @@ object TestTypes {
   }
   type Zq = Zq.type
 
-  type i00 = i0 *: i0 *: DNil
-  type i11 = i1 *: i1 *: DNil
+  type i00 = i0 *: i0 *: ENil
+  type i11 = i1 *: i1 *: ENil
   type i111 = i1 *: i11
-  type i12 = i1 *: i2 *: DNil
-  type i21 = i2 *: i1 *: DNil
-  type i012 = i0 *: i1 *: i2 *: DNil
-  type i102 = i1 *: i0 *: i2 *: DNil
+  type i12 = i1 *: i2 *: ENil
+  type i21 = i2 *: i1 *: ENil
+  type i012 = i0 *: i1 *: i2 *: ENil
+  type i102 = i1 *: i0 *: i2 *: ENil
   type i0012 = i0 *: i012
-  type i3003 = i3 *: i0 *: i0 *: i3 *: DNil
-  type i1234 = i1 *: i2 *: i3 *: i4 *: DNil
-  type i4321 = i4 *: i3 *: i2 *: i1 *: DNil
+  type i3003 = i3 *: i0 *: i0 *: i3 *: ENil
+  type i1234 = i1 *: i2 *: i3 *: i4 *: ENil
+  type i4321 = i4 *: i3 *: i2 *: i1 *: ENil
 
   type Rev4 = i3 -: i2 -: i1 -: i0 -: INil
   type Rev2 = i1 -: i0 -: INil
