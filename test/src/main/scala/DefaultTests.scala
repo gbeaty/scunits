@@ -3,6 +3,7 @@ package scunits.test
 import scunits._
 import scunits.types._
 import scunits.default._
+import scunits.si._
 
 object DefaultTests {
   // Test Dimless

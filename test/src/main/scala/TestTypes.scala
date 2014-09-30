@@ -81,6 +81,14 @@ object TestTypes {
   }
   type Cq = Cn
 
+  type CDn = C :: D :: QNil
+  object CDq extends Quantities {
+    type quants = CDn
+    type C = dimOf[i0]
+    type D = dimOf[i1]
+  }
+  type CDq = CDn
+
   type Zn = Z :: QNil
   object Zq extends Quantities {
     type quants = Zn

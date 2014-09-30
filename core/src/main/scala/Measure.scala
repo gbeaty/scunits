@@ -8,8 +8,8 @@ case class Measure[D <: Dims](v: Double) extends AnyVal with Ordered[Measure[D]]
   def +(m: Measure[D]) = Measure[D](v + m.v)
   def -(m: Measure[D]) = Measure[D](v - m.v)
 
-  def *[R <: DimsOf[D#quants]](r: Measure[R]) = Measure[D#mult[R]](r.v * v)
-  def /[R <: DimsOf[D#quants]](r: Measure[R]) = Measure[D#div[R]](r.v / v)
+  def *[R <: DimsOf[D#quants]](r: Measure[R]) = Measure[D#mult[R]](v * r.v)
+  def /[R <: DimsOf[D#quants]](r: Measure[R]) = Measure[D#div[R]](v / r.v)
 
   def ×(r: Double) = Measure[D](v * r)
   def ÷(r: Double) = Measure[D](v / r)

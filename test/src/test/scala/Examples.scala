@@ -2,7 +2,7 @@ package scunits.test
 
 import org.specs2.mutable._
 
-class Examples extends Specification {
+class BasicExamples extends Specification {
   import scunits._          // Main import, just the basic types.
   import scunits.default._  // Default dimensions (Length, Speed, etc.)  
   import scunits.si._       // Import all base SI units, accepted units and prefixes.  
@@ -35,8 +35,8 @@ class Examples extends Specification {
       val dimless: Measure[Dimless] = gal / oneLitre
 
       // Type-level Dims composition is easy:
-      implicitly[Volume#Div[Length] =:= Area]
-      implicitly[Acceleration#Mult[Mass] =:= Force]
+      implicitly[Volume#div[Length] =:= Area]
+      implicitly[Acceleration#mult[Mass] =:= Force]
       
       // Dims types change as you'd expect:
       val litreArea: Measure[Area] = oneLitre / metre(0.1)
@@ -91,7 +91,7 @@ class Examples extends Specification {
 
       // But distance traveled per fuel used is a poor way to represent gas milage. Fuel used per distance is better.
       // Invert a UnitM with .inv:
-      val gpm: UnitM[Volume#Div[Length]] = mpg.inv
+      val gpm: UnitM[Volume#div[Length]] = mpg.inv
       mpg(20.0) ==== gpm(1.0 / 20.0)
     }
   }
@@ -104,7 +104,6 @@ class Examples extends Specification {
       def sq[D <: Dims](in: Measure[D]) = in * in
 
       // So this will compile:
-      sq(metre(2.0)) ==== squareMetre(4.0)
       // ...but this won't:
       // sq(coef(2.0)) ==== coef(4.0)
 
@@ -112,56 +111,77 @@ class Examples extends Specification {
       val dnil: Measure[Dimless] = 5.0
 
       // Use #Neg to find the reciprocal of a Dims:
-      val hz: Measure[Time#Neg] = hertz(5.0)
+      val hz: Measure[Time#neg] = hertz(5.0)
 
       // Dims compose as you might expect:
-      val sqm: Measure[Length#Mult[Length]] = metre(2.0) * metre(2.0)
+      val sqm: Measure[Length#mult[Length]] = metre(2.0) * metre(2.0)
       sqm ==== squareMetre(4.0)
-      val m: Measure[Area#Div[Length]] = sqm / metre(4.0)
+      val m: Measure[Area#div[Length]] = sqm / metre(4.0)
       m ==== metre(1.0)      
     }
   }
+}
 
-  /*"Base Quantities" should {
-    "Be definible" in {
-      // We can make up our own base quantities.
-      // Unfortunately they must all be given unique type-level numbers as IDs:
-      import scunits.integer._
-      type _10 = SuccInt[_9]
-      type _11 = SuccInt[_10]
-      object Apple extends BaseQuantity[_10]("apples","a")
-      object Orange extends BaseQuantity[_11]("oranges","o")
+class QuantitiesExamples extends Specification {
+  // We can make up our own base quantities.
+  import scunits._
+  import scunits.types._
 
-      // Then a type alias for each base dimension:
-      type Apple = Apple.Base
-      type Orange = Orange.Base
+  object Apple extends BaseQuantity
+  object Orange extends BaseQuantity
 
-      // You can't compare apple and oranges! This won't compile:
+  // To use them we need to include them in a Quantities object:
+  trait ApplesAndOranges extends Quantities {
+    // Create a type alias for each quantity:
+    type Apple = dimOf[i0]
+    type Orange = dimOf[i1]
+
+    // Now we'll need some units.
+    val apple = UnitM[Apple]("apple","a",1)
+    val orange = UnitM[Apple]("orange","o",1)
+    // A bushel is 126 apples:
+    val bushel = apple * 126
+  }
+  object ApplesAndOranges extends ApplesAndOranges {
+    // Define the order of the quantities:
+    type quants = Apple.type :: Orange.type :: QNil
+  }
+
+  "Apples and Oranges" should {
+    "Not be comparable" in { 
+      import ApplesAndOranges._                 
+
+      // You can't compare apple and oranges! This won't compile:      
       // Measure[Apple](4) > Measure[Orange](2)
 
-      // Under the hood, UnitM.apply converts a number to a base unit for their dimension.
-      // Generally this is SI units, but the SI sadly lacks a base quantity for apples.
-      // We'll use one apple as the base unit for apples:
-      val apple = UnitM[Apple]("apple","a",1)
-      apple(1) ==== Measure[Apple](1)
-      // So we don't really need the apple UnitM, but I like to have it in case the base unit of Apple changes.
-
-      // Lets define a bushel as 126 apples:
-      val bushel = (apple * 126)
-
-      // All base quantities can be composed with the others, e.g., the average apple weighs 150 grams:
-      val meanAppleMass = gram(150) / Measure[Apple](1)
-      meanAppleMass ==== Measure[Mass#Div[Apple]](150)
-
-      // So we can get the average weight of a bushel of apples:
-      bushel(1) * meanAppleMass ==== gram(18900)
-
-      // I'm looking for a way to make base quantities more composable, so there can't be collisions between their IDs.
-      // If anyone has any suggestions on how to do this, please let me know.
+      // This will:
+      Measure[Apple](4) > Measure[Apple](2)
     }
   }
 
-  "Algebra" should {
+  // You can also extend existing Quantities. This is done by appending new BaseQuanities:
+  object Pear extends BaseQuantity
+  object ApplesOrangesAndPears extends ApplesAndOranges {
+    override type quants = ApplesAndOranges.quants#append[Pear.type :: QNil]
+    type Pear = dimOf[i2]
+
+    val pear = UnitM[Pear]("pear","p",1)
+  }
+
+  // Converting between different Quantities requires a Converter.
+  // These should be cached as vals because the creation of a converter is somewhat costly.
+  // Scunits preserves its primitive-like performance with cached converters.
+  type ToPears = ConverterConst[ApplesAndOranges.quants,ApplesOrangesAndPears.quants,i0 -: i1 -: INil] with CachedConverter
+  implicit val toPears: ToPears = converter(ApplesAndOranges, ApplesOrangesAndPears)
+
+  "Apples, Oranges and Pears" should {
+    "Be convertable" in {
+      // ApplesAndOranges.apple(1) ==== ApplesOrangesAndPears.apple(1)
+      ApplesOrangesAndPears.apple(1) ==== ApplesAndOranges.apple(1)
+    }
+  }
+
+  /*"Algebra" should {
     "Work on abstract Measures" in {      
       // Even when dealing with abstract Dims, some elementary algebra is possible. e.g.:
 

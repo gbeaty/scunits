@@ -7,6 +7,7 @@ trait QList {
   type Size <: NonNegInt
   type MapHeadOrElse[F[_ <: BaseQuantity] <: QList, Else <: QList] <: QList
   type Merge[R <: QList] <: QList
+  type append[R <: QList] <: QList
   protected type MergeNel[L <: QNel] <: QList
 }
 trait QNel extends QList {
@@ -19,6 +20,8 @@ trait QNel extends QList {
 
   type Merge[R <: QList] = R#MergeNel[Self]
   protected type MergeNel[L <: QNel] = Head :: L#Tail#Merge[Tail]
+
+  type append[R <: QList] = Head :: Tail#append[R]
 }
 trait QNelOfHead[H <: BaseQuantity] extends QNel {
   type Head = H
@@ -32,4 +35,5 @@ trait QNil extends QList {
   type MapHeadOrElse[F[_ <: BaseQuantity] <: QList, Else <: QList] = Else
   type Merge[R <: QList] = R
   protected type MergeNel[L <: QNel] = L
+  type append[R <: QList] = R
 }

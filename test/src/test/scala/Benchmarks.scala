@@ -48,10 +48,10 @@ class Benchmarks extends Specification {
   sequential
 
   implicit def mult[L <: Dims, R <: Dims] = new Mult[L,R] {
-    type Out = L#Mult[R]
+    type Out = L#mult[R]
   }
   implicit def div[L <: Dims, R <: Dims] = new Div[L,R] {
-    type Out = L#Div[R]
+    type Out = L#div[R]
   }
 
   def time[A](f: () => A)(name: String, cycles: Long) = {
