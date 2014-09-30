@@ -171,8 +171,7 @@ class QuantitiesExamples extends Specification {
   // Converting between different Quantities requires a Converter.
   // These should be cached as vals because the creation of a converter is somewhat costly.
   // Scunits preserves its primitive-like performance with cached converters.
-  type ToPears = ConverterConst[ApplesAndOranges.quants,ApplesOrangesAndPears.quants,i0 -: i1 -: INil] with CachedConverter
-  implicit val toPears: ToPears = converter(ApplesAndOranges, ApplesOrangesAndPears)
+  implicit val toPears = converter(ApplesAndOranges, ApplesOrangesAndPears)
 
   "Apples, Oranges and Pears" should {
     "Be convertable" in {
