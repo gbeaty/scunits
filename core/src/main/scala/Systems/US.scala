@@ -106,10 +106,3 @@ trait Base {
   }
   val mpg = UnitM[DistancePerFuelUsed]("miles per gallon","mpg",425143.707)
 }
-
-trait All extends InternationalFoot with Mass.Avoirdupois with Nautical with Base {
-  object Survey extends SurveyFoot
-  object Fluid extends volume.Fluid
-  object Dry extends volume.Dry
-  object Troy extends Mass.Troy
-}

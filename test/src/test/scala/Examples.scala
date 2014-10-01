@@ -162,6 +162,7 @@ class QuantitiesExamples extends Specification {
   // You can also extend existing Quantities. This is done by appending new BaseQuanities:
   object Pear extends BaseQuantity
   object ApplesOrangesAndPears extends ApplesAndOranges {
+    // We need to append here so the inherited indexes of apple and pear (i0 and i1) are still valid:
     override type quants = ApplesAndOranges.quants#append[Pear.type :: QNil]
     type Pear = dimOf[i2]
 
@@ -169,7 +170,7 @@ class QuantitiesExamples extends Specification {
   }
 
   // Converting between different Quantities requires a Converter.
-  // These should be cached as vals because the creation of a converter is somewhat costly.
+  // These must be cached as vals because the creation of a converter is costly but rarely needed.
   // Scunits preserves its primitive-like performance with cached converters.
   implicit val toPears = converter(ApplesAndOranges, ApplesOrangesAndPears)
 

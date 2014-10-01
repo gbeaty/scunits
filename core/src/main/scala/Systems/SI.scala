@@ -78,5 +78,3 @@ trait Accepted {
   val reducedPlankConstant = UnitM[Power]("reduced plank constant","ħ",1.0545716818e34)
   val electronMass = UnitM[Mass]("electron mass","me",9.109382616e-28)
 }
-
-trait All extends Base with Prefix with Accepted

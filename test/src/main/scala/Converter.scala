@@ -7,16 +7,16 @@ object SearchTests {
   def has[Qs <: Quantities, Q <: BaseQuantity, I <: Integer](in: Qs, find: Q)(implicit i: QuantFound[Qs#quants,Q,I]) = i
 
   val a = has(ABCDq,A)
-  val iA: a.at = new i0
+  implicitly[a.at =:= i0]
 
   val b = has(ABCDq,B)
-  val iB: b.at = new i1
+  implicitly[b.at =:= i1]
 
   val c = has(ABCDq,C)
-  val iC: c.at = new i2
+  implicitly[c.at =:= i2]
 
   val d = has(ABCDq,D)
-  val iD: d.at = new i3
+  implicitly[d.at =:= i3]
 }
 
 object ConverterTests {

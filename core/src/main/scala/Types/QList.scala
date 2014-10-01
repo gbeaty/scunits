@@ -9,7 +9,6 @@ trait QList {
 trait QNel extends QList {
   type head <: BaseQuantity
   type tail <: QList
-  type Self = head :: tail
   type append[R <: QList] = head :: tail#append[R]
 }
 trait QNelOfHead[H <: BaseQuantity] extends QNel {

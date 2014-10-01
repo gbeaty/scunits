@@ -15,5 +15,3 @@ trait Pressure {
 trait Acceleration {
   val gee = UnitM[scunits.default.Acceleration]("gee", "ɡ", 9.80665)
 }
-
-trait All extends Pressure with Acceleration
