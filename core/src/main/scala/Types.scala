@@ -15,14 +15,6 @@ package object types {
   type i8 = i7#succ
   type i9 = i8#succ
 
-  // CompareOps:
-  type ==[L <: Comparable, R <: L#to] = L#compare[R]#isEqual
-  type <>[L <: Comparable, R <: L#to] = L#compare[R]#isEqual#Neg
-  type >[L <: Comparable, R <: L#to] = L#compare[R]#isGreater
-  type <[L <: Comparable, R <: L#to] = L#compare[R]#isLess
-  type >=[L <: Comparable, R <: L#to] = L#compare[R]#isGreaterOrEqual
-  type <=[L <: Comparable, R <: L#to] = L#compare[R]#isLessOrEqual
-
   // BoolOps:
   type ||[L <: Bool, R <: Bool] = L#Or[R]
   type &&[L <: Bool, R <: Bool] = L#And[R]

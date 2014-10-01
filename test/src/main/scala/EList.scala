@@ -43,4 +43,8 @@ object DListTests {
   implicitly[i012#div[i012] =:= ENil]
   implicitly[i012#div[i3003] =:= (i3#neg *: i1 *: i2 *: i3#neg *: ENil)]
   implicitly[ENil#div[i012] =:= i012#neg]
+
+  // Test zeros:
+  implicitly[EList#zeros[i1,i2] =:= (i0 *: i2 *: ENil)]
+  implicitly[EList#zeros[i3,i2] =:= (i0 *: i0 *: i0 *: i2 *: ENil)]
 }

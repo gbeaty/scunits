@@ -26,7 +26,3 @@ trait Quantities {
   val coef = UnitM[Dimless](mult = 1.0)
   implicit def toCoef(v: Double) = Measure[Dimless](v)
 }
-
-trait Append[Qs <: QNil, To <: Quantities] extends Quantities {
-  type quants = To#quants#append[Qs]
-}

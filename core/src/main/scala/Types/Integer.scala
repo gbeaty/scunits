@@ -2,7 +2,7 @@ package scunits.types
 
 import scunits._
 
-trait Integer extends ComparableTo[Integer] {
+trait Integer {
   type This <: Integer
   type isZero <: Bool
   type isPos <: Bool
@@ -17,10 +17,7 @@ trait Integer extends ComparableTo[Integer] {
   type sub[N <: Integer] <: Integer
   type neg <: Integer
 
-  type compare[R <: Integer] = (This#sub[R])#comp
-  type comp <: Compared
-
-  type PadEList[T <: Integer] <: EList
+  type loop[B,F[_ <: B] <: B, Res <: B] <: B
 }
 
 trait NonNegInt extends Integer {
@@ -32,7 +29,7 @@ trait NonPosInt extends Integer {
   type isPos = False
   type pred <: NegInt
   type addNP[N <: NonPosInt] <: NonPosInt
-  type PadEList[T <: Integer] = T *: ENil
+  type loop[B,F[_ <: B] <: B, Res <: B] = Res
 }
 trait NonZeroInt extends Integer {
   type isZero = False
@@ -40,15 +37,13 @@ trait NonZeroInt extends Integer {
 trait NegInt extends NonPosInt with NonZeroInt {
   type isNeg = True
   type succ <: NonPosInt
-  type comp = Less
   type addNP[N <: NonPosInt] <: NegInt
 }
 trait PosInt extends NonNegInt with NonZeroInt {
   type isPos = True
   type pred <: NonNegInt
-  type comp = Greater
   type addNN[N <: NonNegInt] <: PosInt
-  type PadEList[T <: Integer] = i0 *: pred#PadEList[T]
+  type loop[B,F[_ <: B] <: B, Res <: B] = pred#loop[B,F,F[Res]]
 }
 
 class SuccInt[P <: NonNegInt] extends PosInt {
@@ -83,5 +78,4 @@ final class i0 extends NonNegInt with NonPosInt {
   type pred = PredInt[i0]
   type sub[N <: Integer] = N#neg
   type neg = i0
-  type comp = Equal  
 }

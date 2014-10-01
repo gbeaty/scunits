@@ -10,6 +10,9 @@ trait EList {
   type Get[I <: NonNegInt] = GetInt[I]  
   protected type GetInt[I <: Integer] <: Integer
 
+  protected type prependZero[To <: EList] = i0 *: To
+  type zeros[I <: Integer, T <: Integer] = I#loop[EList,prependZero,T *: ENil]
+
   type neg <: EList
   
   type mult[R <: EList] = Op[R,+]
@@ -48,7 +51,7 @@ trait ENil extends EList {
   type Empty = True
   type Head = i0
   type Tail = ENil
-  type SetInt[I <: Integer, To <: Integer] = To#isZero#If[EList,ENil,I#PadEList[To]]
+  type SetInt[I <: Integer, To <: Integer] = To#isZero#If[EList,ENil,zeros[I,To]]
   type neg = ENil
 
   protected type GetInt[I <: Integer] = i0

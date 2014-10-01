@@ -175,7 +175,7 @@ class QuantitiesExamples extends Specification {
 
   "Apples, Oranges and Pears" should {
     "Be convertable" in {
-      // ApplesAndOranges.apple(1) ==== ApplesOrangesAndPears.apple(1)
+      // Converted using the toPears implicit converter:
       ApplesOrangesAndPears.apple(1) ==== ApplesAndOranges.apple(1)
     }
   }
