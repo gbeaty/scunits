@@ -18,7 +18,7 @@ class ConverterFromTo[F <: QList, T <: QList] extends ConverterFrom[F] {
 }
 class IndicesConverter[F <: QList, T <: QList, I <: IList] extends ConverterFromTo[F,T] {
   type indices = I
-  type exps[FE <: EList] = indices#ConvertDims[FE]
+  type exps[FE <: EList] = indices#convertDims[FE]
   type apply[D <: Dims] = to ^ exps[D#exps]
 }
 class IdentityConverter[Qs <: QList] extends ConverterFromTo[Qs,Qs] {
@@ -26,7 +26,7 @@ class IdentityConverter[Qs <: QList] extends ConverterFromTo[Qs,Qs] {
 }
 
 class QuantFound[Qs <: QList, Q <: BaseQuantity, I <: Integer] {
-  type At = I
+  type at = I
 }
 class DimensionOf[Qs <: QList, B <: BaseQuantity, E <: EList] {
   type exps = E

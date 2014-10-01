@@ -16,8 +16,8 @@ package object types {
   type i9 = i8#succ
 
   // BoolOps:
-  type ||[L <: Bool, R <: Bool] = L#Or[R]
-  type &&[L <: Bool, R <: Bool] = L#And[R]
+  type ||[L <: Bool, R <: Bool] = L#or[R]
+  type &&[L <: Bool, R <: Bool] = L#and[R]
 
   // DimsOps:
   type *[L <: Dims, R <: DimsOf[L#quants]] = L#mult[R]

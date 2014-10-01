@@ -3,37 +3,22 @@ package scunits.types
 import scunits._
 
 trait QList {
-  type Tail <: QList
-  type Size <: NonNegInt
-  type MapHeadOrElse[F[_ <: BaseQuantity] <: QList, Else <: QList] <: QList
-  type Merge[R <: QList] <: QList
+  type tail <: QList
   type append[R <: QList] <: QList
-  protected type MergeNel[L <: QNel] <: QList
 }
 trait QNel extends QList {
-  type Head <: BaseQuantity
-  type Tail <: QList
-  type Self = Head :: Tail
-  type Size = Tail#Size#succ
-
-  type MapHeadOrElse[F[_ <: BaseQuantity] <: QList, Else <: QList] = F[Head]
-
-  type Merge[R <: QList] = R#MergeNel[Self]
-  protected type MergeNel[L <: QNel] = Head :: L#Tail#Merge[Tail]
-
-  type append[R <: QList] = Head :: Tail#append[R]
+  type head <: BaseQuantity
+  type tail <: QList
+  type Self = head :: tail
+  type append[R <: QList] = head :: tail#append[R]
 }
 trait QNelOfHead[H <: BaseQuantity] extends QNel {
-  type Head = H
+  type head = H
 }
 trait ::[L <: BaseQuantity,R <: QList] extends QNelOfHead[L] {
-  type Tail = R
+  type tail = R
 }
 trait QNil extends QList {
-  type Tail = QNil
-  type Size = i0
-  type MapHeadOrElse[F[_ <: BaseQuantity] <: QList, Else <: QList] = Else
-  type Merge[R <: QList] = R
-  protected type MergeNel[L <: QNel] = L
+  type tail = QNil
   type append[R <: QList] = R
 }

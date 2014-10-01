@@ -2,22 +2,22 @@ package scunits.types
 
 trait Bool {
   type If[B,T <: B, E <: B] <: B
-  type Neg <: Bool
-  type Or[R <: Bool] <: Bool
-  type And[R <: Bool] <: Bool
+  type neg <: Bool
+  type or[R <: Bool] <: Bool
+  type and[R <: Bool] <: Bool
   type Xor[R <: Bool] <: Bool
 }
 trait True extends Bool {
-  type Neg = False
+  type neg = False
   type If[B,T <: B, E <: B] = T
-  type Or[R <: Bool] = True
-  type And[R <: Bool] = R
-  type Xor[R <: Bool] = R#Neg
+  type or[R <: Bool] = True
+  type and[R <: Bool] = R
+  type Xor[R <: Bool] = R#neg
 }
 trait False extends Bool {
-  type Neg = True
+  type neg = True
   type If[B,T <: B, E <: B] = E
-  type Or[R <: Bool] = R
-  type And[R <: Bool] = False
+  type or[R <: Bool] = R
+  type and[R <: Bool] = False
   type Xor[R <: Bool] = R
 }

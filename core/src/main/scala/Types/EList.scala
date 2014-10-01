@@ -1,14 +1,11 @@
 package scunits.types
 
 trait EList {
-  type Set[I <: NonNegInt, To <: NonZeroInt] = SetInt[I,To] // Seems to accept To <: NonNegInt ??
-  protected type SetInt[I <: Integer, To <: Integer] <: EList
+  type set[I <: NonNegInt, To <: NonZeroInt] = setInt[I,To] // Seems to accept To <: NonNegInt ??
+  protected type setInt[I <: Integer, To <: Integer] <: EList
 
-  type Empty <: Bool
-  type Head <: Integer
-  type Tail <: EList
-  type Get[I <: NonNegInt] = GetInt[I]  
-  protected type GetInt[I <: Integer] <: Integer
+  type head <: Integer
+  type tail <: EList
 
   protected type prependZero[To <: EList] = i0 *: To
   type zeros[I <: Integer, T <: Integer] = I#loop[EList,prependZero,T *: ENil]
@@ -21,45 +18,39 @@ trait EList {
   protected type OpNel[L <: ENel, O[_ <: Integer, _ <: Integer] <: Integer] <: ENel
   protected type OpNil[O[_ <: Integer, _ <: Integer] <: Integer] <: EList
 
-  type IsPadding <: Bool
-  type TruncZeros <: EList
+  type isPadding <: Bool
+  type truncZeros <: EList
 }
 trait ENel extends EList {
-  type Empty = False
-  type Head <: Integer
-  type Tail <: EList  
+  type head <: Integer
+  type tail <: EList  
 }
 
 trait *:[H <: Integer, T <: EList] extends ENel {
-  type Head = H
-  type Tail = T
-  type This = Head *: Tail
+  type head = H
+  type tail = T
+  type This = head *: tail
 
-  type neg = Head#neg *: Tail#neg
-  type SetInt[I <: Integer, To <: Integer] = I#isPos#If[EList, Head *: Tail#Set[I#pred,To], (To *: Tail)]
-
-  protected type GetInt[I <: Integer] = I#isZero#If[Integer, Head, Tail#GetInt[I#pred]]
+  type neg = head#neg *: tail#neg
+  type setInt[I <: Integer, To <: Integer] = I#isPos#If[EList, head *: tail#set[I#pred,To], (To *: tail)]
   
-  type Op[R <: EList, O[_ <: Integer, _ <: Integer] <: Integer] = R#OpNel[This,O]#TruncZeros
-  protected type OpNel[L <: ENel, O[_ <: Integer, _ <: Integer] <: Integer] = O[L#Head, Head] *: L#Tail#Op[Tail,O]
-  protected type OpNil[O[_ <: Integer, _ <: Integer] <: Integer] = O[i0,Head] *: Tail#OpNil[O]
+  type Op[R <: EList, O[_ <: Integer, _ <: Integer] <: Integer] = R#OpNel[This,O]#truncZeros
+  protected type OpNel[L <: ENel, O[_ <: Integer, _ <: Integer] <: Integer] = O[L#head, head] *: L#tail#Op[tail,O]
+  protected type OpNil[O[_ <: Integer, _ <: Integer] <: Integer] = O[i0,head] *: tail#OpNil[O]
 
-  type IsPadding = Head#isZero && Tail#IsPadding
-  type TruncZeros = IsPadding#If[EList, ENil, Head *: Tail#TruncZeros]
+  type isPadding = head#isZero && tail#isPadding
+  type truncZeros = isPadding#If[EList, ENil, head *: tail#truncZeros]
 }
 trait ENil extends EList {
-  type Empty = True
-  type Head = i0
-  type Tail = ENil
-  type SetInt[I <: Integer, To <: Integer] = To#isZero#If[EList,ENil,zeros[I,To]]
+  type head = i0
+  type tail = ENil
+  type setInt[I <: Integer, To <: Integer] = To#isZero#If[EList,ENil,zeros[I,To]]
   type neg = ENil
 
-  protected type GetInt[I <: Integer] = i0
-
   type Op[R <: EList, O[_ <: Integer, _ <: Integer] <: Integer] = R#OpNil[O]
-  protected type OpNel[L <: ENel, O[_ <: Integer, _ <: Integer] <: Integer] = L#Head *: L#Tail
+  protected type OpNel[L <: ENel, O[_ <: Integer, _ <: Integer] <: Integer] = L#head *: L#tail
   protected type OpNil[O[_ <: Integer, _ <: Integer] <: Integer] = ENil
 
-  type IsPadding = True
-  type TruncZeros = ENil
+  type isPadding = True
+  type truncZeros = ENil
 }

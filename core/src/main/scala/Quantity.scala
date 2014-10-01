@@ -18,7 +18,7 @@ trait Quantities {
 
   type Dims                   = types.DimsOf[quants]
   type dimsOf[D <: EList]     = quants ^ D
-  type dimOf[I <: NonNegInt]  = dimsOf[ENil#Set[I,i1]]
+  type dimOf[I <: NonNegInt]  = dimsOf[ENil#set[I,i1]]
   type Dimless                = dimsOf[ENil]
 
   def dimOf[B <: BaseQuantity,E <: EList](b: B)(implicit d: DimensionOf[quants,B,E]) = d
