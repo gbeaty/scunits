@@ -26,23 +26,31 @@ case class ValueClass(v: Double) extends AnyVal {
   def /(r: ValueClass) = ValueClass(v / r.v)
   def *(r: ValueClass) = ValueClass(v * r.v)
 
-  def ÷(r: Double) = ValueClass(v / r)
-  def ×(r: Double) = ValueClass(v * r)
+  def ×(r: Double) = ValueClass(v / r)
+  def ÷(r: Double) = ValueClass(v * r)
 }
 case class ImpValueClass[D <: Dims](v: Double) extends AnyVal {
-  def +(r: ImpValueClass[D]) = ImpValueClass[D](v + r.v)
-  def -(r: ImpValueClass[D]) = ImpValueClass[D](v - r.v)
+  def +[R <: Dims](r: ImpValueClass[R])(implicit m: Add[D,R]) = ImpValueClass[D](v + r.v)
+  def -[R <: Dims](r: ImpValueClass[R])(implicit m: Sub[D,R]) = ImpValueClass[D](v - r.v)
   def /[R <: Dims](r: ImpValueClass[R])(implicit m: Mult[D,R]) = ImpValueClass[m.Out](v / r.v)
   def *[R <: Dims](r: ImpValueClass[R])(implicit m: Div[D,R]) = ImpValueClass[m.Out](v * r.v)
 
-  def ÷(r: Double) = ImpValueClass[D](v / r)
-  def ×(r: Double) = ImpValueClass[D](v * r)
+  def /(r: Double) = ImpValueClass[D](v / r)
+  def *(r: Double) = ImpValueClass[D](v * r)
 }
+trait Add[L <: Dims, R <: Dims]
+trait Sub[L <: Dims, R <: Dims]
 trait Mult[L <: Dims, R <: Dims] {
   type Out <: Dims
 }
+trait Multed[L <: Dims, R <: Dims, E <: Dims] extends Mult[L,R] {
+  type Out = E
+}
 trait Div[L <: Dims, R <: Dims] {
   type Out <: Dims
+}
+trait Dived[L <: Dims, R <: Dims, E <: Dims] extends Div[L,R] {
+  type Out = E
 }
 
 case class BenchResult[A](name: String, result: A, time: Long, cycles: Long)
@@ -50,51 +58,87 @@ case class BenchResult[A](name: String, result: A, time: Long, cycles: Long)
 class Benchmarks extends Specification {
   sequential
 
-  implicit def mult[L <: Dims, R <: Dims] = new Mult[L,R] {
-    type Out = L#Mult[R]
-  }
-  implicit def div[L <: Dims, R <: Dims] = new Div[L,R] {
-    type Out = L#Div[R]
-  }
+  implicit def add[L <: Dims, R <: Dims]: Add[L,R] = null
+  implicit def sub[L <: Dims, R <: Dims]: Sub[L,R] = null
+  implicit def mult[L <: Dims, R <: Dims]: Multed[L,R,L#Mult[R]] = null
+  implicit def div[L <: Dims, R <: Dims]:  Dived[L,R,L#Div[R]] = null
 
   def time[A](f: () => A)(name: String, cycles: Long) = {
-      val start = System.nanoTime
-      val res = f()
-      val time = (System.nanoTime - start)
-      BenchResult(name, res, time, cycles)
-    }
+    val start = System.nanoTime
+    val res = f()
+    val time = (System.nanoTime - start)
+    BenchResult(name, res, time, cycles)
+  }
 
   def BenchArithmetic(cycles: Int) = {
-    val doubles = Vector.fill(cycles)(util.Random.nextDouble)
-    val measures = doubles.map(Measure[Acceleration](_))
-    val boxes = doubles.map(Boxed(_))
-    val valueClasses = doubles.map(ValueClass(_))
-    val impValueClasses = doubles.map(ImpValueClass[Acceleration](_))
-    val typeclasses = doubles.map(TCMeasure[typeclass.Length](_))
+    val its = 1000000
+    val vals = Array.fill(its)(util.Random.nextDouble)
 
-    val dRes = time(() => doubles.foldLeft(0.0) { (res,el) =>
-      res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5
+    val dRes = time(() => {
+      var i = 0
+      var res = 1.0
+      while(i < its) {
+        val el = vals(i)
+        res = res + res * (res / 2.0) * 1.5 / res - el * (el / 2.0) * 1.5 / el + res * (res / 2.0) * 1.5 / res - el * (el / 2.0) * 1.5 / el + res * (res / 2.0) * 1.5 / res - el * (el / 2.0) * 1.5 / el + res * (res / 2.0) * 1.5 / res - el * (el / 2.0) * 1.5 / el + res * (res / 2.0) * 1.5 / res - el * (el / 2.0) * 1.5 / el + res * (res / 2.0) * 1.5 / res - el * (el / 2.0) * 1.5 / el + res * (res / 2.0) * 1.5 / res - el * (el / 2.0) * 1.5 / el + res * (res / 2.0) * 1.5 / res - el * (el / 2.0) * 1.5 / el + res * (res / 2.0) * 1.5 / res - el * (el / 2.0) * 1.5 / el + res * (res / 2.0) * 1.5 / res - el * (el / 2.0) * 1.5 / el + res * (res / 2.0) * 1.5 / res - el * (el / 2.0) * 1.5 / el + res * (res / 2.0) * 1.5 / res - el * (el / 2.0) * 1.5 / el + res * (res / 2.0) * 1.5 / res - el * (el / 2.0) * 1.5 / el + res * (res / 2.0) * 1.5 / res - el * (el / 2.0) * 1.5 / el + res * (res / 2.0) * 1.5 / res - el * (el / 2.0) * 1.5 / el + res * (res / 2.0) * 1.5 / res - el * (el / 2.0) * 1.5 / el + res * (res / 2.0) * 1.5 / res - el * (el / 2.0) * 1.5 / el + res * (res / 2.0) * 1.5 / res - el * (el / 2.0) * 1.5 / el + res * (res / 2.0) * 1.5 / res - el * (el / 2.0) * 1.5 / el + res * (res / 2.0) * 1.5 / res - el * (el / 2.0) * 1.5 / el + res * (res / 2.0) * 1.5 / res - el * (el / 2.0) * 1.5 / el + res * (res / 2.0) * 1.5 / res - el * (el / 2.0) * 1.5 / el + res * (res / 2.0) * 1.5 / res - el * (el / 2.0) * 1.5 / el
+        i += 1
+      }
+      res
     })("Double",cycles)
 
-    val mRes = time(() => measures.foldLeft(Measure[Acceleration](0.0)) { (res,el) =>
-      res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5
-    }.v)("Measure",cycles)
+    val mRes = time(() => {
+      var i = 0
+      var res = Measure[Acceleration](1.0)
+      while(i < its) {
+        val el = Measure[Acceleration](vals(i))
+        res = res + res * (res ÷ 2.0) × 1.5 / res - el * (el ÷ 2.0) × 1.5 / el + res * (res ÷ 2.0) × 1.5 / res - el * (el ÷ 2.0) × 1.5 / el + res * (res ÷ 2.0) × 1.5 / res - el * (el ÷ 2.0) × 1.5 / el + res * (res ÷ 2.0) × 1.5 / res - el * (el ÷ 2.0) × 1.5 / el + res * (res ÷ 2.0) × 1.5 / res - el * (el ÷ 2.0) × 1.5 / el + res * (res ÷ 2.0) × 1.5 / res - el * (el ÷ 2.0) × 1.5 / el + res * (res ÷ 2.0) × 1.5 / res - el * (el ÷ 2.0) × 1.5 / el + res * (res ÷ 2.0) × 1.5 / res - el * (el ÷ 2.0) × 1.5 / el + res * (res ÷ 2.0) × 1.5 / res - el * (el ÷ 2.0) × 1.5 / el + res * (res ÷ 2.0) × 1.5 / res - el * (el ÷ 2.0) × 1.5 / el + res * (res ÷ 2.0) × 1.5 / res - el * (el ÷ 2.0) × 1.5 / el + res * (res ÷ 2.0) × 1.5 / res - el * (el ÷ 2.0) × 1.5 / el + res * (res ÷ 2.0) × 1.5 / res - el * (el ÷ 2.0) × 1.5 / el + res * (res ÷ 2.0) × 1.5 / res - el * (el ÷ 2.0) × 1.5 / el + res * (res ÷ 2.0) × 1.5 / res - el * (el ÷ 2.0) × 1.5 / el + res * (res ÷ 2.0) × 1.5 / res - el * (el ÷ 2.0) × 1.5 / el + res * (res ÷ 2.0) × 1.5 / res - el * (el ÷ 2.0) × 1.5 / el + res * (res ÷ 2.0) × 1.5 / res - el * (el ÷ 2.0) × 1.5 / el + res * (res ÷ 2.0) × 1.5 / res - el * (el ÷ 2.0) × 1.5 / el + res * (res ÷ 2.0) × 1.5 / res - el * (el ÷ 2.0) × 1.5 / el + res * (res ÷ 2.0) × 1.5 / res - el * (el ÷ 2.0) × 1.5 / el + res * (res ÷ 2.0) × 1.5 / res - el * (el ÷ 2.0) × 1.5 / el + res * (res ÷ 2.0) × 1.5 / res - el * (el ÷ 2.0) × 1.5 / el
+        i += 1
+      }
+      res.v
+    })("Measure",cycles)
 
-    val bRes = time(() => boxes.foldLeft(Boxed(0.0)) { (res,el) =>
-      res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5 + res / 2.0 + el * 4.0 - (el + res) * 0.5
-    }.v)("Boxed",cycles)
+    val bRes = time(() => {
+      var i = 0
+      var res = Boxed(1.0)
+      while(i < its) {
+        val el = Boxed(vals(i))
+        res = res + res * (res / 2.0) * 1.5 / res - el * (el / 2.0) * 1.5 / el + res * (res / 2.0) * 1.5 / res - el * (el / 2.0) * 1.5 / el + res * (res / 2.0) * 1.5 / res - el * (el / 2.0) * 1.5 / el + res * (res / 2.0) * 1.5 / res - el * (el / 2.0) * 1.5 / el + res * (res / 2.0) * 1.5 / res - el * (el / 2.0) * 1.5 / el + res * (res / 2.0) * 1.5 / res - el * (el / 2.0) * 1.5 / el + res * (res / 2.0) * 1.5 / res - el * (el / 2.0) * 1.5 / el + res * (res / 2.0) * 1.5 / res - el * (el / 2.0) * 1.5 / el + res * (res / 2.0) * 1.5 / res - el * (el / 2.0) * 1.5 / el + res * (res / 2.0) * 1.5 / res - el * (el / 2.0) * 1.5 / el + res * (res / 2.0) * 1.5 / res - el * (el / 2.0) * 1.5 / el + res * (res / 2.0) * 1.5 / res - el * (el / 2.0) * 1.5 / el + res * (res / 2.0) * 1.5 / res - el * (el / 2.0) * 1.5 / el + res * (res / 2.0) * 1.5 / res - el * (el / 2.0) * 1.5 / el + res * (res / 2.0) * 1.5 / res - el * (el / 2.0) * 1.5 / el + res * (res / 2.0) * 1.5 / res - el * (el / 2.0) * 1.5 / el + res * (res / 2.0) * 1.5 / res - el * (el / 2.0) * 1.5 / el + res * (res / 2.0) * 1.5 / res - el * (el / 2.0) * 1.5 / el + res * (res / 2.0) * 1.5 / res - el * (el / 2.0) * 1.5 / el + res * (res / 2.0) * 1.5 / res - el * (el / 2.0) * 1.5 / el + res * (res / 2.0) * 1.5 / res - el * (el / 2.0) * 1.5 / el + res * (res / 2.0) * 1.5 / res - el * (el / 2.0) * 1.5 / el + res * (res / 2.0) * 1.5 / res - el * (el / 2.0) * 1.5 / el
+        i += 1
+      }
+      res.v
+    })("Boxed",cycles)
 
-    val vRes = time(() => valueClasses.foldLeft(ValueClass(0.0)) { (res,el) =>
-      res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5
-    }.v)("ValueClass",cycles)
+    val iRes = time(() => {
+      var i = 0
+      var res = ImpValueClass[Acceleration](1.0)
+      while(i < its) {
+        val el = ImpValueClass[Acceleration](vals(i))
+        res = res + res * (res / 2.0) * 1.5 / res - el * (el / 2.0) * 1.5 / el + res * (res / 2.0) * 1.5 / res - el * (el / 2.0) * 1.5 / el + res * (res / 2.0) * 1.5 / res - el * (el / 2.0) * 1.5 / el + res * (res / 2.0) * 1.5 / res - el * (el / 2.0) * 1.5 / el + res * (res / 2.0) * 1.5 / res - el * (el / 2.0) * 1.5 / el + res * (res / 2.0) * 1.5 / res - el * (el / 2.0) * 1.5 / el + res * (res / 2.0) * 1.5 / res - el * (el / 2.0) * 1.5 / el + res * (res / 2.0) * 1.5 / res - el * (el / 2.0) * 1.5 / el + res * (res / 2.0) * 1.5 / res - el * (el / 2.0) * 1.5 / el + res * (res / 2.0) * 1.5 / res - el * (el / 2.0) * 1.5 / el + res * (res / 2.0) * 1.5 / res - el * (el / 2.0) * 1.5 / el + res * (res / 2.0) * 1.5 / res - el * (el / 2.0) * 1.5 / el + res * (res / 2.0) * 1.5 / res - el * (el / 2.0) * 1.5 / el + res * (res / 2.0) * 1.5 / res - el * (el / 2.0) * 1.5 / el + res * (res / 2.0) * 1.5 / res - el * (el / 2.0) * 1.5 / el + res * (res / 2.0) * 1.5 / res - el * (el / 2.0) * 1.5 / el + res * (res / 2.0) * 1.5 / res - el * (el / 2.0) * 1.5 / el + res * (res / 2.0) * 1.5 / res - el * (el / 2.0) * 1.5 / el + res * (res / 2.0) * 1.5 / res - el * (el / 2.0) * 1.5 / el + res * (res / 2.0) * 1.5 / res - el * (el / 2.0) * 1.5 / el + res * (res / 2.0) * 1.5 / res - el * (el / 2.0) * 1.5 / el + res * (res / 2.0) * 1.5 / res - el * (el / 2.0) * 1.5 / el + res * (res / 2.0) * 1.5 / res - el * (el / 2.0) * 1.5 / el
+        i += 1
+      }
+      res.v
+    })("ImpValueClass",cycles)
 
-    val iRes = time(() => impValueClasses.foldLeft(ImpValueClass[Acceleration](0.0)) { (res,el) =>
-      res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5
-    }.v)("ImpValueClass",cycles)
+    val vRes = time(() => {
+      var i = 0
+      var res = ValueClass(1.0)
+      while(i < its) {
+        val el = ValueClass(vals(i))
+        res = res + res * (res ÷ 2.0) × 1.5 / res - el * (el ÷ 2.0) × 1.5 / el + res * (res ÷ 2.0) × 1.5 / res - el * (el ÷ 2.0) × 1.5 / el + res * (res ÷ 2.0) × 1.5 / res - el * (el ÷ 2.0) × 1.5 / el + res * (res ÷ 2.0) × 1.5 / res - el * (el ÷ 2.0) × 1.5 / el + res * (res ÷ 2.0) × 1.5 / res - el * (el ÷ 2.0) × 1.5 / el + res * (res ÷ 2.0) × 1.5 / res - el * (el ÷ 2.0) × 1.5 / el + res * (res ÷ 2.0) × 1.5 / res - el * (el ÷ 2.0) × 1.5 / el + res * (res ÷ 2.0) × 1.5 / res - el * (el ÷ 2.0) × 1.5 / el + res * (res ÷ 2.0) × 1.5 / res - el * (el ÷ 2.0) × 1.5 / el + res * (res ÷ 2.0) × 1.5 / res - el * (el ÷ 2.0) × 1.5 / el + res * (res ÷ 2.0) × 1.5 / res - el * (el ÷ 2.0) × 1.5 / el + res * (res ÷ 2.0) × 1.5 / res - el * (el ÷ 2.0) × 1.5 / el + res * (res ÷ 2.0) × 1.5 / res - el * (el ÷ 2.0) × 1.5 / el + res * (res ÷ 2.0) × 1.5 / res - el * (el ÷ 2.0) × 1.5 / el + res * (res ÷ 2.0) × 1.5 / res - el * (el ÷ 2.0) × 1.5 / el + res * (res ÷ 2.0) × 1.5 / res - el * (el ÷ 2.0) × 1.5 / el + res * (res ÷ 2.0) × 1.5 / res - el * (el ÷ 2.0) × 1.5 / el + res * (res ÷ 2.0) × 1.5 / res - el * (el ÷ 2.0) × 1.5 / el + res * (res ÷ 2.0) × 1.5 / res - el * (el ÷ 2.0) × 1.5 / el + res * (res ÷ 2.0) × 1.5 / res - el * (el ÷ 2.0) × 1.5 / el + res * (res ÷ 2.0) × 1.5 / res - el * (el ÷ 2.0) × 1.5 / el + res * (res ÷ 2.0) × 1.5 / res - el * (el ÷ 2.0) × 1.5 / el + res * (res ÷ 2.0) × 1.5 / res - el * (el ÷ 2.0) × 1.5 / el
+        i += 1
+      }
+      res.v
+    })("ValueClass",cycles)
 
-    val tRes = time(() => typeclasses.foldLeft(TCMeasure[typeclass.Length](0.0)) { (res,el) =>
-      res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5 + res ÷ 2.0 + el × 4.0 - (el + res) × 0.5
-    }.v)("TCMeasure",cycles)
+    val tRes = time(() => {
+      var i = 0
+      var res = TCMeasure[typeclass.Length](1.0)
+      while(i < its) {
+        val el = TCMeasure[typeclass.Length](vals(i))
+        res = res + res * (res ÷ 2.0) × 1.5 / res - el * (el ÷ 2.0) × 1.5 / el + res * (res ÷ 2.0) × 1.5 / res - el * (el ÷ 2.0) × 1.5 / el + res * (res ÷ 2.0) × 1.5 / res - el * (el ÷ 2.0) × 1.5 / el + res * (res ÷ 2.0) × 1.5 / res - el * (el ÷ 2.0) × 1.5 / el + res * (res ÷ 2.0) × 1.5 / res - el * (el ÷ 2.0) × 1.5 / el + res * (res ÷ 2.0) × 1.5 / res - el * (el ÷ 2.0) × 1.5 / el + res * (res ÷ 2.0) × 1.5 / res - el * (el ÷ 2.0) × 1.5 / el + res * (res ÷ 2.0) × 1.5 / res - el * (el ÷ 2.0) × 1.5 / el + res * (res ÷ 2.0) × 1.5 / res - el * (el ÷ 2.0) × 1.5 / el + res * (res ÷ 2.0) × 1.5 / res - el * (el ÷ 2.0) × 1.5 / el + res * (res ÷ 2.0) × 1.5 / res - el * (el ÷ 2.0) × 1.5 / el + res * (res ÷ 2.0) × 1.5 / res - el * (el ÷ 2.0) × 1.5 / el + res * (res ÷ 2.0) × 1.5 / res - el * (el ÷ 2.0) × 1.5 / el + res * (res ÷ 2.0) × 1.5 / res - el * (el ÷ 2.0) × 1.5 / el + res * (res ÷ 2.0) × 1.5 / res - el * (el ÷ 2.0) × 1.5 / el + res * (res ÷ 2.0) × 1.5 / res - el * (el ÷ 2.0) × 1.5 / el + res * (res ÷ 2.0) × 1.5 / res - el * (el ÷ 2.0) × 1.5 / el + res * (res ÷ 2.0) × 1.5 / res - el * (el ÷ 2.0) × 1.5 / el + res * (res ÷ 2.0) × 1.5 / res - el * (el ÷ 2.0) × 1.5 / el + res * (res ÷ 2.0) × 1.5 / res - el * (el ÷ 2.0) × 1.5 / el + res * (res ÷ 2.0) × 1.5 / res - el * (el ÷ 2.0) × 1.5 / el + res * (res ÷ 2.0) × 1.5 / res - el * (el ÷ 2.0) × 1.5 / el + res * (res ÷ 2.0) × 1.5 / res - el * (el ÷ 2.0) × 1.5 / el
+        i += 1
+      }
+      res.v
+    })("TCMeasure",cycles)
 
     Seq(dRes, mRes, bRes, vRes, iRes, tRes)
   }

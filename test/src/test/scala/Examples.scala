@@ -173,7 +173,7 @@ class Examples extends Specification {
     }
   }
 
-  "Algebra" should {
+  /*"Algebra" should {
     "Work on abstract Measures" in {      
       // Even when dealing with abstract Dims, some elementary algebra is possible. e.g.:
 
@@ -192,5 +192,5 @@ class Examples extends Specification {
       // More complex algebra does not work, yet:
       // def abOverAc[A <: Dims, B <: Dims, C <: Dims](l: Measure[A#Mult[B]], r: Measure[A#Mult[C]]): Measure[B#Div[A]] = l / r
     }
-  }
+  }*/
 }

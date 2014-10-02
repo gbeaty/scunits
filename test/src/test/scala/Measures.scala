@@ -37,7 +37,7 @@ class Measures extends Specification {
       def sub[L <: Dims](l: Measure[L], r: Measure[L]): Measure[L] = l - r
       sub(m1,m2) ==== metre(-1.0)
     }
-    "Multiply" in {
+    /*"Multiply" in {
       "Cancel denominators" in {
         def mult[L <: Dims, R <: Dims](l: Measure[L], r: Measure[R#Div[L]]): Measure[R] = l * r
         mult[Time,Length](second(2.0),metrePerSecond(2.0)) ==== metre(4.0)
@@ -72,6 +72,6 @@ class Measures extends Specification {
         def div2[R <: Dims](l: Measure[DNil], r: Measure[R]): Measure[R#Neg] = l / r
         div2(coef(2.0),second(2.0)) ==== hertz(1.0)
       }
-    }
+    }*/
   }
 }
