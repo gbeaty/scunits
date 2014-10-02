@@ -131,7 +131,7 @@ class QuantitiesExamples extends Specification {
   object Orange extends BaseQuantity
 
   // To use them we need to include them in a Quantities object:
-  trait ApplesAndOranges extends Quantities {
+  trait AppleOrange extends Quantities {
     // Create a type alias for each quantity:
     type Apple = dimOf[i0]
     type Orange = dimOf[i1]
@@ -142,14 +142,14 @@ class QuantitiesExamples extends Specification {
     // A bushel is 126 apples:
     val bushel = apple * 126
   }
-  object ApplesAndOranges extends ApplesAndOranges {
+  object AppleOrange extends AppleOrange {
     // Define the order of the quantities:
     type quants = Apple.type :: Orange.type :: QNil
   }
 
   "Apples and Oranges" should {
     "Not be comparable" in { 
-      import ApplesAndOranges._                 
+      import AppleOrange._                 
 
       // You can't compare apple and oranges! This won't compile:      
       // Measure[Apple](4) > Measure[Orange](2)
@@ -161,9 +161,9 @@ class QuantitiesExamples extends Specification {
 
   // You can also extend existing Quantities. This is done by appending new BaseQuanities:
   object Pear extends BaseQuantity
-  object ApplesOrangesAndPears extends ApplesAndOranges {
+  object AppleOrangePear extends AppleOrange {
     // We need to append here so the inherited indexes of apple and pear (i0 and i1) are still valid:
-    override type quants = ApplesAndOranges.quants#append[Pear.type :: QNil]
+    override type quants = AppleOrange.quants#append[Pear.type :: QNil]
     type Pear = dimOf[i2]
 
     val pear = UnitM[Pear]("pear","p",1)
@@ -172,12 +172,12 @@ class QuantitiesExamples extends Specification {
   // Converting between different Quantities requires a Converter.
   // These must be cached as vals because the creation of a converter is costly but rarely needed.
   // Scunits preserves its primitive-like performance with cached converters.
-  implicit val toPears = converter(ApplesAndOranges, ApplesOrangesAndPears)
+  implicit val toPears = converter(AppleOrange, AppleOrangePear)
 
   "Apples, Oranges and Pears" should {
     "Be convertable" in {
       // Converted using the toPears implicit converter:
-      ApplesOrangesAndPears.apple(1) ==== ApplesAndOranges.apple(1)
+      AppleOrangePear.apple(1) ==== AppleOrange.apple(1)
     }
   }
 

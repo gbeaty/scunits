@@ -1,10 +1,13 @@
 import scunits._
 import scunits.types._
 
-package object scunits {
+trait LowPriorityImplicits {
+  implicit def identityConverter[Qs <: QList] = new IdentityConverter[Qs] with CachedConverter
+}
+
+package object scunits extends LowPriorityImplicits {
   implicit def invertMeasure[D <: Dims](m: Measure[D]) = m.inv
 
-  implicit def identityConverter[D <: Dims] = new IdentityConverter[D#quants] with CachedConverter
   implicit def convert[C <: ConverterFrom[D#quants] with CachedConverter, D <: Dims](m: Measure[D])(implicit c: C) =
     Measure[c.apply[D]](m.v)
 

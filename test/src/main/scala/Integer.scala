@@ -10,12 +10,6 @@ object Integer {
   implicitly[i1#neg + i2 =:= i1]
   implicitly[i1#neg + i2#neg =:= i3#neg]
 
-  implicitly[i0#addNN[i0] =:= i0]
-  implicitly[i1#addNN[i3] =:= i4]
-  implicitly[i1#neg#addNN[i3] =:= i2]
-  implicitly[i2#addNP[i0] =:= i2]
-  implicitly[i1#neg#addNP[i4#neg] =:= i5#neg]
-
   implicitly[i1#isPos =:= True]
   implicitly[i0#isPos =:= False]
   implicitly[i1#neg#isPos =:= False]

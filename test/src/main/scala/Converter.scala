@@ -55,3 +55,37 @@ object DimOfTests {
   val cDim = ABCDq.dimOf(C)
   implicitly[cDim.dims =:= (ABCDn ^ (i0 *: i0 *: i1 *: ENil))]
 }
+
+object MeasureConverterTests {
+  // implicit val aToAbcd = converter(Aq,ABCDq)
+  // implicit val abToAbcd = converter(ABq,ABCDq)
+  // implicit val abcToAbcd = converter(ABCq,ABCDq)
+  // implicit val abdToAbcd = converter(ABDq,ABCDq)
+  // implicit val bToAbcd = converter(Bq,ABCDq)
+  // implicit val cToAbcd = converter(Cq,ABCDq)
+  implicit val bcToAbcd = converter(BCq,ABCDq)
+  // implicit val cdToAbcd = converter(CDq,ABCDq)
+
+  // Add/subtract:
+  (Measure[ABCDq.B](1.0) + Measure[ABCDq.B](1.0)): Measure[ABCDq.B]
+  (Measure[ABCDq.B](1.0) - Measure[ABCDq.B](1.0)): Measure[ABCDq.B]
+
+  (Measure[ABCDq.B](1.0) + Measure[BCq.B](1.0)): Measure[ABCDq.B]
+  (Measure[BCq.B](1.0) + Measure[ABCDq.B](1.0)): Measure[ABCDq.B]
+
+  (Measure[ABCDq.B](1.0) - Measure[BCq.B](1.0)): Measure[ABCDq.B]
+  (Measure[BCq.B](1.0) - Measure[ABCDq.B](1.0)): Measure[ABCDq.B]
+
+  // Should not compile:
+  // (Measure[ABCDq.B](1.0) + Measure[ABCDq.C](1.0))
+  // (Measure[ABCDq.B](1.0) - Measure[ABCDq.C](1.0))
+  // (Measure[BCq.B](1.0) + Measure[ABCDq.C](1.0))
+  // (Measure[BCq.B](1.0) - Measure[ABCDq.C](1.0))
+
+  // Mult/div:
+
+  // (Measure[ABCDq.B](1.0) * Measure[BCq.C](1.0)): Measure[ABCDq.B#mult[ABCDq.C]]
+  // (Measure[BCq.C](1.0) * Measure[ABCDq.B](1.0)): Measure[ABCDq.B#mult[ABCDq.C]]
+
+  // ConverterFromTo[::[A.type,::[B.type,::[C.type,::[D.type,QNil]]]],BCq.C#quants] with CachedConverter
+}

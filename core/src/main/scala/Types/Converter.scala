@@ -7,7 +7,7 @@ class Converter {
   type to <: QList  
 
   type exps[FE <: EList] <: EList
-  type apply[D <: Dims] <: DimsOf[to]
+  type apply[D <: Dims] = to ^ exps[D#exps]
   def apply[D <: DimsOf[from]](in: Measure[D]) = Measure[apply[D]](in.v)
 }
 class ConverterFrom[F <: QList] extends Converter {
@@ -19,7 +19,6 @@ class ConverterFromTo[F <: QList, T <: QList] extends ConverterFrom[F] {
 class IndicesConverter[F <: QList, T <: QList, I <: IList] extends ConverterFromTo[F,T] {
   type indices = I
   type exps[FE <: EList] = indices#convertDims[FE]
-  type apply[D <: Dims] = to ^ exps[D#exps]
 }
 class IdentityConverter[Qs <: QList] extends ConverterFromTo[Qs,Qs] {
   type exps[FE <: EList] = FE
