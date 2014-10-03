@@ -11,6 +11,8 @@ case class UnitM[D <: Dims](
   offset: BigDecimal = 0.0,
   prefix: Option[UnitPrefix] = None) {
 
+  type dims = D
+
   val prefixedMult: BigDecimal = prefix.map(_.mult * mult).getOrElse(mult)
   val prefixedMultDouble = prefixedMult.toDouble
   val doubleOffset = offset.toDouble
