@@ -3,13 +3,11 @@ package scunits
 import scunits.integer._
 
 case class Measure[D <: Dims](v: Double) extends AnyVal {
-  type Dims = D
-
   def *[R <: Dims](r: Measure[R])(implicit m: Multer[D,R]) = Measure[m.Out](v * r.v)
   def /[R <: Dims](r: Measure[R])(implicit m: Multer[D,R#Neg]) = Measure[m.Out](v / r.v)
   
-  def +[R <: Dims](r: Measure[R]) = Measure[D](v + r.v)
-  def -[R <: Dims](r: Measure[R]) = Measure[D](v - r.v)
+  def +[R <: Dims](r: Measure[R])(implicit a: Additive[D#Set,R#Set]) = Measure[D](v + r.v)
+  def -[R <: Dims](r: Measure[R])(implicit a: Additive[D#Set,R#Set]) = Measure[D](v - r.v)
 
   def ×(r: Double) = Measure[D](v * r)
   def ÷(r: Double) = Measure[D](v / r)

@@ -7,15 +7,22 @@ trait LowPriorityImplicits {
   implicit def removeQuantSkip[Q <: Quantity, In <: DNel](implicit rq: RemoveQuant[Q,In#Tail]):
     RemovedQuant[Q,In,rq.Exp,In#Head :: rq.Rem] = null
 
+  implicit def removeQuantNil[Q <: Quantity]: RemovedQuant[Q,Dimless,_0,Dimless] = null
+
   implicit def multSkip[L <: DNel, R <: DNel](implicit m: Multer[L#Tail,R]):
     Multing[L,R,L#Head :: m.Out] = null
+
+  implicit def multLeftNil[R <: DNel]: Multing[Dimless,R,R] = null
 }
 
-class DimsOps extends LowPriorityImplicits {
-  implicit def additive[A]: Additive[A,A] = null
+package object scunits extends LowPriorityImplicits {
+  implicit def ordering[D <: Dims] = new Ordering[Measure[D]] {
+    def compare(l: Measure[D], r: Measure[D]) = if(l < r) -1 else if(l > r) 1 else 0
+  }
 
+  implicit def additive[A]: Additive[A,A] = null
+  
   implicit def removeQuantMatch[Q <: Quantity, In <: DNelOf[Q]]: RemovedQuant[Q,In,In#Head#Exp,In#Tail] = null
-  implicit def removeQuantNil[Q <: Quantity]: RemovedQuant[Q,Dimless,_0,Dimless] = null  
 
   implicit def multAdd[L <: DNel, R <: DNel, RE <: Integer, RR <: Dims]
     (implicit r: RemovedQuant[L#Head#Quant,R,RE,RR], m: Multer[L#Tail,RR]):
@@ -27,16 +34,8 @@ class DimsOps extends LowPriorityImplicits {
         ]
       ] = null
 
-  implicit def multLeftNil[R <: DNel]: Multing[Dimless,R,R] = null
+  
   implicit def multRightNil[L <: Dims]: Multing[L,Dimless,L] = null
-}
-
-package object scunits extends DimsOps {
-  implicit def ordering[D <: Dims] = new Ordering[Measure[D]] {
-    def compare(l: Measure[D], r: Measure[D]) = if(l < r) -1 else if(l > r) 1 else 0
-  }
-
-  implicit def invert[F <: Dims](f: Measure[F]) = Measure[F#Neg](1.0 / f.v)
   
   val coef = UnitM[Dimless]("","")
   implicit def toCoef(d: Double) = Measure[Dimless](d)
