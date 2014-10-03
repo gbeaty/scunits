@@ -1,15 +1,13 @@
 package scunits.system
 
 import scunits._
-import Scunits._
-import scunits.quantity._
 
-trait Planck {
+/*trait Planck {
   // Base units:
   val length = UnitM[Length]("planck length","L",1.61619997e-35)
   val mass = UnitM[Mass]("planck mass","M",2.1765113e-5)
   val time = UnitM[Time]("planck planck time","T",5.3910632e-44)
-  val charge = UnitM[Electric.Charge]("planck charge","Q",1.87554595641e-18)
+  val charge = UnitM[Charge]("planck charge","Q",1.87554595641e-18)
   val temperature = UnitM[Temperature]("planck temperature","Θ",1.41683385e32)
 
   // Derived units:
@@ -29,4 +27,4 @@ trait Planck {
   val current = (charge / time).label("planck current","QT-1")
   val voltage = (power / current).label("planck voltage","L2MT-2Q-1")
   val impedance = (voltage / current).label("planck impedance","L2MT-1Q-2")
-}
+}*/

@@ -1,9 +1,8 @@
 package scunits.system.si
 
 import scunits._
-import scunits.quantity._
 
-trait Prefix {
+/*trait Prefix {
   val yocto = new UnitPrefix("yocto", "y", 1e-24)
   val zepto = new UnitPrefix("zepto", "z", 1e-21)
   val atto = new UnitPrefix("atto", "a", 1e-18)
@@ -82,4 +81,4 @@ trait Accepted {
   val electronMass = UnitM[Mass]("electron mass","me",9.109382616e-28)
 }
 
-trait All extends Base with Prefix with Accepted
+trait All extends Base with Prefix with Accepted*/

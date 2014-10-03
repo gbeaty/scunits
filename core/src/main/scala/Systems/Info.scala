@@ -3,9 +3,8 @@ package scunits.system.info
 import scala.math._
 
 import scunits._
-import scunits.quantity._
 
-trait Bits {
+/*trait Bits {
   val bit = UnitM[quantity.Info]("bit","b")
   val byte = (bit * 8).label("byte","B")
 
@@ -34,4 +33,4 @@ trait Prefix {
     val zetta = new UnitPrefix("zetta","Z",pow(1024,7))
     val yotta = new UnitPrefix("yotta","Y",pow(1024,8))
   }
-}
+}*/

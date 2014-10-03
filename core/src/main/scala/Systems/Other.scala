@@ -2,7 +2,7 @@ package scunits.system.other
 
 import scunits._
 
-trait Pressure {
+/*trait Pressure {
   val mmHg = UnitM[quantity.Pressure]("millimeter of mercury", "mm Hg", 133.322387415)
   val mmWater = UnitM[quantity.Pressure]("millimeter of water", "mm H2O", 9.80665)
   val torr = UnitM[quantity.Pressure]("torr", "torr",101325.0 / 760.0)
@@ -15,4 +15,4 @@ trait Acceleration {
   val gee = UnitM[quantity.Acceleration]("gee", "ɡ", 9.80665)
 }
 
-trait All extends Pressure with Acceleration
+trait All extends Pressure with Acceleration*/

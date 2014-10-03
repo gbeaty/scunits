@@ -11,10 +11,7 @@ package object integer {
     type Neg <: Integer
     type Mult[R <: Integer] <: Integer
 
-    type BranchNegZeroPos[B, N<:B, Z<:B, P<:B] <: B
     type IfZero[B,T <: B,E[_ <: NonZeroInt] <: B] <: B
-
-    type DimMag[B <: BaseQuantityLike, T <: Dims] <: Dims
   }
 
   trait NonNegInt extends Integer {
@@ -25,19 +22,14 @@ package object integer {
   }
   trait NonZeroInt extends Integer {
     override type Self <: NonZeroInt
-    type DimMag[B <: BaseQuantityLike, T <: Dims] = DNelConst[B,Self,T]
     type IfZero[B,T <: B,E[_ <: NonZeroInt] <: B] = E[Self]
   }
   trait NegInt extends NonPosInt with NonZeroInt {
     override type Self <: NegInt
-    type BranchNegZeroPos[B, N<:B, Z<:B, P<:B] = N
   }
   trait PosInt extends NonNegInt with NonZeroInt{
     override type Self <: PosInt
-    type BranchNegZeroPos[B, N<:B, Z<:B, P<:B] = P
   }
-  // 4 * 2 = 2 + 3 * 2 = 2 + 2 + 2 * 2
-  // 4#Mult[2] = 2#Add[3#Mult[2]]
 
   class SuccInt[P <: NonNegInt] extends PosInt {
     type Self = SuccInt[P]
@@ -67,10 +59,7 @@ package object integer {
     type Sub[N <: Integer] = N#Neg
     type Neg = _0
     type Mult[R <: Integer] = _0
-    type BranchNegZeroPos[B, N<:B, Z<:B, P<:B] = Z
     type IfZero[B,T <: B,E[_ <: NonZeroInt] <: B] = T
-
-    type DimMag[B <: BaseQuantityLike, T <: Dims] = T
   }
 
   object Ops {
@@ -79,13 +68,13 @@ package object integer {
     type *[L <: Integer, R <: Integer] = L#Mult[R]
   }
 
-  type _1 = _0#Succ
-  type _2 = _1#Succ
-  type _3 = _2#Succ
-  type _4 = _3#Succ
-  type _5 = _4#Succ
-  type _6 = _5#Succ
-  type _7 = _6#Succ
-  type _8 = _7#Succ
-  type _9 = _8#Succ
+  type p1 = _0#Succ
+  type p2 = p1#Succ
+  type p3 = p2#Succ
+  type p4 = p3#Succ
+
+  type n1 = _0#Pred
+  type n2 = n1#Pred
+  type n3 = n2#Pred
+  type n4 = n3#Pred
 }

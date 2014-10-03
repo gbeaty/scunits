@@ -3,9 +3,8 @@ package scunits.system.us
 import scala.math.BigDecimal
 
 import scunits._
-import scunits.quantity._
 
-class FootBased(metresPerFoot: BigDecimal) {
+/*class FootBased(metresPerFoot: BigDecimal) {
   val foot = UnitM[Length]("foot","ft",metresPerFoot)
 
   val link = (foot * 33/50).label("link","li")
@@ -112,4 +111,4 @@ trait All extends InternationalFoot with Mass.Avoirdupois with Nautical with Bas
   object Fluid extends volume.Fluid
   object Dry extends volume.Dry
   object Troy extends Mass.Troy
-}
+}*/

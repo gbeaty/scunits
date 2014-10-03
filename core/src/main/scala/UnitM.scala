@@ -1,10 +1,8 @@
 package scunits
 
-import scunits.quantity._
 import scunits.integer._
-import scunits.integer.Ops._
 
-import scala.math.BigDecimal
+import scala.math._
 
 case class UnitM[D <: Dims](
   name: Option[String] = None,
@@ -28,8 +26,8 @@ case class UnitM[D <: Dims](
 
   def inv = UnitM[D#Neg](mult = 1 / mult)
 
-  def *[R <: Dims](r: UnitM[R]) = UnitM[D#Mult[R]](mult = prefixedMult * r.prefixedMult)
-  def /[R <: Dims](r: UnitM[R]) = UnitM[D#Div[R]](mult = prefixedMult / r.prefixedMult)
+  def *[R <: Dims](r: UnitM[R])(implicit m: Multer[D,R]) = UnitM[m.Out](mult = prefixedMult * r.prefixedMult)
+  def /[R <: Dims](r: UnitM[R])(implicit m: Multer[D,R#Neg]) = UnitM[m.Out](mult = prefixedMult / r.prefixedMult)
 
   def *(r: BigDecimal) = UnitM[D](mult = prefixedMult * r)
   def *(r: Double) = UnitM[D](mult = prefixedMult * r)
@@ -48,11 +46,11 @@ case class UnitM[D <: Dims](
   def /(r: Byte) = UnitM[D](mult = prefixedMult / r)
 
   def prefixLabel(pn: String, ps: String) = (name, symbol) match {
-      case (Some(n),Some(s)) => this.label(pn + n, ps + s)
-      case _ => this
-    }
-  def sq = (this * this).prefixLabel("square ", "sq-")
-  def cu = (this * this * this).prefixLabel("cubic", "cu-")
+    case (Some(n),Some(s)) => this.label(pn + n, ps + s)
+    case _ => this
+  }
+  def sq = UnitM[D#Pow[p2]](mult = prefixedMult.pow(2)).prefixLabel("square", "sq-")
+  def cu = UnitM[D#Pow[p3]](mult = prefixedMult.pow(3)).prefixLabel("cubic", "cu-")
 }
 object UnitM {
   def apply[D <: Dims](name: String, symbol: String): UnitM[D] =
