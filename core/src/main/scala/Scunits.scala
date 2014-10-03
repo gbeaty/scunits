@@ -51,7 +51,7 @@ package object scunits extends LowPriorityImplicits {
   sealed trait Intensity extends BaseQuantity[Intensity]
 
   // SI base quantities:
-  type Frequency = (Time^p1)
+  type Frequency = (Time^n1) :: Dimless
   type Force = (Mass^p1) :: (Length^p1) :: (Time^n2) :: Dimless
   type Pressure = (Mass^p1) :: (Length^n1) :: (Time^n2) :: Dimless
   type Energy = (Mass^p1) :: (Length^p2) :: (Time^n2) :: Dimless
@@ -81,4 +81,7 @@ package object scunits extends LowPriorityImplicits {
   type AngularMomentum = (Length^p2) :: (Mass^p1) :: (Time^n1) :: Dimless
   type Torque = (Length^p2) :: (Mass^p1) :: (Time^n2) :: Dimless
   // type Yank = 
+
+  // Other:
+  type InfoRate = (Info^p1) :: (Time^n1) :: Dimless
 }

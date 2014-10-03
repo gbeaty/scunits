@@ -2,7 +2,7 @@ package scunits.system
 
 import scunits._
 
-/*trait Planck {
+trait Planck {
   // Base units:
   val length = UnitM[Length]("planck length","L",1.61619997e-35)
   val mass = UnitM[Mass]("planck mass","M",2.1765113e-5)
@@ -27,4 +27,4 @@ import scunits._
   val current = (charge / time).label("planck current","QT-1")
   val voltage = (power / current).label("planck voltage","L2MT-2Q-1")
   val impedance = (voltage / current).label("planck impedance","L2MT-1Q-2")
-}*/
+}

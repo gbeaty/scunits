@@ -4,8 +4,8 @@ import scala.math._
 
 import scunits._
 
-/*trait Bits {
-  val bit = UnitM[quantity.Info]("bit","b")
+trait Bits {
+  val bit = UnitM[scunits.Info]("bit","b")
   val byte = (bit * 8).label("byte","B")
 
   val bps = UnitM[InfoRate]("bit per second", "bps")
@@ -33,4 +33,4 @@ trait Prefix {
     val zetta = new UnitPrefix("zetta","Z",pow(1024,7))
     val yotta = new UnitPrefix("yotta","Y",pow(1024,8))
   }
-}*/
+}
