@@ -9,16 +9,13 @@ trait LowPriorityImplicits {
 
   implicit def removeQuantNil[Q <: Quantity]: RemovedQuant[Q,Dimless,_0,Dimless] = null
 
-  implicit def multSkip[L <: DNel, R <: DNel](implicit m: Multer[L#Tail,R]):
-    Multing[L,R,L#Head :: m.Out] = null
-
   implicit def multLeftNil[R <: DNel]: Multing[Dimless,R,R] = null
 }
 
 package object scunits extends LowPriorityImplicits {
-  implicit def ordering[D <: Dims] = new Ordering[Measure[D]] {
+  /*implicit def ordering[D <: Dims] = new Ordering[Measure[D]] {
     def compare(l: Measure[D], r: Measure[D]) = if(l < r) -1 else if(l > r) 1 else 0
-  }
+  }*/
 
   implicit def additive[A]: Additive[A,A] = null
   
@@ -33,7 +30,6 @@ package object scunits extends LowPriorityImplicits {
           ({type Nz[I <: NonZeroInt] = (L#Head#Quant ^ I) :: m.Out})#Nz
         ]
       ] = null
-
   
   implicit def multRightNil[L <: Dims]: Multing[L,Dimless,L] = null
   

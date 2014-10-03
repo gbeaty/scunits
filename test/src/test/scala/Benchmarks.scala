@@ -1,11 +1,7 @@
 package scunits.test
 
 import scunits._
-import Scunits._
-import scunits.quantity._
 import scunits.us._
-import scunits.typeclass.TCMeasure
-import scunits.typeclass.DListOps._
 
 import org.specs2.mutable._
 
@@ -58,10 +54,10 @@ case class BenchResult[A](name: String, result: A, time: Long, cycles: Long)
 class Benchmarks extends Specification {
   sequential
 
-  implicit def add[L <: Dims, R <: Dims]: Add[L,R] = null
-  implicit def sub[L <: Dims, R <: Dims]: Sub[L,R] = null
-  implicit def mult[L <: Dims, R <: Dims]: Multed[L,R,L#Mult[R]] = null
-  implicit def div[L <: Dims, R <: Dims]:  Dived[L,R,L#Div[R]] = null
+  implicit def add[L <: Dims, R <: Dims]:  Add[L,R] = null
+  implicit def sub[L <: Dims, R <: Dims]:  Sub[L,R] = null
+  implicit def mult[L <: Dims, R <: Dims]: Multed[L,R,L] = null
+  implicit def div[L <: Dims, R <: Dims]:  Dived[L,R,L] = null
 
   def time[A](f: () => A)(name: String, cycles: Long) = {
     val start = System.nanoTime
@@ -129,18 +125,7 @@ class Benchmarks extends Specification {
       res.v
     })("ValueClass",cycles)
 
-    val tRes = time(() => {
-      var i = 0
-      var res = TCMeasure[typeclass.Length](1.0)
-      while(i < its) {
-        val el = TCMeasure[typeclass.Length](vals(i))
-        res = res + res * (res ÷ 2.0) × 1.5 / res - el * (el ÷ 2.0) × 1.5 / el + res * (res ÷ 2.0) × 1.5 / res - el * (el ÷ 2.0) × 1.5 / el + res * (res ÷ 2.0) × 1.5 / res - el * (el ÷ 2.0) × 1.5 / el + res * (res ÷ 2.0) × 1.5 / res - el * (el ÷ 2.0) × 1.5 / el + res * (res ÷ 2.0) × 1.5 / res - el * (el ÷ 2.0) × 1.5 / el + res * (res ÷ 2.0) × 1.5 / res - el * (el ÷ 2.0) × 1.5 / el + res * (res ÷ 2.0) × 1.5 / res - el * (el ÷ 2.0) × 1.5 / el + res * (res ÷ 2.0) × 1.5 / res - el * (el ÷ 2.0) × 1.5 / el + res * (res ÷ 2.0) × 1.5 / res - el * (el ÷ 2.0) × 1.5 / el + res * (res ÷ 2.0) × 1.5 / res - el * (el ÷ 2.0) × 1.5 / el + res * (res ÷ 2.0) × 1.5 / res - el * (el ÷ 2.0) × 1.5 / el + res * (res ÷ 2.0) × 1.5 / res - el * (el ÷ 2.0) × 1.5 / el + res * (res ÷ 2.0) × 1.5 / res - el * (el ÷ 2.0) × 1.5 / el + res * (res ÷ 2.0) × 1.5 / res - el * (el ÷ 2.0) × 1.5 / el + res * (res ÷ 2.0) × 1.5 / res - el * (el ÷ 2.0) × 1.5 / el + res * (res ÷ 2.0) × 1.5 / res - el * (el ÷ 2.0) × 1.5 / el + res * (res ÷ 2.0) × 1.5 / res - el * (el ÷ 2.0) × 1.5 / el + res * (res ÷ 2.0) × 1.5 / res - el * (el ÷ 2.0) × 1.5 / el + res * (res ÷ 2.0) × 1.5 / res - el * (el ÷ 2.0) × 1.5 / el + res * (res ÷ 2.0) × 1.5 / res - el * (el ÷ 2.0) × 1.5 / el + res * (res ÷ 2.0) × 1.5 / res - el * (el ÷ 2.0) × 1.5 / el + res * (res ÷ 2.0) × 1.5 / res - el * (el ÷ 2.0) × 1.5 / el + res * (res ÷ 2.0) × 1.5 / res - el * (el ÷ 2.0) × 1.5 / el
-        i += 1
-      }
-      res.v
-    })("TCMeasure",cycles)
-
-    Seq(dRes, mRes, bRes, vRes, iRes, tRes)
+    Seq(dRes, mRes, bRes, vRes, iRes)
   }
 
   def BenchArray(arraySize: Int) = {
