@@ -5,15 +5,26 @@ package object types {
   // IntOps:
   type +[L <: Integer, R <: Integer] = L#add[R]
   type -[L <: Integer, R <: Integer] = L#sub[R]
-  type i1 = i0#succ
-  type i2 = i1#succ
-  type i3 = i2#succ
-  type i4 = i3#succ
-  type i5 = i4#succ
-  type i6 = i5#succ
-  type i7 = i6#succ
-  type i8 = i7#succ
-  type i9 = i8#succ
+
+  type p1 = _0#succ
+  type p2 = p1#succ
+  type p3 = p2#succ
+  type p4 = p3#succ
+  type p5 = p4#succ
+  type p6 = p5#succ
+  type p7 = p6#succ
+  type p8 = p7#succ
+  type p9 = p8#succ
+
+  type n1 = _0#pred
+  type n2 = n1#pred
+  type n3 = n2#pred
+  type n4 = n3#pred
+  type n5 = n4#pred
+  type n6 = n5#pred
+  type n7 = n6#pred
+  type n8 = n7#pred
+  type n9 = n8#pred
 
   // BoolOps:
   type ||[L <: Bool, R <: Bool] = L#or[R]

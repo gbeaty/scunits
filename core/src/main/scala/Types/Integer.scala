@@ -41,25 +41,25 @@ sealed trait PosInt extends NonNegInt with NonZeroInt {
 
 sealed trait SuccInt[P <: NonNegInt] extends PosInt {
   type succ = SuccInt[SuccInt[P]]
-  type add[N <: Integer] = P#add[N]#succ
+  type add[N <: Integer] = P#add[N#succ]
   type pred = P
-  type sub[N <: Integer] = P#sub[N]#succ
+  type sub[N <: Integer] = P#sub[N#pred]
   type neg = P#neg#pred
 }
 
 sealed trait PredInt[S <: NonPosInt] extends NegInt {
   type succ = S
-  type add[N <: Integer] = S#add[N]#pred
+  type add[N <: Integer] = S#add[N#pred]
   type pred = PredInt[PredInt[S]]
-  type sub[N <: Integer] = S#sub[N]#pred
+  type sub[N <: Integer] = S#sub[N#succ]
   type neg = S#neg#succ
 }
 
-sealed trait i0 extends NonNegInt with NonPosInt {
+sealed trait _0 extends NonNegInt with NonPosInt {
   type isZero = True
-  type succ = SuccInt[i0]
+  type succ = SuccInt[_0]
   type add[N <: Integer] = N
-  type pred = PredInt[i0]
+  type pred = PredInt[_0]
   type sub[N <: Integer] = N#neg
-  type neg = i0
+  type neg = _0
 }

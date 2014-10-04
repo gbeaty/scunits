@@ -7,14 +7,14 @@ trait DefaultQuantities extends Quantities {
     (Time.type :: Info.type :: Length.type :: Mass.type :: Temperature.type ::
     Current.type :: Intensity.type :: AmountOfSubstance.type :: QNil)  
   
-  type Time              = dimOf[i0]
-  type Info              = dimOf[i1]
-  type Length            = dimOf[i2]
-  type Mass              = dimOf[i3]
-  type Temperature       = dimOf[i4]
-  type Current           = dimOf[i5]
-  type Intensity         = dimOf[i6]
-  type AmountOfSubstance = dimOf[i7]
+  type Time              = dimOf[_0]
+  type Info              = dimOf[p1]
+  type Length            = dimOf[p2]
+  type Mass              = dimOf[p3]
+  type Temperature       = dimOf[p4]
+  type Current           = dimOf[p5]
+  type Intensity         = dimOf[p6]
+  type AmountOfSubstance = dimOf[p7]
 
   type Area = Length * Length
   type Volume = Area * Length

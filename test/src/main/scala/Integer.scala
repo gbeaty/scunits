@@ -3,20 +3,37 @@ package scunits.test
 import scunits.types._
 
 object Integer {
-  implicitly[i0 + i0 =:= i0]
-  implicitly[i0 - i0 =:= i0]
-  implicitly[i1 + i2 =:= i3]
-  implicitly[i1 - i2 =:= i1#neg]
-  implicitly[i1#neg + i2 =:= i1]
-  implicitly[i1#neg + i2#neg =:= i3#neg]
+  implicitly[_0 + _0 =:= _0]  
+  
+  implicitly[p1 + p2 =:= p3]
+  implicitly[p3 + n1 =:= p2]
+  implicitly[p1 + n3 =:= n2]
+  implicitly[p2 + n2 =:= _0]
 
-  implicitly[i1#isPos =:= True]
-  implicitly[i0#isPos =:= False]
-  implicitly[i1#neg#isPos =:= False]
+  implicitly[n1 + n2 =:= n3]
+  implicitly[n3 + p1 =:= n2]
+  implicitly[n1 + p3 =:= p2]
+  implicitly[n2 + p2 =:= _0]
+
+  implicitly[_0 - _0 =:= _0]
+
+  implicitly[p3 - p1 =:= p2]
+  implicitly[p3 - n1 =:= p4]
+  implicitly[p1 - p3 =:= n2]
+  implicitly[p2 - p2 =:= _0]
+
+  implicitly[n3 - n1 =:= n2]
+  implicitly[n3 - p1 =:= n4]
+  implicitly[n1 - n3 =:= p2]
+  implicitly[n2 - n2 =:= _0]
+
+  implicitly[p1#isPos =:= True]
+  implicitly[_0#isPos =:= False]
+  implicitly[n1#isPos =:= False]
 
   type plusPlus[I <: Integer] = I#succ
   type double[I <: Integer] = I#loop[Integer,plusPlus,I]
-  implicitly[double[i1] =:= i2]
-  implicitly[double[i2] =:= i4]
-  implicitly[double[i4] =:= i8]
+  implicitly[double[p1] =:= p2]
+  implicitly[double[p2] =:= p4]
+  implicitly[double[p4] =:= p8]
 }

@@ -7,7 +7,7 @@ trait EList {
   type head <: Integer
   type tail <: EList
 
-  protected type prependZero[To <: EList] = i0 *: To
+  protected type prependZero[To <: EList] = _0 *: To
   type zeros[I <: Integer, T <: Integer] = I#loop[EList,prependZero,T *: ENil]
 
   type neg <: EList
@@ -36,13 +36,13 @@ trait *:[H <: Integer, T <: EList] extends ENel {
   
   type Op[R <: EList, O[_ <: Integer, _ <: Integer] <: Integer] = R#OpNel[This,O]#truncZeros
   protected type OpNel[L <: ENel, O[_ <: Integer, _ <: Integer] <: Integer] = O[L#head, head] *: L#tail#Op[tail,O]
-  protected type OpNil[O[_ <: Integer, _ <: Integer] <: Integer] = O[i0,head] *: tail#OpNil[O]
+  protected type OpNil[O[_ <: Integer, _ <: Integer] <: Integer] = O[_0,head] *: tail#OpNil[O]
 
   type isPadding = head#isZero && tail#isPadding
   type truncZeros = isPadding#If[EList, ENil, head *: tail#truncZeros]
 }
 trait ENil extends EList {
-  type head = i0
+  type head = _0
   type tail = ENil
   type setInt[I <: Integer, To <: Integer] = To#isZero#If[EList,ENil,zeros[I,To]]
   type neg = ENil

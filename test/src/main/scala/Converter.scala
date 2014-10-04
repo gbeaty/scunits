@@ -7,16 +7,16 @@ object SearchTests {
   def has[Qs <: Quantities, Q <: BaseQuantity, I <: Integer](in: Qs, find: Q)(implicit i: QuantFound[Qs#quants,Q,I]) = i
 
   val a = has(ABCDq,A)
-  implicitly[a.at =:= i0]
+  implicitly[a.at =:= _0]
 
   val b = has(ABCDq,B)
-  implicitly[b.at =:= i1]
+  implicitly[b.at =:= p1]
 
   val c = has(ABCDq,C)
-  implicitly[c.at =:= i2]
+  implicitly[c.at =:= p2]
 
   val d = has(ABCDq,D)
-  implicitly[d.at =:= i3]
+  implicitly[d.at =:= p3]
 }
 
 object ConverterTests {
@@ -29,10 +29,10 @@ object ConverterTests {
   }
   import TestConverters._
 
-  implicitly[aToAb.indices =:= (i0 -: INil)]
+  implicitly[aToAb.indices =:= (_0 -: INil)]
   implicitly[aToAb.apply[Aq.Dimless] =:= ABq.Dimless]
 
-  implicitly[bToAb.indices =:= (i1 -: INil)]
+  implicitly[bToAb.indices =:= (p1 -: INil)]
   implicitly[bToAb.apply[Bq.Dimless] =:= ABq.Dimless]
   implicitly[bToAb.apply[Bq.B] =:= ABq.B]
 
@@ -47,13 +47,13 @@ object ConverterTests {
 
 object DimOfTests {
   val aDim = ABCDq.dimOf(A)
-  implicitly[aDim.dims =:= (ABCDn ^ (i1 *: ENil))]
+  implicitly[aDim.dims =:= (ABCDn ^ (p1 *: ENil))]
 
   val bDim = ABCDq.dimOf(B)
-  implicitly[bDim.dims =:= (ABCDn ^ (i0 *: i1 *: ENil))]
+  implicitly[bDim.dims =:= (ABCDn ^ (_0 *: p1 *: ENil))]
 
   val cDim = ABCDq.dimOf(C)
-  implicitly[cDim.dims =:= (ABCDn ^ (i0 *: i0 *: i1 *: ENil))]
+  implicitly[cDim.dims =:= (ABCDn ^ (_0 *: _0 *: p1 *: ENil))]
 }
 
 object MeasureConverterTests {

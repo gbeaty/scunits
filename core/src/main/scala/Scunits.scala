@@ -18,7 +18,7 @@ package object scunits extends LowPriorityImplicits {
 
   implicit def quantSearch[Qs <: QNel, Q <: BaseQuantity, I <: Integer](implicit i: QuantFound[Qs#tail,Q,I]) =
       new QuantFound[Qs,Q,I#succ]
-  implicit def quantFound[Qs <: QNelOfHead[Q], Q <: BaseQuantity] = new QuantFound[Qs,Q,i0]
+  implicit def quantFound[Qs <: QNelOfHead[Q], Q <: BaseQuantity] = new QuantFound[Qs,Q,_0]
 
   implicit def indexConverterBuild[F <: QNel, T <: QList, I <: Integer, Is <: IList]
     (implicit i: QuantFound[T,F#head,I], c: IndicesConverter[F#tail,T,Is]) = new IndicesConverter[F,T,I -: Is]
@@ -26,6 +26,6 @@ package object scunits extends LowPriorityImplicits {
   implicit def indexConverterBuilt[T <: QList] = new IndicesConverter[QNil,T,INil]
 
   implicit def dimOfSearch[Qs <: QNel, B <: BaseQuantity, E <: EList](implicit d: DimensionOf[Qs#tail,B,E]) =
-    new DimensionOf[Qs,B,i0 *: E]
-  implicit def dimOfFound[Qs <: QNelOfHead[B], B <: BaseQuantity] = new DimensionOf[Qs,B,i1 *: ENil]
+    new DimensionOf[Qs,B,_0 *: E]
+  implicit def dimOfFound[Qs <: QNelOfHead[B], B <: BaseQuantity] = new DimensionOf[Qs,B,p1 *: ENil]
 }
