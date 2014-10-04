@@ -25,12 +25,37 @@ class IdentityConverter[Qs <: QList] extends ConverterFromTo[Qs,Qs] {
   type exps[FE <: EList] = FE
 }
 
-class QuantSearch[Qs <: QList, Q <: BaseQuantity, I <: Integer] {
+class SearchResult {
+  type at <: Integer
+}
+class Found[I <: Integer] extends SearchResult {
   type at = I
 }
+class NotFound extends SearchResult {
+  type at = n1
+}
+class QuantSearched[Qs <: QList, Q <: BaseQuantity, I <: Integer] {
+  type res <: SearchResult
+}
+class QuantSearch[Qs <: QList, Q <: BaseQuantity, I <: Integer, R <: SearchResult] extends QuantSearched[Qs,Q,I] {
+  type res = R
+}
+
 class DimensionOf[Qs <: QList, B <: BaseQuantity, E <: EList] {
   type exps = E
   type dims = Qs ^ E
 }
 
 trait CachedConverter
+
+/*
+AB
+ BC
+
+AB => BC = - 0
+BC => AB = 1 -
+
+BC[1,0] = AB[0,1]
+
+AB[0,1] * BC[1,0]
+*/

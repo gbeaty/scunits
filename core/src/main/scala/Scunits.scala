@@ -3,6 +3,9 @@ import scunits.types._
 
 trait LowPriorityImplicits {
   implicit def identityConverter[Qs <: QList] = new IdentityConverter[Qs] with CachedConverter
+
+  implicit def quantSearch[Qs <: QNel, Q <: BaseQuantity, R <: SearchResult, I <: Integer]
+    (implicit ts: QuantSearch[Qs#tail,Q,I#succ,R]): QuantSearch[Qs,Q,I,R] = null
 }
 
 package object scunits extends LowPriorityImplicits {
@@ -14,14 +17,14 @@ package object scunits extends LowPriorityImplicits {
   def converter[F <: Quantities, T <: Quantities, Is <: IList](f: F, t: T)
     (implicit c: IndicesConverter[F#quants,T#quants,Is]) =
       new IndicesConverter[F#quants,T#quants,Is] with CachedConverter
+  
+  implicit def quantFound[Qs <: QNelOf[Q], Q <: BaseQuantity, I <: Integer]:
+    QuantSearch[Qs,Q,I,Found[I]] = null
+  implicit def quantNotfound[Q <: BaseQuantity, I <: Integer]:
+    QuantSearch[QNil,Q,I,NotFound] = null
 
-  implicit def quantSearch[Qs <: QNel, Q <: BaseQuantity, I <: Integer](implicit i: QuantSearch[Qs#tail,Q,I]):
-    QuantSearch[Qs,Q,I#isNeg#branch[Integer,I,I#succ]] = null
-  implicit def quantFound[Qs <: QNelOf[Q], Q <: BaseQuantity]: QuantSearch[Qs,Q,_0] = null
-  // implicit def quantNotfound[Q <: BaseQuantity]: QuantNotFound[QNil,Q] = null
-
-  implicit def indexConverterBuild[F <: QNel, T <: QList, I <: Integer, Is <: IList]
-    (implicit i: QuantSearch[T,F#head,I], c: IndicesConverter[F#tail,T,Is]): IndicesConverter[F,T,I -: Is] = null
+  implicit def indexConverterBuild[F <: QNel, T <: QList, R <: SearchResult, Is <: IList]
+    (implicit i: QuantSearch[T,F#head,_0,R], c: IndicesConverter[F#tail,T,Is]): IndicesConverter[F,T,R#at -: Is] = null
 
   implicit def indexConverterBuilt[T <: QList]: IndicesConverter[QNil,T,INil] = null
 

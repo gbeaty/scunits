@@ -1,14 +1,12 @@
-package racewatcher
+package scunits
 
 import sbt._
 import Keys._
 
-object Ddaq extends Build {
+object Scunits extends Build {
 
   val appVersion = "0.0.1-SNAPSHOT"
   val scala = "2.11.2"
-
-  scalacOptions ++= Seq("-feature","-explaintypes")
 
   val testDeps = Seq(
     "org.specs2" %% "specs2" % "2.4" % "test"
@@ -41,6 +39,7 @@ object Ddaq extends Build {
   )
   val test = project("test").dependsOn(core).settings(
     libraryDependencies ++= testDeps
+    //,scalacOptions ++= Seq("-Xlog-implicits")
   )
 
   override def rootProject = Some(core)

@@ -4,34 +4,39 @@ import scunits._
 import TestTypes._
 
 object SearchTests {
-  def has[Qs <: Quantities, Q <: BaseQuantity, I <: Integer](in: Qs, find: Q)(implicit i: QuantSearch[Qs#quants,Q,I]) = i
+  def s[Qs <: Quantities, Q <: BaseQuantity, R <: SearchResult](qs: Qs, bq: Q)
+    (implicit res: QuantSearch[Qs#quants,Q,_0,R]) = res
 
-  // val n = has(QNil,A)
-  // implicitly[n.at =:= n1]
+  // Not founds:
+  val nA = s(QNil,A)
+  implicitly[nA.res =:= NotFound]
+  val anB = s(Aq,B)
+  implicitly[anB.res =:= NotFound]
+  val abcnD = s(ABCq,D)
+  implicitly[abcnD.res =:= NotFound]
 
-  val a = has(ABCDq,A)
-  implicitly[a.at =:= _0]
-
-  val b = has(ABCDq,B)
-  implicitly[b.at =:= p1]
-
-  val c = has(ABCDq,C)
-  implicitly[c.at =:= p2]
-
-  val d = has(ABCDq,D)
-  implicitly[d.at =:= p3]
+  val abcFA = s(ABCq,A)
+  implicitly[abcFA.res =:= Found[_0]]
+  val abcFC = s(ABCq,C)
+  implicitly[abcFC.res =:= Found[p2]]
 }
 
 object ConverterTests {
   object TestConverters {
+    // Full:
     implicit val aToAb = converter(Aq,ABq)
     implicit val bToAb = converter(Bq,ABq)
     implicit val bToAbc = converter(Bq,ABCq)
     implicit val cToAbc = converter(Cq,ABCq)
     implicit val bcToAbcd = converter(BCq,ABCDq)
+
+    // Partial:
+    implicit val abToA = converter(ABq,Aq)
+    implicit val abToBc = converter(ABq,BCq)
   }
   import TestConverters._
 
+  // Full tests:
   implicitly[aToAb.indices =:= (_0 -: INil)]
   implicitly[aToAb.apply[Aq.Dimless] =:= ABq.Dimless]
 
@@ -46,28 +51,10 @@ object ConverterTests {
   Measure[aToAb.apply[Aq.A]](1.0) === abOne
   aToAb(aOne) === abOne
   bcToAbcd(bcOne) === Measure[ABCDq.B#mult[ABCDq.C]](1.0)
-}
 
-object DimOfTests {
-  val aDim = ABCDq.dimOf(A)
-  implicitly[aDim.dims =:= (ABCDn ^ (p1 *: ENil))]
-
-  val bDim = ABCDq.dimOf(B)
-  implicitly[bDim.dims =:= (ABCDn ^ (_0 *: p1 *: ENil))]
-
-  val cDim = ABCDq.dimOf(C)
-  implicitly[cDim.dims =:= (ABCDn ^ (_0 *: _0 *: p1 *: ENil))]
-}
-
-object MeasureConverterTests {
-  // implicit val aToAbcd = converter(Aq,ABCDq)
-  // implicit val abToAbcd = converter(ABq,ABCDq)
-  // implicit val abcToAbcd = converter(ABCq,ABCDq)
-  // implicit val abdToAbcd = converter(ABDq,ABCDq)
-  // implicit val bToAbcd = converter(Bq,ABCDq)
-  // implicit val cToAbcd = converter(Cq,ABCDq)
-  implicit val bcToAbcd = converter(BCq,ABCDq)
-  // implicit val cdToAbcd = converter(CDq,ABCDq)
+  // Partial tests:
+  implicitly[abToA.indices =:= (_0 -: n1 -: INil)]
+  implicitly[abToBc.indices =:= (n1 -: _0 -: INil)]
 
   // Add/subtract:
   (Measure[ABCDq.B](1.0) + Measure[ABCDq.B](1.0)): Measure[ABCDq.B]
@@ -89,6 +76,15 @@ object MeasureConverterTests {
 
   // (Measure[ABCDq.B](1.0) * Measure[BCq.C](1.0)): Measure[ABCDq.B#mult[ABCDq.C]]
   // (Measure[BCq.C](1.0) * Measure[ABCDq.B](1.0)): Measure[ABCDq.B#mult[ABCDq.C]]
+}
 
-  // ConverterFromTo[::[A.type,::[B.type,::[C.type,::[D.type,QNil]]]],BCq.C#quants] with CachedConverter
+object DimOfTests {
+  val aDim = ABCDq.dimOf(A)
+  implicitly[aDim.dims =:= (ABCDn ^ (p1 *: ENil))]
+
+  val bDim = ABCDq.dimOf(B)
+  implicitly[bDim.dims =:= (ABCDn ^ (_0 *: p1 *: ENil))]
+
+  val cDim = ABCDq.dimOf(C)
+  implicitly[cDim.dims =:= (ABCDn ^ (_0 *: _0 *: p1 *: ENil))]
 }
