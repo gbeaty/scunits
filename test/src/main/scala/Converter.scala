@@ -4,7 +4,10 @@ import scunits._
 import TestTypes._
 
 object SearchTests {
-  def has[Qs <: Quantities, Q <: BaseQuantity, I <: Integer](in: Qs, find: Q)(implicit i: QuantFound[Qs#quants,Q,I]) = i
+  def has[Qs <: Quantities, Q <: BaseQuantity, I <: Integer](in: Qs, find: Q)(implicit i: QuantSearch[Qs#quants,Q,I]) = i
+
+  // val n = has(QNil,A)
+  // implicitly[n.at =:= n1]
 
   val a = has(ABCDq,A)
   implicitly[a.at =:= _0]

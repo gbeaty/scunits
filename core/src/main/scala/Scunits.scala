@@ -10,22 +10,22 @@ package object scunits extends LowPriorityImplicits {
 
   implicit def convert[C <: ConverterFrom[D#quants] with CachedConverter, D <: Dims](m: Measure[D])(implicit c: C) =
     Measure[c.apply[D]](m.v)
-
-  @annotation.implicitNotFound(msg = "Cannot generate a Converter of type ${F} -> ${T}. Consider creating one manually.")
+  
   def converter[F <: Quantities, T <: Quantities, Is <: IList](f: F, t: T)
     (implicit c: IndicesConverter[F#quants,T#quants,Is]) =
       new IndicesConverter[F#quants,T#quants,Is] with CachedConverter
 
-  implicit def quantSearch[Qs <: QNel, Q <: BaseQuantity, I <: Integer](implicit i: QuantFound[Qs#tail,Q,I]) =
-      new QuantFound[Qs,Q,I#succ]
-  implicit def quantFound[Qs <: QNelOfHead[Q], Q <: BaseQuantity] = new QuantFound[Qs,Q,_0]
+  implicit def quantSearch[Qs <: QNel, Q <: BaseQuantity, I <: Integer](implicit i: QuantSearch[Qs#tail,Q,I]):
+    QuantSearch[Qs,Q,I#isNeg#branch[Integer,I,I#succ]] = null
+  implicit def quantFound[Qs <: QNelOf[Q], Q <: BaseQuantity]: QuantSearch[Qs,Q,_0] = null
+  // implicit def quantNotfound[Q <: BaseQuantity]: QuantNotFound[QNil,Q] = null
 
   implicit def indexConverterBuild[F <: QNel, T <: QList, I <: Integer, Is <: IList]
-    (implicit i: QuantFound[T,F#head,I], c: IndicesConverter[F#tail,T,Is]) = new IndicesConverter[F,T,I -: Is]
+    (implicit i: QuantSearch[T,F#head,I], c: IndicesConverter[F#tail,T,Is]): IndicesConverter[F,T,I -: Is] = null
 
-  implicit def indexConverterBuilt[T <: QList] = new IndicesConverter[QNil,T,INil]
+  implicit def indexConverterBuilt[T <: QList]: IndicesConverter[QNil,T,INil] = null
 
-  implicit def dimOfSearch[Qs <: QNel, B <: BaseQuantity, E <: EList](implicit d: DimensionOf[Qs#tail,B,E]) =
-    new DimensionOf[Qs,B,_0 *: E]
-  implicit def dimOfFound[Qs <: QNelOfHead[B], B <: BaseQuantity] = new DimensionOf[Qs,B,p1 *: ENil]
+  implicit def dimOfSearch[Qs <: QNel, B <: BaseQuantity, E <: EList](implicit d: DimensionOf[Qs#tail,B,E]):
+    DimensionOf[Qs,B,_0 *: E] = null
+  implicit def dimOfFound[Qs <: QNelOf[B], B <: BaseQuantity]: DimensionOf[Qs,B,p1 *: ENil] = null
 }

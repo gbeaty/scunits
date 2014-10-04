@@ -14,7 +14,11 @@ trait -:[L <: Integer, R <: IList] extends INel {
   type head = L
   type tail = R
 
-  protected type convertingDims[E <: EList, Res <: EList] = tail#convertingDims[E#tail, Res#set[head,E#head]]  
+  protected type convertingDims[E <: EList, Res <: EList] =
+    tail#convertingDims[
+      E#tail,
+      head#isNeg#branch[EList, Res, Res#set[head,E#head]]
+    ]
 }
 trait INil extends IList {
   protected type convertingDims[E <: EList, Res <: EList] = Res

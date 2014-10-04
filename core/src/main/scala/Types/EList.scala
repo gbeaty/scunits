@@ -32,19 +32,19 @@ trait *:[H <: Integer, T <: EList] extends ENel {
   type This = head *: tail
 
   type neg = head#neg *: tail#neg
-  type setInt[I <: Integer, To <: Integer] = I#isPos#If[EList, head *: tail#set[I#pred,To], (To *: tail)]
+  type setInt[I <: Integer, To <: Integer] = I#isPos#branch[EList, head *: tail#set[I#pred,To], (To *: tail)]
   
   type Op[R <: EList, O[_ <: Integer, _ <: Integer] <: Integer] = R#OpNel[This,O]#truncZeros
   protected type OpNel[L <: ENel, O[_ <: Integer, _ <: Integer] <: Integer] = O[L#head, head] *: L#tail#Op[tail,O]
   protected type OpNil[O[_ <: Integer, _ <: Integer] <: Integer] = O[_0,head] *: tail#OpNil[O]
 
   type isPadding = head#isZero && tail#isPadding
-  type truncZeros = isPadding#If[EList, ENil, head *: tail#truncZeros]
+  type truncZeros = isPadding#branch[EList, ENil, head *: tail#truncZeros]
 }
 trait ENil extends EList {
   type head = _0
   type tail = ENil
-  type setInt[I <: Integer, To <: Integer] = To#isZero#If[EList,ENil,zeros[I,To]]
+  type setInt[I <: Integer, To <: Integer] = To#isZero#branch[EList,ENil,zeros[I,To]]
   type neg = ENil
 
   type Op[R <: EList, O[_ <: Integer, _ <: Integer] <: Integer] = R#OpNil[O]

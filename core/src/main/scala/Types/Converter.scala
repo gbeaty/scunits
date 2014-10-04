@@ -13,6 +13,7 @@ class Converter {
 class ConverterFrom[F <: QList] extends Converter {
   type from = F
 }
+@annotation.implicitNotFound(msg = "Cannot find a Converter of type ${F} -> ${T}.")
 class ConverterFromTo[F <: QList, T <: QList] extends ConverterFrom[F] {
   type to = T
 }
@@ -24,7 +25,7 @@ class IdentityConverter[Qs <: QList] extends ConverterFromTo[Qs,Qs] {
   type exps[FE <: EList] = FE
 }
 
-class QuantFound[Qs <: QList, Q <: BaseQuantity, I <: Integer] {
+class QuantSearch[Qs <: QList, Q <: BaseQuantity, I <: Integer] {
   type at = I
 }
 class DimensionOf[Qs <: QList, B <: BaseQuantity, E <: EList] {

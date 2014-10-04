@@ -11,10 +11,10 @@ trait QNel extends QList {
   type tail <: QList
   type append[R <: QList] = head :: tail#append[R]
 }
-trait QNelOfHead[H <: BaseQuantity] extends QNel {
+trait QNelOf[H <: BaseQuantity] extends QNel {
   type head = H
 }
-trait ::[L <: BaseQuantity,R <: QList] extends QNelOfHead[L] {
+trait ::[L <: BaseQuantity,R <: QList] extends QNelOf[L] {
   type tail = R
 }
 trait QNil extends QList {

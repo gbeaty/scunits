@@ -16,6 +16,10 @@ object TestTypes {
   object Z extends BaseQuantity
   type Z = Z.type
 
+  object QNil extends Quantities {
+    type quants = QNil
+  }
+
   type ABn = A :: B :: QNil
   object ABq extends Quantities {
     type quants = ABn
