@@ -25,19 +25,7 @@ class IdentityConverter[Qs <: QList] extends ConverterFromTo[Qs,Qs] {
   type exps[FE <: EList] = FE
 }
 
-class SearchResult {
-  type at <: Integer
-}
-class Found[I <: Integer] extends SearchResult {
-  type at = I
-}
-class NotFound extends SearchResult {
-  type at = n1
-}
-class QuantSearched[Qs <: QList, Q <: BaseQuantity, I <: Integer] {
-  type res <: SearchResult
-}
-class QuantSearch[Qs <: QList, Q <: BaseQuantity, I <: Integer, R <: SearchResult] extends QuantSearched[Qs,Q,I] {
+class QuantSearch[Qs <: QList, Q <: BaseQuantity, I <: Integer, R <: IntBox] {
   type res = R
 }
 

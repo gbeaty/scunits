@@ -33,4 +33,7 @@ package object types {
   // DimsOps:
   type *[L <: Dims, R <: DimsOf[L#quants]] = L#mult[R]
   type /[L <: Dims, R <: DimsOf[L#quants]] = L#div[R]
+
+  // Indices ops:
+  type -:[L <: Integer, R <: IList] = Full[L] =: R
 }

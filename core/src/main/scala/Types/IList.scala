@@ -7,19 +7,21 @@ trait IList {
   protected type convertingDims[E <: EList, Res <: EList] <: EList
 }
 trait INel extends IList {
-  type head <: Integer
+  type head <: IntBox
   type tail <: IList
 }
-trait -:[L <: Integer, R <: IList] extends INel {
+trait =:[L <: IntBox, R <: IList] extends INel {
   type head = L
   type tail = R
 
   protected type convertingDims[E <: EList, Res <: EList] =
     tail#convertingDims[
       E#tail,
-      head#isNeg#branch[EList, Res, Res#set[head,E#head]]
+      // head#isNeg#branch[EList, Res, Res#set[head,E#head]]
+      head#doOrElse[EList, ({type S[H <: Integer] = Res#set[H,E#head]})#S, Res]
     ]
 }
+
 trait INil extends IList {
   protected type convertingDims[E <: EList, Res <: EList] = Res
 }
