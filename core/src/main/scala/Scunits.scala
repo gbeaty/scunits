@@ -11,11 +11,11 @@ trait LowPriorityImplicits {
 package object scunits extends LowPriorityImplicits {
   implicit def invertMeasure[D <: Dims](m: Measure[D]) = m.inv
 
-  implicit def convert[C <: ConverterFrom[D#quants] with CachedConverter, D <: Dims](m: Measure[D])(implicit c: C) =
-    Measure[c.apply[D]](m.v)
+  implicit def convert[C <: ConverterFrom[D#quants] with CachedConverter, D <: Dims](m: Measure[D])
+    (implicit c: C) = Measure[C#apply[D]](m.v)
 
-  def convertPartial[C <: ConverterFrom[F#quants] with CachedConverter, F <: Dims](m: Measure[F])(implicit c: C) =
-    Measure[c.apply[F]](m.v)
+  /*implicit def convert2[C <: Converter2From[D#quants] with CachedConverter, D <: Dims](m: Measure[D])
+    (implicit c: C, f: IsFull[C#apply[D]]) = Measure[f.contents](m.v)*/
   
   def converter[F <: Quantities, T <: Quantities, Is <: IList](f: F, t: T)
     (implicit c: IndicesConverter[F#quants,T#quants,Is]) =

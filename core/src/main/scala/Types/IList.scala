@@ -3,6 +3,9 @@ package scunits.types
 import scunits._
 
 trait IList {
+  type convertDims2[E <: EList] = convertingDims2[E,ENil]#map[({type t[E <: EList] = E#truncZeros})#t]
+  protected type convertingDims2[E <: EList, Res <: EList] <: Box[EList]
+
   type convertDims[E <: EList] = convertingDims[E,ENil]#truncZeros
   protected type convertingDims[E <: EList, Res <: EList] <: EList
 }

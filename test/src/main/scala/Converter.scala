@@ -61,11 +61,11 @@ object ConverterTests {
   (Measure[ABCDq.B](1.0) + Measure[ABCDq.B](1.0)): Measure[ABCDq.B]
   (Measure[ABCDq.B](1.0) - Measure[ABCDq.B](1.0)): Measure[ABCDq.B]
 
-  (Measure[ABCDq.B](1.0) + Measure[BCq.B](1.0)): Measure[ABCDq.B]
-  (Measure[BCq.B](1.0) + Measure[ABCDq.B](1.0)): Measure[ABCDq.B]
+  (Measure[ABCDq.B](1.0) + bcToAbcd(Measure[BCq.B](1.0))): Measure[ABCDq.B]
+  (bcToAbcd(Measure[BCq.B](1.0)) + Measure[ABCDq.B](1.0)): Measure[ABCDq.B]
 
-  (Measure[ABCDq.B](1.0) - Measure[BCq.B](1.0)): Measure[ABCDq.B]
-  (Measure[BCq.B](1.0) - Measure[ABCDq.B](1.0)): Measure[ABCDq.B]
+  (Measure[ABCDq.B](1.0) - bcToAbcd(Measure[BCq.B](1.0))): Measure[ABCDq.B]
+  (bcToAbcd(Measure[BCq.B](1.0)) - Measure[ABCDq.B](1.0)): Measure[ABCDq.B]
 
   // Should not compile:
   // (Measure[ABCDq.B](1.0) + Measure[ABCDq.C](1.0))

@@ -25,6 +25,26 @@ class IdentityConverter[Qs <: QList] extends ConverterFromTo[Qs,Qs] {
   type exps[FE <: EList] = FE
 }
 
+class Converter2 {
+  type from <: QList
+  type to <: QList  
+
+  type exps[FE <: EList] <: EBox.box
+  protected type toDims[es <: EList] = to ^ es
+  type apply[D <: Dims] = exps[D#exps]#mapTo[Dims, toDims]
+}
+class Converter2From[F <: QList] extends Converter2 {
+  type from = F
+}
+@annotation.implicitNotFound(msg = "Cannot find a Converter2 of type ${F} -> ${T}.")
+class Converter2FromTo[F <: QList, T <: QList] extends Converter2From[F] {
+  type to = T
+}
+class IndicesConverter2[F <: QList, T <: QList, I <: IList] extends Converter2FromTo[F,T] {
+  type indices = I
+  type exps[FE <: EList] = indices#convertDims2[FE]
+}
+
 class QuantSearch[Qs <: QList, Q <: BaseQuantity, I <: Integer, R <: Box[Integer]] {
   type res = R
 }
