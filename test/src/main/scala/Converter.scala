@@ -4,21 +4,21 @@ import scunits._
 import TestTypes._
 
 object SearchTests {
-  def s[Qs <: Quantities, Q <: BaseQuantity, R <: IntBox](qs: Qs, bq: Q)
+  def s[Qs <: Quantities, Q <: BaseQuantity, R <: Box[Integer]](qs: Qs, bq: Q)
     (implicit res: QuantSearch[Qs#quants,Q,_0,R]) = res
 
   // Not founds:
   val nA = s(QNil,A)
-  implicitly[nA.res =:= Empty]
+  implicitly[nA.res =:= IntBox.empty]
   val anB = s(Aq,B)
-  implicitly[anB.res =:= Empty]
+  implicitly[anB.res =:= IntBox.empty]
   val abcnD = s(ABCq,D)
-  implicitly[abcnD.res =:= Empty]
+  implicitly[abcnD.res =:= IntBox.empty]
 
   val abcFA = s(ABCq,A)
-  implicitly[abcFA.res =:= Full[_0]]
+  implicitly[abcFA.res =:= IntBox.full[_0]]
   val abcFC = s(ABCq,C)
-  implicitly[abcFC.res =:= Full[p2]]
+  implicitly[abcFC.res =:= IntBox.full[p2]]
 }
 
 object ConverterTests {
@@ -37,7 +37,7 @@ object ConverterTests {
   import TestConverters._
 
   // Full tests:
-  implicitly[=:[Full[_0],INil] =:= -:[_0,INil]]
+  implicitly[=:[IntBox.full[_0],INil] =:= -:[_0,INil]]
   implicitly[aToAb.indices =:= (_0 -: INil)]
   implicitly[aToAb.apply[Aq.Dimless] =:= ABq.Dimless]
 
@@ -54,8 +54,8 @@ object ConverterTests {
   bcToAbcd(bcOne) === Measure[ABCDq.B#mult[ABCDq.C]](1.0)
 
   // Partial tests:
-  implicitly[abToA.indices =:= (Full[_0] =: Empty =: INil)]
-  implicitly[abToBc.indices =:= (Empty =: Full[_0] =: INil)]
+  implicitly[abToA.indices =:= (_0 -: IntBox.empty =: INil)]
+  implicitly[abToBc.indices =:= (IntBox.empty =: _0 -: INil)]
 
   // Add/subtract:
   (Measure[ABCDq.B](1.0) + Measure[ABCDq.B](1.0)): Measure[ABCDq.B]

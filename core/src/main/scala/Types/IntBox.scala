@@ -1,14 +1,16 @@
 package scunits.types
 
-trait IntBox {
-  type doOrElse[B, F[_ <: Integer] <: B, E <: B] <: B
-  type getOrElse[E <: Integer] <: Integer
+trait Box[A] {
+  type getOrElse[B, F[DA <: A] <: B, E <: B] <: B
+  type full[C <: A] = Full[A,C]
+  type empty = Empty[A]
+  type self = Box[A]
 }
-trait Full[C <: Integer] extends IntBox {
-  type doOrElse[B, F[_ <: Integer] <: B, E <: B] = F[C]
-  type getOrElse[E <: Integer] = C
+trait Full[A,C <: A] extends Box[A] {
+  type getOrElse[B, F[DA <: A] <: B, E <: B] = F[C]
 }
-trait Empty extends IntBox {
-  type doOrElse[B, F[_ <: Integer] <: B, E <: B] = E
-  type getOrElse[E <: Integer] = E
+trait Empty[A] extends Box[A] {
+  type getOrElse[B, F[DA <: A] <: B, E <: B] = E
 }
+
+object IntBox extends Box[Integer]

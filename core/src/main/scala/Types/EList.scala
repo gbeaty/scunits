@@ -6,6 +6,7 @@ trait EList {
 
   type head <: Integer
   type tail <: EList
+  type empty <: Bool
 
   protected type prependZero[To <: EList] = _0 *: To
   type zeros[I <: Integer, T <: Integer] = I#loop[EList,prependZero,T *: ENil]
@@ -29,6 +30,7 @@ trait ENel extends EList {
 trait *:[H <: Integer, T <: EList] extends ENel {
   type head = H
   type tail = T
+  type empty = False
   type This = head *: tail
 
   type neg = head#neg *: tail#neg
@@ -44,6 +46,7 @@ trait *:[H <: Integer, T <: EList] extends ENel {
 trait ENil extends EList {
   type head = _0
   type tail = ENil
+  type empty = True
   type setInt[I <: Integer, To <: Integer] = To#isZero#branch[EList,ENil,zeros[I,To]]
   type neg = ENil
 
@@ -54,3 +57,4 @@ trait ENil extends EList {
   type isPadding = True
   type truncZeros = ENil
 }
+trait EUndefined extends EList

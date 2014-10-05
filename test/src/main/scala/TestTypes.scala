@@ -3,6 +3,9 @@ package scunits.types
 import scunits._
 
 object TestTypes {
+  // Indices ops:
+  type -:[L <: Integer, R <: IList] = IntBox.full[L] =: R
+  
   object A extends BaseQuantity
   type A = A.type
   object B extends BaseQuantity

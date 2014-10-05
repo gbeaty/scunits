@@ -25,7 +25,7 @@ class IdentityConverter[Qs <: QList] extends ConverterFromTo[Qs,Qs] {
   type exps[FE <: EList] = FE
 }
 
-class QuantSearch[Qs <: QList, Q <: BaseQuantity, I <: Integer, R <: IntBox] {
+class QuantSearch[Qs <: QList, Q <: BaseQuantity, I <: Integer, R <: Box[Integer]] {
   type res = R
 }
 
@@ -40,8 +40,13 @@ trait CachedConverter
 AB
  BC
 
-AB => BC = - 0
-BC => AB = 1 -
+AB => BC = -0
+BC => AB = 1-
+
+AB00 => BC00
+AB01 => BC10
+AB10 => -
+AB11 => -
 
 BC[1,0] = AB[0,1]
 
