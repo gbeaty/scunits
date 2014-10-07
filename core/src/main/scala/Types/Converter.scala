@@ -31,7 +31,7 @@ class Converter2 {
 
   type exps[FE <: EList] <: EBox.box
   protected type toDims[es <: EList] = to ^ es
-  type apply[D <: Dims] = exps[D#exps]#mapTo[Dims, toDims]
+  type apply[D <: DimsOf[from]] = exps[D#exps]#mapTo[Dims, toDims]
 }
 class Converter2From[F <: QList] extends Converter2 {
   type from = F
@@ -42,16 +42,14 @@ class Converter2FromTo[F <: QList, T <: QList] extends Converter2From[F] {
 }
 class IndicesConverter2[F <: QList, T <: QList, I <: IList] extends Converter2FromTo[F,T] {
   type indices = I
-  type exps[FE <: EList] = indices#convertDims2[FE]
+  type exps[FE <: EList] = indices#apply[FE]
+}
+class IdentityConverter2[Qs <: QList] extends Converter2FromTo[Qs,Qs] {
+  type exps[FE <: EList] = Full[EList, FE]
 }
 
 class QuantSearch[Qs <: QList, Q <: BaseQuantity, I <: Integer, R <: Box[Integer]] {
   type res = R
-}
-
-class DimensionOf[Qs <: QList, B <: BaseQuantity, E <: EList] {
-  type exps = E
-  type dims = Qs ^ E
 }
 
 trait CachedConverter

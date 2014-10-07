@@ -118,4 +118,5 @@ object TestTypes {
   type Rev4 = p3 -: p2 -: p1 -: _0 -: INil
   type Rev2 = p1 -: _0 -: INil
   type Skip1 = p1 -: INil
+  type c23To01 = Empty[Integer] =: Empty[Integer] =: Full[Integer, _0] =: Full[Integer, p1] =: INil
 }

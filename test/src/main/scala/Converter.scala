@@ -31,8 +31,8 @@ object ConverterTests {
     implicit val bcToAbcd = converter(BCq,ABCDq)
 
     // Partial:
-    implicit val abToA = converter(ABq,Aq)
-    implicit val abToBc = converter(ABq,BCq)
+    implicit val abToA = converter2(ABq,Aq)
+    implicit val abToBc = converter2(ABq,BCq)
   }
   import TestConverters._
 
@@ -57,6 +57,9 @@ object ConverterTests {
   implicitly[abToA.indices =:= (_0 -: IntBox.empty =: INil)]
   implicitly[abToBc.indices =:= (IntBox.empty =: _0 -: INil)]
 
+  implicitly[abToA.apply[ABq.B] =:= Empty[Dims]]
+  implicitly[abToA.apply[ABq.A] =:= Full[Dims, An ^ (p1 *: ENil)]]
+
   // Add/subtract:
   (Measure[ABCDq.B](1.0) + Measure[ABCDq.B](1.0)): Measure[ABCDq.B]
   (Measure[ABCDq.B](1.0) - Measure[ABCDq.B](1.0)): Measure[ABCDq.B]
@@ -77,15 +80,4 @@ object ConverterTests {
 
   // (Measure[ABCDq.B](1.0) * Measure[BCq.C](1.0)): Measure[ABCDq.B#mult[ABCDq.C]]
   // (Measure[BCq.C](1.0) * Measure[ABCDq.B](1.0)): Measure[ABCDq.B#mult[ABCDq.C]]
-}
-
-object DimOfTests {
-  val aDim = ABCDq.dimOf(A)
-  implicitly[aDim.dims =:= (ABCDn ^ (p1 *: ENil))]
-
-  val bDim = ABCDq.dimOf(B)
-  implicitly[bDim.dims =:= (ABCDn ^ (_0 *: p1 *: ENil))]
-
-  val cDim = ABCDq.dimOf(C)
-  implicitly[cDim.dims =:= (ABCDn ^ (_0 *: _0 *: p1 *: ENil))]
 }

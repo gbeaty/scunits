@@ -21,8 +21,6 @@ trait Quantities {
   type dimOf[I <: NonNegInt]  = dimsOf[ENil#set[I,p1]]
   type Dimless                = dimsOf[ENil]
 
-  def dimOf[B <: BaseQuantity,E <: EList](b: B)(implicit d: DimensionOf[quants,B,E]) = d
-
   val coef = UnitM[Dimless](mult = 1.0)
   implicit def toCoef(v: Double) = Measure[Dimless](v)
 }
