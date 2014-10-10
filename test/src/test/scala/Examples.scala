@@ -11,8 +11,8 @@ class BasicExamples extends Specification {
 
   "Measures" should {
     "Work" in {
-      // All measures are case value classes, and are stored as SI units,
-      // so comparisons between measures produce expected results.
+      // All measurements (Measures) are case value classes, and are stored internally in SI units,
+      // so comparisons between Measures produce expected results.
       // Measure is the value class which contains the underlying value (Measure.v).
       // Volume is the dimension, which is represented by the Dims type.
       val gal: Measure[Volume] = gallon(1.0)
@@ -31,7 +31,7 @@ class BasicExamples extends Specification {
       // This value represents the Measure in its SI unit, e.g. one gallon is so many cubic metres:
       gal.v ==== 0.003785411784
 
-      // Naturally if we do Measure[A] / Measure[A] we get a dimensionless (DNil) result:
+      // Naturally if we do Measure[A] / Measure[A] we get a dimensionless (dimless) result:
       val dimless: Measure[Dimless] = gal / oneLitre
 
       // Type-level Dims composition is easy:
@@ -48,7 +48,7 @@ class BasicExamples extends Specification {
       // Automagically recognize and convert inverse units:
       val massPerVolumeOfWater = pound(8.33) / gallon(1.0)
       val volumePerMassOfWater = gallon(1.0) / pound(8.33)
-      massPerVolumeOfWater   ==== volumePerMassOfWater
+      massPerVolumeOfWater ==== volumePerMassOfWater
       // Their values will be different because Frequency is dimensionally different from Time:
       massPerVolumeOfWater.v !=== volumePerMassOfWater.v
     }
@@ -91,7 +91,7 @@ class BasicExamples extends Specification {
 
       // But distance traveled per fuel used is a poor way to represent gas milage. Fuel used per distance is better.
       // Invert a UnitM with .inv:
-      val gpm: UnitM[Volume#div[Length]] = mpg.inv
+      val gpm = mpg.inv
       mpg(20.0) ==== gpm(1.0 / 20.0)
     }
   }
@@ -102,15 +102,12 @@ class BasicExamples extends Specification {
       // These are lists of base quantities and a list of their exponents.
       // They exist only at the type-level, and have no run-time representation.
       def sq[D <: Dims](in: Measure[D]) = in * in
+      sq(metre(1)) === squareMetre(1)
 
-      // So this will compile:
-      // ...but this won't:
-      // sq(coef(2.0)) ==== coef(4.0)
+      // Dimless represents a dimensionless quantity, created by the UnitM coef:
+      val dimless: Measure[Dimless] = coef(5)
 
-      // ...or Dimless, which represents dimensionless quantities:
-      val dnil: Measure[Dimless] = 5.0
-
-      // Use #Neg to find the reciprocal of a Dims:
+      // Use #neg to find the reciprocal of a Dims:
       val hz: Measure[Time#neg] = hertz(5.0)
 
       // Dims compose as you might expect:
@@ -180,7 +177,6 @@ class QuantitiesExamples extends Specification {
       AppleOrangePear.apple(1) ==== AppleOrange.apple(1)
       AppleOrangePear.orange(1) ==== AppleOrange.orange(1)
 
-      // Compilation error when trying to create fromPears from within a test, for some reason?
       // We can convert AppleOrangePears to AppleOranges, so long as the pear dimension has an exponent of zero:
       implicit val fromPears = converter(AppleOrangePear, AppleOrange)
       AppleOrange.apple(1) ==== AppleOrangePear.apple(1)
@@ -201,8 +197,8 @@ class QuantitiesExamples extends Specification {
       cancelNumerator[Length,Time](metre(60.0), metrePerSecond(60.0)) ==== second(1.0)
 
       // A / A = a dimensionless quantity
-      def cancelSelf[A <: Dims](a: Measure[A]): Measure[DNil] = a / a
-      cancelSelf[Length](metre(1.0)) ==== Measure[DNil](1.0)
+      def cancelSelf[A <: Dims](a: Measure[A]): Measure[dimless] = a / a
+      cancelSelf[Length](metre(1.0)) ==== Measure[dimless](1.0)
 
       // More complex algebra does not work, yet:
       // def abOverAc[A <: Dims, B <: Dims, C <: Dims](l: Measure[A#Mult[B]], r: Measure[A#Mult[C]]): Measure[B#Div[A]] = l / r
