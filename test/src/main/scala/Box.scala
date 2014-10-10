@@ -8,9 +8,8 @@ object BoxTests {
   type boxSucc[I <: Integer] = Full[Integer, I#succ]
 
   // constructors:
-  implicitly[IntBox.box =:= Box[Integer]]
-  implicitly[IntBox.full[p2] =:= b2]
-  implicitly[IntBox.empty =:= empty]
+  implicitly[Full[Integer,p2] =:= b2]
+  implicitly[Empty[Integer] =:= empty]
 
   // self:
   implicitly[empty#self =:= empty]

@@ -4,7 +4,7 @@ import scunits._
 
 object TestTypes {
   // Indices ops:
-  type -:[L <: Integer, R <: IList] = IntBox.full[L] =: R
+  type -:[L <: Integer, R <: IList] = Full[Integer,L] =: R
   
   object A extends BaseQuantity
   type A = A.type

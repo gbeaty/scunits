@@ -23,7 +23,8 @@ trait =:[L <: Box[Integer], R <: IList] extends INel {
     type apply = E#head#isZero#branch[
       Box[EList],
       recurse[Res], // E#head == _0, do nothing.
-      head#mapTo[EList, set]#flatMap[recurse]] // E#head != _0, convert if possible, abort if not.
+      head#mapTo[EList, set]#flatMap[recurse] // E#head != _0, convert if possible, abort if not.
+    ]
   })#apply
 
   protected type convertingDims[E <: EList, Res <: EList] =

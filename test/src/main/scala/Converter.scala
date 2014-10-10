@@ -9,16 +9,16 @@ object SearchTests {
 
   // Not founds:
   val nA = s(QNil,A)
-  implicitly[nA.res =:= IntBox.empty]
+  implicitly[nA.res =:= Empty[Integer]]
   val anB = s(Aq,B)
-  implicitly[anB.res =:= IntBox.empty]
+  implicitly[anB.res =:= Empty[Integer]]
   val abcnD = s(ABCq,D)
-  implicitly[abcnD.res =:= IntBox.empty]
+  implicitly[abcnD.res =:= Empty[Integer]]
 
   val abcFA = s(ABCq,A)
-  implicitly[abcFA.res =:= IntBox.full[_0]]
+  implicitly[abcFA.res =:= Full[Integer,_0]]
   val abcFC = s(ABCq,C)
-  implicitly[abcFC.res =:= IntBox.full[p2]]
+  implicitly[abcFC.res =:= Full[Integer,p2]]
 }
 
 object ConverterTests {
@@ -31,53 +31,26 @@ object ConverterTests {
     implicit val bcToAbcd = converter(BCq,ABCDq)
 
     // Partial:
-    implicit val abToA = converter2(ABq,Aq)
-    implicit val abToBc = converter2(ABq,BCq)
+    implicit val abToA = converter(ABq,Aq)
+    implicit val abToBc = converter(ABq,BCq)
   }
   import TestConverters._
 
   // Full tests:
-  implicitly[=:[IntBox.full[_0],INil] =:= -:[_0,INil]]
-  implicitly[aToAb.indices =:= (_0 -: INil)]
-  implicitly[aToAb.apply[Aq.Dimless] =:= ABq.Dimless]
-
-  implicitly[bToAb.indices =:= (p1 -: INil)]
-  implicitly[bToAb.apply[Bq.Dimless] =:= ABq.Dimless]
-  implicitly[bToAb.apply[Bq.B] =:= ABq.B]
-
-  val aOne = Measure[Aq.A](1.0)
-  val abOne = Measure[ABq.A](1.0)
-  val bcOne = Measure[BCq.B#mult[BCq.C]](1.0)
-
-  Measure[aToAb.apply[Aq.A]](1.0) === abOne
-  aToAb(aOne) === abOne
-  bcToAbcd(bcOne) === Measure[ABCDq.B#mult[ABCDq.C]](1.0)
+  aToAb(Measure[Aq.A](1)): Measure[ABq.A]
+  bcToAbcd(Measure[BCq.B#mult[BCq.C]](1)): Measure[ABCDq.B#mult[ABCDq.C]]
 
   // Partial tests:
-  implicitly[abToA.indices =:= (_0 -: IntBox.empty =: INil)]
-  implicitly[abToBc.indices =:= (IntBox.empty =: _0 -: INil)]
+  implicitly[abToA.indices =:= (_0 -: Empty[Integer] =: INil)]
+  implicitly[abToBc.indices =:= (Empty[Integer] =: _0 -: INil)]
 
-  implicitly[abToA.apply[ABq.B] =:= Empty[Dims]]
-  implicitly[abToA.apply[ABq.A] =:= Full[Dims, An ^ (p1 *: ENil)]]
+  implicitly[abToA.exps[ABq.B#exps] =:= Empty[EList]]
+  implicitly[abToA.exps[ABq.A#exps] =:= Full[EList, p1 *: ENil]]
 
-  // Add/subtract:
-  (Measure[ABCDq.B](1.0) + Measure[ABCDq.B](1.0)): Measure[ABCDq.B]
-  (Measure[ABCDq.B](1.0) - Measure[ABCDq.B](1.0)): Measure[ABCDq.B]
+  abToA(Measure[ABq.A](1)): Measure[Aq.A]
+  abToBc(Measure[ABq.B](1)): Measure[BCq.B]
 
-  (Measure[ABCDq.B](1.0) + bcToAbcd(Measure[BCq.B](1.0))): Measure[ABCDq.B]
-  (bcToAbcd(Measure[BCq.B](1.0)) + Measure[ABCDq.B](1.0)): Measure[ABCDq.B]
-
-  (Measure[ABCDq.B](1.0) - bcToAbcd(Measure[BCq.B](1.0))): Measure[ABCDq.B]
-  (bcToAbcd(Measure[BCq.B](1.0)) - Measure[ABCDq.B](1.0)): Measure[ABCDq.B]
-
-  // Should not compile:
-  // (Measure[ABCDq.B](1.0) + Measure[ABCDq.C](1.0))
-  // (Measure[ABCDq.B](1.0) - Measure[ABCDq.C](1.0))
-  // (Measure[BCq.B](1.0) + Measure[ABCDq.C](1.0))
-  // (Measure[BCq.B](1.0) - Measure[ABCDq.C](1.0))
-
-  // Mult/div:
-
-  // (Measure[ABCDq.B](1.0) * Measure[BCq.C](1.0)): Measure[ABCDq.B#mult[ABCDq.C]]
-  // (Measure[BCq.C](1.0) * Measure[ABCDq.B](1.0)): Measure[ABCDq.B#mult[ABCDq.C]]
+  // Implicit tests:
+  (Measure[ABCDq.B](1.0) + Measure[BCq.B](1.0)): Measure[ABCDq.B]
+  (Measure[ABCDq.C](1.0) + Measure[BCq.C](1.0)): Measure[ABCDq.C]
 }

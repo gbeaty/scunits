@@ -4,7 +4,7 @@ import scunits.types._
 
 case class Measure[D <: Dims](v: Double) extends AnyVal with Ordered[Measure[D]] {
   type dims = D
-  type Conv[RD <: Dims] = ConverterFromTo[D#quants,RD#quants] with CachedConverter
+  // type Conv[RD <: Dims] = ConverterFromTo[D#quants,RD#quants] with CachedConverter
 
   def +(m: Measure[D]) = Measure[D](v + m.v)  
   def -(m: Measure[D]) = Measure[D](v - m.v)

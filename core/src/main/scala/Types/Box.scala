@@ -28,10 +28,20 @@ trait Empty[A] extends Box[A] {
   type isFull = False
 }
 
-trait IsFull[B <: Box[Dims]] {
-  type contents <: Dims
+class Bounded[A] {
+  class i[C <: A] {
+    type apply = C
+  }
 }
+class Bounded2[A] {
+  type apply[C <: A] = C
+}
+object Bounded {
+  type B1 = Bounded[Any]#i[String]#apply
+  implicitly[B1 =:= String]
 
-object IntBox extends Box[Integer]
-object EBox extends Box[EList]
-object DBox extends Box[Dims]
+  val b2 = new Bounded2[Integer]
+
+  // type B2 = Bounded2[Integer]#apply[_0]
+  type B2 = b2.apply[_0]
+}
