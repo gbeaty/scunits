@@ -13,7 +13,7 @@ object AmountOfSubstance extends BaseQuantity
 object Current extends BaseQuantity
 object Intensity extends BaseQuantity
 
-trait Quantities {
+class Quantities {
   type quants <: QList
 
   type Dims                   = types.DimsOf[quants]

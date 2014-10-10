@@ -177,8 +177,14 @@ class QuantitiesExamples extends Specification {
   "Apples, Oranges and Pears" should {
     "Be convertable" in {
       // Converted using the toPears implicit converter:
-      // AppleOrangePear.apple(1) ==== AppleOrange.apple(1)
-      true
+      AppleOrangePear.apple(1) ==== AppleOrange.apple(1)
+      AppleOrangePear.orange(1) ==== AppleOrange.orange(1)
+
+      // Compilation error when trying to create fromPears from within a test, for some reason?
+      // We can convert AppleOrangePears to AppleOranges, so long as the pear dimension has an exponent of zero:
+      implicit val fromPears = converter(AppleOrangePear, AppleOrange)
+      AppleOrange.apple(1) ==== AppleOrangePear.apple(1)
+      AppleOrange.orange(1) ==== AppleOrangePear.orange(1)
     }
   }
 
