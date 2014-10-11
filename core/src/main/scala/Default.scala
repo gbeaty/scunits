@@ -3,7 +3,7 @@ package scunits
 import scunits.types._
 
 trait DefaultQuantities extends Quantities {
-  trait Quants extends
+  trait quants extends
     (Time.type :: Info.type :: Length.type :: Mass.type :: Temperature.type ::
     Current.type :: Intensity.type :: AmountOfSubstance.type :: QNil)  
   

@@ -165,10 +165,12 @@ class QuantitiesExamples extends Specification {
 
     val pear = UnitM[Pear]("pear","p",1)
   }
-
-  // Converting between different Quantities requires a Converter.
-  // These must be cached as vals because the creation of a converter is costly but rarely needed.
-  // Scunits preserves its primitive-like performance with cached converters.
+  /*
+    Converting between Measures of different Quantities requires a Converter. These must be cached as
+    vals because the creation of a converter is costly but rarely needed. Scunits preserves its
+    primitive-like performance with cached converters. They are generally only used when working with
+    Measures from other libraries.
+  */
   implicit val toPears = converter(AppleOrange, AppleOrangePear)
 
   "Apples, Oranges and Pears" should {
@@ -185,7 +187,7 @@ class QuantitiesExamples extends Specification {
   }
 
   /*"Algebra" should {
-    "Work on abstract Measures" in {      
+    "Work on abstract Measures" in {
       // Even when dealing with abstract Dims, some elementary algebra is possible. e.g.:
 
       // Implicitly convert Measure[A] * Measure[B / A] to Measure[B]
