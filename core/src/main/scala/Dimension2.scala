@@ -36,8 +36,8 @@ object Test2 {
       type div = bugDiv[L,R]
     }
 
-    type dimless = DimsConst[this.type, dimlessQuant]    
-    type dimOf[I <: NonNegInt] = DimsConst[this.type, quantOf[I]]    
+    type dimless = DimsConst[self, self#dimlessQuant]    
+    type dimOf[I <: NonNegInt] = DimsConst[self, self#quantOf[I]]    
   }
   trait MNel extends MList {
     type head <: Multer
@@ -75,28 +75,33 @@ object Test2 {
     type multers <: MList
     type quant <: multers#quant
 
+    class op[R <: DimsOf[multers]] {
+      type mult = DimsConst[multers, multers#op[quant,R#quant]#mult]
+      type div = DimsConst[multers, multers#op[quant,R#quant]#div]
+    }
+
     type mult[R <: DimsOf[multers]] = DimsConst[multers, multers#op[quant,R#quant]#mult]
     type div[R <: DimsOf[multers]] = DimsConst[multers, multers#op[quant,R#quant]#div]
   }
   trait DimsOf[M <: MList] extends Dims {
     type multers = M
   }
-  trait DimsConst[M <: MList, Q <: Quant/*M#quant*/] extends DimsOf[M] {
-    // type quant = Q
+  trait DimsConst[M <: MList, Q <: M#quant] extends DimsOf[M] {
+    type quant = Q
   }
 
-  object BaseQuantities {
+  object BQs {
     trait Length extends Quant { type length <: Integer }
     trait Time extends Quant { type time <: Integer }
   }
-  trait LengthMulter extends MulterOf[BaseQuantities.Length] {
-    type set[L <: Quant, To <: Integer] = L with BaseQuantities.Length { type length = To }
-    type get[L <: BaseQuantities.Length] = L#length
+  trait LengthMulter extends MulterOf[BQs.Length] {
+    type set[L <: Quant, To <: Integer] = L with BQs.Length { type length = To }
+    type get[L <: BQs.Length] = L#length
   }
 
-  trait TimeMulter extends MulterOf[BaseQuantities.Time] {
-    type set[L <: Quant, To <: Integer] = L with BaseQuantities.Time { type time = To }
-    type get[L <: BaseQuantities.Time] = L#time
+  trait TimeMulter extends MulterOf[BQs.Time] {
+    type set[L <: Quant, To <: Integer] = L with BQs.Time { type time = To }
+    type get[L <: BQs.Time] = L#time
   }
 
   object Test {
@@ -135,7 +140,9 @@ object Test2 {
     // implicitly[Dimless#mult[Dimless] =:= Dimless]
     // val a: Dimless = 1
 
-    type Speed = Length#div[Time]
-    type Accel = Speed#div[Time]
+    type Speed = Length#op[Time]#div
+    type Accel = Speed#op[Time]#div
+
+    implicitly[Accel#quant =:= Quant with (BQs.Time{type time = n2}) with (BQs.Length{type length = p1})]
   }
 }
