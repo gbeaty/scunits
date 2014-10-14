@@ -1,5 +1,7 @@
 package scunits
 
+import scunits.types._
+
 package object integer {
 
   trait Integer {
@@ -9,22 +11,32 @@ package object integer {
     type Pred <: Integer
     type Sub[N <: Integer] <: Integer    
     type Neg <: Integer
+    type isZero <: Bool
+    type isPos <: Bool
+    type isNeg <: Bool
 
     type BranchNegZeroPos[B, N<:B, Z<:B, P<:B] <: B
 
     type DimMag[B <: BaseQuantityLike, T <: Dims] <: Dims
   }
 
-  trait NonNegInt extends Integer
-  trait NonPosInt extends Integer
-  trait NonZeroInt extends Integer {
+  trait NonNegInt extends Integer {
+    type isNeg = False
+  }
+  trait NonPosInt extends Integer {
+    type isPos = False
+  }
+  trait NonZeroInt extends Integer {    
     type DimMag[B <: BaseQuantityLike, T <: Dims] = DNelConst[B,Self,T]
+    type isZero = False
   }
   trait NegInt extends NonPosInt with NonZeroInt {
     type BranchNegZeroPos[B, N<:B, Z<:B, P<:B] = N
+    type isNeg = True
   }
   trait PosInt extends NonNegInt with NonZeroInt{
     type BranchNegZeroPos[B, N<:B, Z<:B, P<:B] = P
+    type isPos = True
   }
 
   type Count = SuccInt[_]
@@ -55,6 +67,7 @@ package object integer {
     type Sub[N <: Integer] = N#Neg
     type Neg = _0
     type BranchNegZeroPos[B, N<:B, Z<:B, P<:B] = Z
+    type isZero = True
 
     type DimMag[B <: BaseQuantityLike, T <: Dims] = T
   }
@@ -64,13 +77,23 @@ package object integer {
     type -[L <: Integer, R <: Integer] = L#Sub[R]
   }
 
-  type _1 = _0#Succ
-  type _2 = _1#Succ
-  type _3 = _2#Succ
-  type _4 = _3#Succ
-  type _5 = _4#Succ
-  type _6 = _5#Succ
-  type _7 = _6#Succ
-  type _8 = _7#Succ
-  type _9 = _8#Succ
+  type p1 = _0#Succ
+  type p2 = p1#Succ
+  type p3 = p2#Succ
+  type p4 = p3#Succ
+  type p5 = p4#Succ
+  type p6 = p5#Succ
+  type p7 = p6#Succ
+  type p8 = p7#Succ
+  type p9 = p8#Succ
+
+  type n1 = _0#Pred
+  type n2 = n1#Pred
+  type n3 = n2#Pred
+  type n4 = n3#Pred
+  type n5 = n4#Pred
+  type n6 = n5#Pred
+  type n7 = n6#Pred
+  type n8 = n7#Pred
+  type n9 = n8#Pred
 }

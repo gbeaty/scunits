@@ -5,7 +5,7 @@ import scunits.integer.Ops._
 
 sealed trait BaseQuantityLike {
   type Id <: NonNegInt
-  type Base = DNelConst[this.type, _1, DNil]
+  type Base = DNelConst[this.type, p1, DNil]
 }
 class BaseQuantity[I <: NonNegInt](val name: String, val symbol: String) extends BaseQuantityLike {
   type Id = I
