@@ -25,21 +25,19 @@ object Test2 {
     type set <: Multer
     type quant <: Quant
 
-    protected type bugMult[L <: quant, R <: quant, E <: Quant] <: Quant
-    protected type bugDiv[L <: quant, R <: quant, E <: Quant] <: Quant
+    protected type bugMult[L <: quant, R <: quant] <: quant
+    protected type bugDiv[L <: quant, R <: quant] <: quant   
+    
+    type quantOf[I <: Integer] <: quant
+    type dimlessQuant <: quant
 
     class op[L <: quant, R <: quant] {
-      type mult = bugMult[L,R,Quant]
-      type div = bugDiv[L,R,Quant]
+      type mult = bugMult[L,R]
+      type div = bugDiv[L,R]
     }
 
-    type dimless = DimsConst[self, dimlessQuant]
-    type dimlessQuant <: quant
-    
-    type dimOf[I <: NonNegInt] = DimsConst[self, doQuantOf[Quant,I]]
-
-    type quantOf[I <: Integer] = doQuantOf[Quant,I]
-    protected type doQuantOf[Q <: Quant, I <: Integer] <: Quant
+    type dimless = DimsConst[this.type, dimlessQuant]    
+    type dimOf[I <: NonNegInt] = DimsConst[this.type, quantOf[I]]    
   }
   trait MNel extends MList {
     type head <: Multer
@@ -51,23 +49,26 @@ object Test2 {
     type self = head :*: tail
     type set = head with tail#set
     type quant = head#of with tail#quant
-    type dimlessQuant = head#set[Quant,_0] with tail#dimlessQuant
+    type dimlessQuant = head#set[tail#dimlessQuant, _0]
 
-    protected type bugMult[L <: quant, R <: quant, E <: Quant] = tail#bugMult[L,R,head#op[L,R,E]#apply[+]]
-    protected type bugDiv[L <: quant, R <: quant, E <: Quant] = tail#bugDiv[L,R,head#op[L,R,E]#apply[-]]
-    
-    protected type doQuantOf[Q <: Quant, I <: Integer] =
-      I#isZero#branch[Quant, head#set[Q,p1] with tail#dimlessQuant, tail#doQuantOf[head#set[Q,_0], I#Pred]]
+    protected type bugMult[L <: quant, R <: quant] = head#op[L,R,tail#bugMult[L,R]]#apply[+]
+    protected type bugDiv[L <: quant, R <: quant] = head#op[L,R,tail#bugDiv[L,R]]#apply[-]
+
+    type quantOf[I <: Integer] = I#isZero#branch[
+      quant,
+      head#set[tail#dimlessQuant, p1],
+      head#set[tail#quantOf[I#Pred], _0]
+    ]
   }
   trait MNil extends MList {
     type self = MNil
     type set = Multer
     type quant = Quant
-    protected type doQuantOf[Q <: Quant, I <: Integer] = Q
+    type quantOf[I <: Integer] = Quant
     type dimlessQuant = Quant
 
-    protected type bugMult[L <: quant, R <: quant, E <: Quant] = E
-    protected type bugDiv[L <: quant, R <: quant, E <: Quant] = E
+    protected type bugMult[L <: quant, R <: quant] = Quant
+    protected type bugDiv[L <: quant, R <: quant] = Quant
   }
 
   trait Dims {
@@ -80,7 +81,7 @@ object Test2 {
   trait DimsOf[M <: MList] extends Dims {
     type multers = M
   }
-  trait DimsConst[M <: MList, Q <: Quant] extends DimsOf[M] {
+  trait DimsConst[M <: MList, Q <: Quant/*M#quant*/] extends DimsOf[M] {
     // type quant = Q
   }
 
@@ -126,13 +127,13 @@ object Test2 {
     implicitly[multers#op[LengthQ,LengthQ]#div =:= DimlessQ]
     implicitly[multers#op[AccelQ,AccelQ]#div =:= DimlessQ]
 
+    // val a: multers#op[LengthQ,LengthQ]#mult2 = 1
+    // Quant with Length{type length = p2} with Quant with Time{type time = _0} with MNil#bugMult[Quant with Length{type length = p1} with Quant with Time{type time = _0} with Quant,Quant with Length{type length = p1} with Quant with Time{type time = _0} with Quant]
+
     // implicitly[Length =:= multersRev#dimOf[p1]]
     // implicitly[Time =:= multersRev#dimOf[_0]]
     // implicitly[Dimless#mult[Dimless] =:= Dimless]
     // val a: Dimless = 1
-
-    // DimsConst[(some other)_74.type(in trait MList),Quant with BaseQuantities.Length{type length = _99.quant#length#Add[DimsConst[_74.type(in trait MList),Quant with BaseQuantities.Length{type length = scunits.integer._0} with BaseQuantities.Time{type time = scunits.integer._0}]#quant#length]} with BaseQuantities.Time{type time = _99.quant#time#Add[DimsConst[_74.type(in trait MList),Quant with BaseQuantities.Length{type length = scunits.integer._0} with BaseQuantities.Time{type time = scunits.integer._0}]#quant#time]}] forSome { val _99: DimsConst[_ <: :*:[LengthMulter,:*:[TimeMulter,MNil]], Quant with BaseQuantities.Length{type length = scunits.integer._0} with BaseQuantities.Time{type time = scunits.integer._0}] }
-
 
     type Speed = Length#div[Time]
     type Accel = Speed#div[Time]
