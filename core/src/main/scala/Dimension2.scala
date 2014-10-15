@@ -3,25 +3,19 @@ package scunits
 import scunits.integer._
 import scunits.integer.Ops._
 
-object Test2 {
+trait Left
+trait Right
+trait Is[A,B]
+
+package object dims2 {
   trait Quant
-  trait Dim {
-    type multer <: Multer
-    type exp <: Integer    
-  }
-  trait ^[L <: Multer, R <: Integer] extends Dim {
-    type multer = L
-    type exp = R
-  }
+
   trait Multer {
     type self <: Multer
-    type of <: Quant
-    type set[L <: Quant, To <: Integer] = setDim[L, self ^ To]
-    type get[L <: of] = getDim[L]#exp
-    // type base = DimsConst[self :*: MNil, set[Quant,p1]]
-
-    type setDim[L <: Quant, To <: Dim] <: L with of
-    type getDim[L <: of] <: Dim
+    type of
+    type set[L <: Quant, To <: Integer] <: L with of
+    type get[L <: of] <: Integer
+    type to[E <: Integer] <: DimsOf[self :: MNil]
 
     class op[L <: of, R <: of, E <: Quant] {
       type getL = get[L]
@@ -29,9 +23,11 @@ object Test2 {
       type apply[O[_ <: Integer, _ <: Integer] <: Integer] = set[E, O[getL,getR]]
     }
   }
-  trait MulterOf[S <: MulterOf[S,Q], Q <: Quant] extends Multer {
+  trait MulterOf[S <: MulterOf[S,Of], Of] extends Multer {
     type self = S
-    type of = Q    
+    type of = Of
+
+    type to[E <: Integer] = DimsConst[self :: MNil, set[Quant,E]]
   }
 
   trait MList {
@@ -39,162 +35,181 @@ object Test2 {
     type set <: Multer
     type quant <: Quant    
 
-    protected type bugMult[L <: quant, R <: quant] <: quant
-    protected type bugDiv[L <: quant, R <: quant] <: quant
-
-    protected type bugMult2[L <: quant, R <: quant] <: quant
+    protected type bugNeg[L <: quant] <: quant
+    protected type bugOp[L <: quant, R <: quant, O[_ <: Integer, _ <: Integer] <: Integer] <: Dims
+    type sum[L <: quant, R <: quant] <: Integer
     
-    type quantOf[I <: Integer] <: quant
     type dimlessQuant <: quant
     type append[Ms <: MList] <: MList
 
-    type buildDims[F <: quant] <: Dims
+    type dimsOf[Q <: quant] <: DimsOf[self]
 
     class op[L <: quant, R <: quant] {
-      type mult = bugMult[L,R]
-      type div = bugDiv[L,R]
+      type apply[O[_ <: Integer, _ <: Integer] <: Integer] = bugOp[L,R,O]
     }
-
-    class op2[L <: quant, R <: quant] {
-      type mult <: quant
+    class neg[L <: quant] {
+      type apply = bugNeg[L]
     }
 
     type dimless = DimsConst[self, self#dimlessQuant]
-    type dimOf[I <: NonNegInt] = DimsConst[self, self#quantOf[I]]
   }
   trait MNel extends MList {
     type head <: Multer
     type tail <: MList
   }
-  trait :*:[L <: Multer, R <: MList] extends MNel {
+  trait ::[L <: Multer, R <: MList] extends MNel {
     type head = L
     type tail = R
-    type self = head :*: tail
+    type self = head :: tail
     type set = head with tail#set
     type quant = head#of with tail#quant
     type dimlessQuant = head#set[tail#dimlessQuant, _0]
-    type append[Ms <: MList] = head :*: tail#append[Ms]
+    type append[Ms <: MList] = head :: tail#append[Ms]
 
-    /*type buildDims[F <: quant] = ({
-      type dim = head#getDim[F]
-      type res = dim#exp#isZero#branch[
-        Dims,
-        tail#buildDims[F],
-        ({
-          type rem = tail#buildDims[F]
-          type all = DimsConst[dim#multer :*: rem#multers, rem#quant with dim]
-        })#all
-      ]
-    })#res*/
 
-    protected type bugMult[L <: quant, R <: quant] = head#op[L,R,tail#bugMult[L,R]]#apply[+]
-    protected type bugDiv[L <: quant, R <: quant] = head#op[L,R,tail#bugDiv[L,R]]#apply[-]
+    protected type bugNeg[L <: quant] = head#set[tail#bugNeg[L], head#get[L]#Neg]
 
-    type quantOf[I <: Integer] = I#isZero#branch[
-      quant,
-      head#set[tail#dimlessQuant, p1],
-      head#set[tail#quantOf[I#Pred], _0]
-    ]
+    protected type bugOp[L <: quant, R <: quant, O[_ <: Integer, _ <: Integer] <: Integer] = ({
+      type exp = O[head#get[L], head#get[R]]
+      // type exp = O[head#get[L], _0]
+      // type exp = O[head#get[R], _0]
+      // type exp = head#get[R]
+      // type exp = _0
+      // type exp = head#get[L] - head#get[R]
+      type rem = tail#bugOp[head#set[L,_0], head#set[R,_0],O]
+      // type rem = tail#bugOp[L,R,O]
+      type res = exp#isZero#branch[Dims, rem, DimsConst[head :: rem#multers, head#set[rem#quant,exp]]]
+      // type res = DimsConst[head :: rem#multers, head#set[rem#quant,exp]]
+    })#res
+
+    type sum[L <: quant, R <: quant] = head#get[L] + head#get[R] + tail#sum[L,R]
   }
+
   trait MNil extends MList {
     type self = MNil
     type set = Multer
     type quant = Quant
-    type quantOf[I <: Integer] = Quant
     type dimlessQuant = Quant
     type append[Ms <: MList] = Ms
 
-    type buildDims[F <: quant] = Dimless2
+    protected type bugNeg[L <: quant] = Quant
+    protected type bugOp[L <: quant, R <: quant, O[_ <: Integer, _ <: Integer] <: Integer] = Dimless
 
-    protected type bugMult[L <: quant, R <: quant] = Quant
-    protected type bugDiv[L <: quant, R <: quant] = Quant
+    type sum[L <: quant, R <: quant] = _0
   }
 
   trait Dims {
     type multers <: MList
     type quant <: multers#quant
 
-    class op[R <: DimsOf[multers]] {
-      type mult = DimsConst[multers, multers#op[quant,R#quant]#mult]
-      type div = DimsConst[multers, multers#op[quant,R#quant]#div]
-    }
+    type neg <: DimsOf[multers]
 
-    type mult2[R <: Dims] = ({
-      type ms = multers#append[R#multers]
-      type dless = ms#dimlessQuant
-      type res = ms#op[dless with quant, dless with R#quant]#mult
-    })#res
-
-    type mult[R <: DimsOf[multers]] = DimsConst[multers, multers#op[quant,R#quant]#mult]
-    type div[R <: DimsOf[multers]] = DimsConst[multers, multers#op[quant,R#quant]#div]
-
-    type merge[R <: Dims] = ({
-      type ms = multers#append[R#multers]
-      type res = DimsConst[ms, ms#dimlessQuant with R#quant]
-    })#res
+    type mult[R <: Dims] = op[R,+]
+    type div[R <: Dims] = op[R,-]
+    type op[R <: Dims, O[_ <: Integer, _ <: Integer] <: Integer] <: Dims
   }
-  trait DimsOf[M <: MList] extends Dims {
-    type multers = M
+  trait DimsOf[Ms <: MList] extends Dims {
+    type multers = Ms
   }
-  trait DimsConst[M <: MList, Q <: M#quant] extends DimsOf[M] {
+  trait DimsConst[Ms <: MList, Q <: Ms#quant] extends DimsOf[Ms] {
     type quant = Q
-  }
-  trait Dimless2 extends DimsConst[MNil,Quant]
 
-  object BQs {
-    trait Length extends Quant { type length <: Dim }
-    trait Time extends Quant { type time <: Dim }
-  }
-  trait LengthMulter extends MulterOf[LengthMulter, BQs.Length] {
-    type setDim[L <: Quant, To <: Dim] = L with BQs.Length { type length = To }
-    type getDim[L <: of] = L#length
-  }
+    type neg = DimsConst[Ms, Ms#neg[Q]#apply]
 
-  trait TimeMulter extends MulterOf[TimeMulter, BQs.Time] {
-    type setDim[L <: Quant, To <: Dim] = L with BQs.Time { type time = To }
-    type getDim[L <: of] = L#time
+    type op[R <: Dims, O[_ <: Integer, _ <: Integer] <: Integer] = ({
+      type ms = multers#append[R#multers]
+      type base = ms#dimlessQuant
+      // type base = ms#quant
+      type res = ms#op[quant with base, R#quant with base]#apply[+]
+    })#res
+
+    type sum[R <: Dims] = ({
+      type ms = multers#append[R#multers]
+      type base = ms#dimlessQuant
+      type l = base with quant
+      type r = base with R#quant
+      type res = ms#sum[l,r]
+    })#res
+  }
+  type Dimless = DimsConst[MNil,Quant]
+
+  object BQ {
+    trait Length extends Quant { type length <: Integer }
+    trait Time extends Quant { type time <: Integer }
+    trait Info extends Quant { type info <: Integer }
+  }
+  object Multer {
+    trait Length extends MulterOf[Length, BQ.Length] {
+      type set[L <: Quant, To <: Integer] = L with BQ.Length { type length = To }
+      type get[L <: of] = L#length
+    }
+    trait Time extends MulterOf[Time, BQ.Time] {
+      type set[L <: Quant, To <: Integer] = L with BQ.Time { type time = To }
+      type get[L <: of] = L#time
+    }
+    trait Info extends MulterOf[Info, BQ.Info] {
+      type set[L <: Quant, To <: Integer] = L with BQ.Info { type info = To }
+      type get[L <: of] = L#info
+    }
   }
 
   object Test {
-    type lenMulters = LengthMulter :*: MNil    
-    type multers = LengthMulter :*: TimeMulter :*: MNil
-    type multersRev = TimeMulter :*: LengthMulter :*: MNil
-    type Dimless = multers#dimless
-    type Length = multers#dimOf[_0]
-    type Time = multers#dimOf[p1]
+    type ^[L <: Multer, R <: Integer] = L#set[Quant,R]
+    type LengthMs = Multer.Length :: MNil
+    type TimeMs = Multer.Time :: MNil
+    type InfoMs = Multer.Info :: MNil
 
-    implicitly[multers#quantOf[_0] =:= multersRev#quantOf[p1]]
+    type Length = Multer.Length#to[p1]
+    type Area = Multer.Length#to[p2]
+    type Volume = Multer.Length#to[p3]
+    type Time = Multer.Time#to[p1]
+    type Frequency = DimsConst[Multer.Time :: MNil, Multer.Time#set[Quant, n1]]
+    type Speed = DimsConst[Multer.Length :: Multer.Time :: MNil, Multer.Time#set[Multer.Length#set[Quant, p1], n1]]
+    type Accel = DimsConst[Multer.Length :: Multer.Time :: MNil, Multer.Time#set[Multer.Length#set[Quant, p1], n2]]
+    type Bandwidth = DimsConst[Multer.Info :: Multer.Time :: MNil, Multer.Time#set[Multer.Info#set[Quant, p1], n1]]
 
-    type DimlessQ = multers#dimlessQuant
-    type LengthQ = multers#quantOf[_0]
-    type TimeQ = multers#quantOf[p1]
-    type SpeedQ = multers#op[LengthQ,TimeQ]#div
-    type AccelQ = multers#op[SpeedQ,TimeQ]#div
-    type Frequency = multers#op[DimlessQ,TimeQ]#div
+    // Test base:
+    implicitly[Time =:= DimsConst[Multer.Time :: MNil, Quant with BQ.Time { type time = p1 }]]
 
-    // Test quantOf:
-    implicitly[LengthQ =:= multersRev#quantOf[p1]]
-    implicitly[TimeQ =:= multersRev#quantOf[_0]]
+    // Test append:
+    type LengthTimeMs = LengthMs#append[TimeMs]
+    implicitly[LengthTimeMs =:= (Multer.Length :: Multer.Time :: MNil)]
+    implicitly[MNil#append[MNil] =:= MNil]
+    implicitly[MNil#append[(Multer.Length :: MNil)] =:= (Multer.Length :: MNil)]
+    implicitly[(Multer.Length :: MNil)#append[MNil] =:= (Multer.Length :: MNil)]
 
-    // Test quant mult/div:
-    type Test = multers#op[LengthQ,TimeQ]#mult
-    implicitly[multers#op[DimlessQ,DimlessQ]#mult =:= DimlessQ]
-    implicitly[multers#op[DimlessQ,DimlessQ]#div =:= DimlessQ]
-    implicitly[multers#op[LengthQ,DimlessQ]#mult =:= LengthQ]
-    implicitly[multers#op[LengthQ,TimeQ]#mult =:= multers#op[TimeQ,LengthQ]#mult]
-    implicitly[multersRev#op[LengthQ,TimeQ]#mult =:= multers#op[LengthQ,TimeQ]#mult]
-    implicitly[multers#op[LengthQ,LengthQ]#div =:= DimlessQ]
-    implicitly[multers#op[AccelQ,AccelQ]#div =:= DimlessQ]
+    // Test dimlessQuant:
+    implicitly[MNil#dimlessQuant =:= Quant]
+    implicitly[LengthTimeMs#dimlessQuant =:= Multer.Length#set[Multer.Time#set[Quant,_0],_0]]
 
-    type Speed = Length#op[Time]#div
-    type Accel = Speed#op[Time]#div
+    // Test setters/getters:
+    implicitly[Multer.Length#get[Multer.Length#set[Quant,p1]] =:= p1]
+    implicitly[Multer.Time#get[Multer.Time#set[Speed,n2]] =:= n2]
+    implicitly[Multer.Time#get[Multer.Time#set[Multer.Time#set[Quant,n2],n1]] =:= n1]
+    implicitly[Multer.Time#get[Multer.Time#set[Multer.Time#set[Quant,n1],n2]] =:= n2]
 
-    implicitly[Accel#op[Accel]#div =:= Dimless]
-    implicitly[Dimless#op[Dimless]#div =:= Dimless]
-    implicitly[Dimless#op[Dimless]#mult =:= Dimless]
+    // Test quantity-level mults:
+    // implicitly[MNil#op[Quant,Quant]#apply[+] =:= Dimless]
+    // implicitly[TimeMs#op[Time#quant,Frequency#quant]#apply[+] =:= Dimless]
+    // implicitly[Speed#multers#op[Speed#quant, Speed#multers#dimlessQuant with Time#quant]#apply[+] =:= DimsConst[LengthMs,Length#quant]]
 
-    // Test merge:
-    // implicitly[lenMulters]
+    // Test negations:
+    implicitly[Dimless#neg =:= Dimless]
+    implicitly[Time#neg =:= Frequency]
+    implicitly[Speed#neg#neg =:= Speed]
+    implicitly[Speed#neg =:= DimsConst[Multer.Length :: Multer.Time :: MNil, Multer.Time#set[Multer.Length#set[Quant, n1], p1]]]
+    
+    // Test mults and divs
+    implicitly[Dimless#mult[Dimless] =:= Dimless]
+    implicitly[Dimless#div[Dimless] =:= Dimless]
+
+    implicitly[Time#mult[Frequency] =:= Dimless]
+    // implicitly[Volume#div[Area] =:= Length]
+    // implicitly[Length#mult[Length] =:= Area]
+
+    // implicitly[Dimless#div[Time] =:= Frequency]
+    // implicitly[Length#div[Time] =:= Speed]    
+    // implicitly[Speed#mult[Time] =:= Length]
   }
 }
 
