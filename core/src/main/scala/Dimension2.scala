@@ -33,7 +33,6 @@ package object dims2 {
 
     protected type bugNeg[L <: quant] <: quant
     protected type bugOp[L <: quant, R <: quant, O[_ <: Integer, _ <: Integer] <: Integer] <: Dims
-    type sum[L <: quant, R <: quant] <: Integer
     
     type dimlessQuant <: quant
     type append[Ms <: MList] <: MList
@@ -69,8 +68,6 @@ package object dims2 {
       type rem = tail#bugOp[head#set[L,_0], head#set[R,_0], O]
       type res = exp#isZero#branch[Dims, rem, DimsConst[head :: rem#multers, head#set[rem#quant,exp]]]
     })#res
-
-    type sum[L <: quant, R <: quant] = head#get[L] + head#get[R] + tail#sum[L,R]
   }
 
   trait MNil extends MList {
@@ -82,31 +79,19 @@ package object dims2 {
 
     protected type bugNeg[L <: quant] = Quant
     protected type bugOp[L <: quant, R <: quant, O[_ <: Integer, _ <: Integer] <: Integer] = Dimless
-
-    type sum[L <: quant, R <: quant] = _0
   }
 
   trait Dims {
     type multers <: MList
     type quant <: multers#quant
 
-    type neg <: DimsOf[multers]
+    type neg = DimsConst[multers, multers#neg[quant]#apply]
   }
   trait DimsOf[Ms <: MList] extends Dims {
     type multers = Ms
   }
   trait DimsConst[Ms <: MList, Q <: Ms#quant] extends DimsOf[Ms] {
     type quant = Q
-
-    type neg = DimsConst[Ms, Ms#neg[Q]#apply]
-
-    type sum[R <: Dims] = ({
-      type ms = multers#append[R#multers]
-      type base = ms#dimlessQuant
-      type l = base with quant
-      type r = base with R#quant
-      type res = ms#sum[l,r]
-    })#res
   }
   type Dimless = DimsConst[MNil,Quant]
 
@@ -203,7 +188,9 @@ package object dims2 {
     implicitly[Length * Length =:= Area]
 
     implicitly[Dimless / Time =:= Frequency]
-    // implicitly[Length#div[Time] =:= Speed]    
-    // implicitly[Speed#mult[Time] =:= Length]
+    implicitly[Length / Time =:= Speed]    
+    implicitly[Speed * Time =:= Length]
+
+    // implicitly[Frequency * Length =:= Speed]
   }
 }
