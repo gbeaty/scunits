@@ -1,8 +1,6 @@
 package scunits.test
 
 import scunits._
-import scunits.integer._
-import scunits.integer.Ops._
 
 object Dimension {
   import Electric._
