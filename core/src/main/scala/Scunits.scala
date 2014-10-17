@@ -1,5 +1,6 @@
 import scunits._
-import scunits.integer._
+
+import scunits.types._
 
 trait LowPriorityImplicits {
   object Mult

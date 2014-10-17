@@ -1,7 +1,6 @@
 package scunits.integer
 
 import scunits.types._
-import scunits.integer.Ops._
 
 object Integer {
   implicitly[_0 + _0 =:= _0]  

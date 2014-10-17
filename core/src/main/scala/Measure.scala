@@ -1,6 +1,6 @@
 package scunits
 
-import scunits.integer._
+import scunits.types._
 
 case class Measure[D <: Dims](v: Double) extends AnyVal {
 

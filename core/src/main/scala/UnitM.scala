@@ -1,7 +1,6 @@
 package scunits
 
-import scunits.integer._
-import scunits.integer.Ops._
+import scunits.types._
 
 import scala.math.BigDecimal
 
