@@ -8,7 +8,7 @@ trait Bits {
   val bit = UnitM[scunits.Info]("bit","b")
   val byte = (bit * 8).label("byte","B")
 
-  val bps = UnitM[InfoRate]("bit per second", "bps")
+  val bps = UnitM[Bandwidth]("bit per second", "bps")
   val Bps = (bps / 8).label("byte per second", "Bps")
 }
 

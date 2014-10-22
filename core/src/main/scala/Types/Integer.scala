@@ -2,68 +2,64 @@ package scunits.types
 
 import scunits._
 
-trait Integer {
-  type Self <: Integer
-  type Succ <: Integer
-  type Add[N <: Integer] <: Integer
-  type Pred <: Integer
-  type Sub[N <: Integer] <: Integer    
-  type Neg <: Integer
+sealed trait Integer {
   type isZero <: Bool
   type isPos <: Bool
   type isNeg <: Bool
+  type succ <: Integer  
+  
+  type add[N <: Integer] <: Integer
 
-  type BranchNegZeroPos[B, N<:B, Z<:B, P<:B] <: B
+  type pred <: Integer
+  type sub[N <: Integer] <: Integer
+  type neg <: Integer
 
-  type DimMag[B <: BaseQuantityLike, T <: Dims] <: Dims
+  type loop[B,F[_ <: B] <: B, Res <: B] <: B
 }
 
-trait NonNegInt extends Integer {
+sealed trait NonNegInt extends Integer {
   type isNeg = False
+  type succ <: PosInt
 }
-trait NonPosInt extends Integer {
+sealed trait NonPosInt extends Integer {
   type isPos = False
+  type pred <: NegInt
+  type loop[B,F[_ <: B] <: B, Res <: B] = Res
 }
-trait NonZeroInt extends Integer {    
-  type DimMag[B <: BaseQuantityLike, T <: Dims] = DNelConst[B,Self,T]
+sealed trait NonZeroInt extends Integer {
   type isZero = False
 }
-trait NegInt extends NonPosInt with NonZeroInt {
-  type BranchNegZeroPos[B, N<:B, Z<:B, P<:B] = N
+sealed trait NegInt extends NonPosInt with NonZeroInt {
   type isNeg = True
+  type succ <: NonPosInt
 }
-trait PosInt extends NonNegInt with NonZeroInt{
-  type BranchNegZeroPos[B, N<:B, Z<:B, P<:B] = P
+sealed trait PosInt extends NonNegInt with NonZeroInt {
   type isPos = True
+  type pred <: NonNegInt
+  type loop[B,F[_ <: B] <: B, Res <: B] = pred#loop[B,F,F[Res]]
 }
 
-class SuccInt[P <: NonNegInt] extends PosInt {
-  type Self = SuccInt[P]
-  type Succ = SuccInt[SuccInt[P]]
-  type Add[N <: Integer] = P#Add[N]#Succ
-  type Pred = P
-  type Sub[N <: Integer] = P#Sub[N]#Succ
-  type Neg = P#Neg#Pred
+sealed trait SuccInt[P <: NonNegInt] extends PosInt {
+  type succ = SuccInt[SuccInt[P]]
+  type add[N <: Integer] = P#add[N#succ]
+  type pred = P
+  type sub[N <: Integer] = P#sub[N#pred]
+  type neg = P#neg#pred
 }
 
-class PredInt[S <: NonPosInt] extends NegInt {
-  type Self = PredInt[S]
-  type Succ = S
-  type Add[N <: Integer] = S#Add[N]#Pred
-  type Pred = PredInt[PredInt[S]]
-  type Sub[N <: Integer] = S#Sub[N]#Pred
-  type Neg = S#Neg#Succ
+sealed trait PredInt[S <: NonPosInt] extends NegInt {
+  type succ = S
+  type add[N <: Integer] = S#add[N#pred]
+  type pred = PredInt[PredInt[S]]
+  type sub[N <: Integer] = S#sub[N#succ]
+  type neg = S#neg#succ
 }
 
-final class _0 extends NonNegInt with NonPosInt {
-  type Self = _0
-  type Succ = SuccInt[_0]
-  type Add[N <: Integer] = N
-  type Pred = PredInt[_0]
-  type Sub[N <: Integer] = N#Neg
-  type Neg = _0
-  type BranchNegZeroPos[B, N<:B, Z<:B, P<:B] = Z
+sealed trait _0 extends NonNegInt with NonPosInt {
   type isZero = True
-
-  type DimMag[B <: BaseQuantityLike, T <: Dims] = T
+  type succ = SuccInt[_0]
+  type add[N <: Integer] = N
+  type pred = PredInt[_0]
+  type sub[N <: Integer] = N#neg
+  type neg = _0
 }

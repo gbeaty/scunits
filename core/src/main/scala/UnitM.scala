@@ -4,7 +4,7 @@ import scunits.types._
 
 import scala.math.BigDecimal
 
-case class UnitM[D <: Dims](
+case class UnitM[L <: Dims](
   name: Option[String] = None,
   symbol: Option[String] = None,
   mult: BigDecimal = 1.0,
@@ -15,35 +15,32 @@ case class UnitM[D <: Dims](
   val prefixedMultDouble = prefixedMult.toDouble
   val doubleOffset = offset.toDouble
   
-  def apply(in: Double) = Measure[D](prefixedMultDouble * (in + doubleOffset))
-  def unapply(out: Measure[D]) = out.v / prefixedMultDouble - doubleOffset
+  def apply(in: Double) = Measure[L](prefixedMultDouble * (in + doubleOffset))
+  def unapply(out: Measure[L]) = out.v / prefixedMultDouble - doubleOffset
 
-  // def apply(in: BigDecimal) = Measure[D](prefixedMult * in + offset)
-  // def unapply(out: Measure[D]) = (out.v - doubleOffset) / prefixedMultDouble
+  def label(n: String, s: String) = copy[L](name = Some(n), symbol = Some(s))
+  def rename(n: String) = copy[L](name = Some(n))
 
-  def label(n: String, s: String) = copy[D](name = Some(n), symbol = Some(s))
-  def rename(n: String) = copy[D](name = Some(n))
+  def inv[A <: QListOf[L]](implicit a: A) = UnitM[a.neg[L]](mult = 1 / mult)
 
-  def inv = UnitM[D#Neg](mult = 1 / mult)
+  def *[R <: Dims, A <: QListOf[L with R]](r: UnitM[R]) = UnitM[A#mult[L,R]](mult = prefixedMult * r.prefixedMult)
+  def /[R <: Dims, A <: QListOf[L with R]](r: UnitM[R]) = UnitM[A#div[L,R]](mult = prefixedMult / r.prefixedMult)
 
-  def *[R <: Dims](r: UnitM[R]) = UnitM[D#Mult[R]](mult = prefixedMult * r.prefixedMult)
-  def /[R <: Dims](r: UnitM[R]) = UnitM[D#Div[R]](mult = prefixedMult / r.prefixedMult)
+  def *(r: BigDecimal) = UnitM[L](mult = prefixedMult * r)
+  def *(r: Double) = UnitM[L](mult = prefixedMult * r)
+  def *(r: Float) = UnitM[L](mult = prefixedMult * r)
+  def *(r: Long) = UnitM[L](mult = prefixedMult * r)
+  def *(r: Int) = UnitM[L](mult = prefixedMult * r)
+  def *(r: Short) = UnitM[L](mult = prefixedMult * r)
+  def *(r: Byte) = UnitM[L](mult = prefixedMult * r)
 
-  def *(r: BigDecimal) = UnitM[D](mult = prefixedMult * r)
-  def *(r: Double) = UnitM[D](mult = prefixedMult * r)
-  def *(r: Float) = UnitM[D](mult = prefixedMult * r)
-  def *(r: Long) = UnitM[D](mult = prefixedMult * r)
-  def *(r: Int) = UnitM[D](mult = prefixedMult * r)
-  def *(r: Short) = UnitM[D](mult = prefixedMult * r)
-  def *(r: Byte) = UnitM[D](mult = prefixedMult * r)
-
-  def /(r: BigDecimal) = UnitM[D](mult = prefixedMult / r)
-  def /(r: Double) = UnitM[D](mult = prefixedMult / r)
-  def /(r: Float) = UnitM[D](mult = prefixedMult / r)
-  def /(r: Long) = UnitM[D](mult = prefixedMult / r)
-  def /(r: Int) = UnitM[D](mult = prefixedMult / r)
-  def /(r: Short) = UnitM[D](mult = prefixedMult / r)
-  def /(r: Byte) = UnitM[D](mult = prefixedMult / r)
+  def /(r: BigDecimal) = UnitM[L](mult = prefixedMult / r)
+  def /(r: Double) = UnitM[L](mult = prefixedMult / r)
+  def /(r: Float) = UnitM[L](mult = prefixedMult / r)
+  def /(r: Long) = UnitM[L](mult = prefixedMult / r)
+  def /(r: Int) = UnitM[L](mult = prefixedMult / r)
+  def /(r: Short) = UnitM[L](mult = prefixedMult / r)
+  def /(r: Byte) = UnitM[L](mult = prefixedMult / r)
 
   def prefixLabel(pn: String, ps: String) = (name, symbol) match {
       case (Some(n),Some(s)) => this.label(pn + n, ps + s)

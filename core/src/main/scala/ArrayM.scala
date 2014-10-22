@@ -1,5 +1,6 @@
 package scunits
 
+import scunits.types._
 import scala.reflect.ClassTag
 import scala.collection.mutable._
 
