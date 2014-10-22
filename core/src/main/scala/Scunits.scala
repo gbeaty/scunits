@@ -10,10 +10,10 @@ trait LowPriorityImplicits {
 }
 
 package object scunits extends LowPriorityImplicits {
-  implicit def ordering[D <: Dims] = new Ordering[Measure[D]] {
-    def compare(l: Measure[D], r: Measure[D]) = if(l < r) -1 else if(l > r) 1 else 0
-  }
-  
+  // New stuff:
+  type Dimless = Quant
+
+  // Old stuff:
   implicit def mult_L_DNil[L <: Dims](l: Measure[L], r: Measure[DNil], op: Mult.type) = Measure[L](l.v * r.v)
   implicit def mult_DNil_L[L <: Dims](l: Measure[DNil], r: Measure[L], op: Mult.type) = Measure[L](l.v * r.v)
   implicit def mult_L_RdivL[L <: Dims,R <: Dims](l: Measure[L], r: Measure[R#Div[L]], op: Mult.type) = Measure[R](l.v * r.v)

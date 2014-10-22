@@ -1,18 +1,9 @@
 package scunits
 
 package object types {
-  type Dimless = Dims2Const[ANil,Quant]
-  
   // Dims2 ops:
-  type *[L <: Dims2, R <: Dims2] = op[L,R,+]
-  type /[L <: Dims2, R <: Dims2] = op[L,R,-]
-
-  type op[L <: Dims2, R <: Dims2, O[_ <: Integer, _ <: Integer] <: Integer] = ({
-    type ms = L#accessors#append[R#accessors]
-    type base = ms#dimlessQuant
-    type res = ms#op[base with L#quant, base with R#quant]#apply[O]
-  })#res
-  // I'd like to move this to Dims#op, but when they are placed there an odd bug seems to scramble refined type overloading.
+  // type *[L <: Dims2, R <: Dims2] = op[L,R,+]
+  // type /[L <: Dims2, R <: Dims2] = op[L,R,-]
 
   // Integer ops:
   type +[L <: Integer, R <: Integer] = L#Add[R]
