@@ -3,19 +3,19 @@ package scunits.types
 import scunits._
 
 object BQ {
-  trait HasLength extends Quant { type length <: Integer }
-  trait Length extends BaseQuantityOf[HasLength] {
-    type set[L <: Quant, To <: Integer] = L with HasLength { type length = To }
+  trait Length extends BaseQuantity {
+    trait of { type length <: Integer }
+    type set[To <: Integer] = of { type length = To }
     type get[L <: of] = L#length
   }
-  trait HasTime extends Quant { type time <: Integer }
-  trait Time extends BaseQuantityOf[HasTime] {
-    type set[L <: Quant, To <: Integer] = L with HasTime { type time = To }
+  trait Time extends BaseQuantity {
+    trait of { type time <: Integer }
+    type set[To <: Integer] = of { type time = To }
     type get[L <: of] = L#time
   }
-  trait HasInfo extends Quant { type info <: Integer }
-  trait Info extends BaseQuantityOf[HasInfo] {
-    type set[L <: Quant, To <: Integer] = L with HasInfo { type info = To }
+  trait Info extends BaseQuantity {
+    trait of { type info <: Integer }
+    type set[To <: Integer] = of { type info = To }
     type get[L <: of] = L#info
   }
 }
@@ -51,14 +51,14 @@ object Dims2Tests {
 
   // Test zeros:
   implicitly[QNil#zeros =:= Quant]
-  implicitly[LengthTimeMs#zeros =:= BQ.Length#set[BQ.Time#set[Quant,_0],_0]]
+  implicitly[LengthTimeMs#zeros =:= BQ.Length#setQuant[BQ.Time#setQuant[Quant,_0],_0]]
 
   // Test setters/getters:
-  implicitly[BQ.Length#get[BQ.Length#set[Quant,p1]] =:= p1]
-  implicitly[BQ.Time#get[BQ.Time#set[Speed,n2]] =:= n2]
-  implicitly[BQ.Time#get[BQ.Time#set[BQ.Time#set[Quant,n2],n1]] =:= n1]
-  implicitly[BQ.Time#get[BQ.Time#set[BQ.Time#set[Quant,n1],n2]] =:= n2]
-  implicitly[BQ.Time#get[TimeMs#zeros with BQ.Time#set[BQ.Time#set[Quant,n1],n2]] =:= n2]
+  implicitly[BQ.Length#get[BQ.Length#setQuant[Quant,p1]] =:= p1]
+  implicitly[BQ.Time#get[BQ.Time#setQuant[Speed,n2]] =:= n2]
+  implicitly[BQ.Time#get[BQ.Time#setQuant[BQ.Time#setQuant[Quant,n2],n1]] =:= n1]
+  implicitly[BQ.Time#get[BQ.Time#setQuant[BQ.Time#setQuant[Quant,n1],n2]] =:= n2]
+  implicitly[BQ.Time#get[TimeMs#zeros with BQ.Time#setQuant[BQ.Time#setQuant[Quant,n1],n2]] =:= n2]
 
   // Test negations:
   implicitly[bqs.neg[Dimless] =:= Dimless]
