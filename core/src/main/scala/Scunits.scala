@@ -1,8 +1,13 @@
-import scunits._
-
+import scunits.{Scalar, Dims, Dimless}
 import scunits.types._
 
-package object scunits {
+trait Implicits {
+  implicit def invert[D <: Dims, Qs <: QList](s: Scalar[D])(implicit qs: Qs) = s.inv
+  implicit def toCoef(d: Double) = Scalar[Dimless](d)
+}
+
+package object scunits extends Implicits {
+  trait Dims
   type Dimless = Dims
 
   object Basis {
@@ -48,10 +53,10 @@ package object scunits {
     }
   }
   
-  implicit val siBaseQuantities = new (
+  type SiBaseQuantities =
     Basis.Length :: Basis.Time :: Basis.Mass :: Basis.Temperature ::
     Basis.AmountOfSubstance :: Basis.Current :: Basis.Intensity :: QNil
-  )
+  implicit val siBaseQuantities = new SiBaseQuantities
   import siBaseQuantities.ops._
 
   val coef = UnitM[Dimless]("","",1.0)
@@ -98,4 +103,6 @@ package object scunits {
   type Dose = Energy / Mass
 
   type CatalyticActivity = AmountOfSubstance / Time
+
+  type DistancePerFuel = Length / Volume
 }

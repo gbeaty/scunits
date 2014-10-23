@@ -1,5 +1,7 @@
 package scunits.types
 
+import scunits._
+
 trait QList {
   type set <: BaseQuantity
   type dims <: Dims   
@@ -18,13 +20,17 @@ trait QList {
   type neg[L <: Dims] = doNeg[zeros with L]
   protected type doNeg[L <: dims] <: Dims
 
+  type pow[L <: Dims, R <: Integer] = doPow[zeros with L, R]
+  protected type doPow[L <: dims, R <: Integer] <: Dims
+
   object ops {
     type *[L <: Dims, R <: Dims] = mult[L,R]
     type /[L <: Dims, R <: Dims] = div[L,R]
   }
 }
-trait QListOf[+D <: Dims] extends QList {
-  type dims <: D
+trait QListOf[-D <: Dims] extends QList {
+  type dims >: D <: Dims
+  // type dims <: D
 }
 class ::[L <: BaseQuantity, R <: QList] extends QListOf[L#of with R#dims] {
   type head = L
@@ -38,6 +44,8 @@ class ::[L <: BaseQuantity, R <: QList] extends QListOf[L#of with R#dims] {
 
   protected type bugOp[L <: dims, R <: dims, O[_ <: Integer, _ <: Integer] <: Integer] =
     head#setNonZero[tail#bugOp[L,R,O], O[head#get[L], head#get[R]]]
+
+  protected type doPow[L <: dims, R <: Integer] = head#setNonZero[tail#pow[L,R], head#get[L]#mult[R]]
 }
 trait QNil extends QList {
   type set = BaseQuantity
@@ -48,4 +56,6 @@ trait QNil extends QList {
   protected type doNeg[L <: dims] = Dims
 
   protected type bugOp[L <: dims, R <: dims, O[_ <: Integer, _ <: Integer] <: Integer] = Dims
+
+  protected type doPow[L <: dims, R <: Integer] = Dims
 }

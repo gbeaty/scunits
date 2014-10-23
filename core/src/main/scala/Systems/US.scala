@@ -37,7 +37,7 @@ class FootBased(metresPerFoot: BigDecimal) {
 class InternationalFoot extends FootBased(0.3048)
 class SurveyFoot extends FootBased(0.30480061)
 
-package object volume {
+object Volume {
   trait Fluid {
     val minim = UnitM[Volume]("minim","min",6.1611519921875e-8)
     val dram = (minim * 60).label("fluid dram","fl dr")
@@ -103,12 +103,5 @@ trait Base {
     val electric = UnitM[Power]("electric horsepower","hp(E)",746)
     val boiler = UnitM[Power]("boiler horsepower","hp(S)",9812.5)
   }
-  // val mpg = UnitM[Automotive.DistancePerFuel]("miles per gallon","mpg",425143.707)
-}
-
-trait All extends InternationalFoot with Mass.Avoirdupois with Nautical with Base {
-  object Survey extends SurveyFoot
-  object Fluid extends volume.Fluid
-  object Dry extends volume.Dry
-  object Troy extends Mass.Troy
+  val mpg = UnitM[DistancePerFuel]("miles per gallon","mpg",425143.707)
 }

@@ -21,10 +21,10 @@ case class UnitM[L <: Dims](
   def label(n: String, s: String) = copy[L](name = Some(n), symbol = Some(s))
   def rename(n: String) = copy[L](name = Some(n))
 
-  def inv[A <: QListOf[L]](implicit a: A) = UnitM[a.neg[L]](mult = 1 / mult)
+  def inv[A <: QList](implicit a: A) = UnitM[a.neg[L]](mult = 1 / mult)
 
-  def *[R <: Dims, A <: QListOf[L with R]](r: UnitM[R]) = UnitM[A#mult[L,R]](mult = prefixedMult * r.prefixedMult)
-  def /[R <: Dims, A <: QListOf[L with R]](r: UnitM[R]) = UnitM[A#div[L,R]](mult = prefixedMult / r.prefixedMult)
+  def *[R <: Dims, Qs <: QList](r: UnitM[R])(implicit qs: Qs) = UnitM[qs.mult[L,R]](mult = prefixedMult * r.prefixedMult)  
+  def /[R <: Dims, Qs <: QList](r: UnitM[R])(implicit qs: Qs) = UnitM[qs.div[L,R]](mult = prefixedMult / r.prefixedMult)
 
   def *(r: BigDecimal) = UnitM[L](mult = prefixedMult * r)
   def *(r: Double) = UnitM[L](mult = prefixedMult * r)

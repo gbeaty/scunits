@@ -1,6 +1,6 @@
 package scunits.types
 
-trait Dims
+import scunits._
 
 trait BaseQuantity {
   type of

@@ -1,10 +1,6 @@
 package scunits
 
 package object types {
-  // Dims2 ops:
-  // type *[L <: Dims2, R <: Dims2] = op[L,R,+]
-  // type /[L <: Dims2, R <: Dims2] = op[L,R,-]
-
   // Integer ops:
   type +[L <: Integer, R <: Integer] = L#add[R]
   type -[L <: Integer, R <: Integer] = L#sub[R]

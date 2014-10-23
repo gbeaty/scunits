@@ -14,6 +14,8 @@ sealed trait Integer {
   type sub[N <: Integer] <: Integer
   type neg <: Integer
 
+  type mult[R <: Integer] <: Integer
+
   type loop[B,F[_ <: B] <: B, Res <: B] <: B
 }
 
@@ -39,27 +41,30 @@ sealed trait PosInt extends NonNegInt with NonZeroInt {
   type loop[B,F[_ <: B] <: B, Res <: B] = pred#loop[B,F,F[Res]]
 }
 
-sealed trait SuccInt[P <: NonNegInt] extends PosInt {
+sealed class SuccInt[P <: NonNegInt] extends PosInt {
   type succ = SuccInt[SuccInt[P]]
   type add[N <: Integer] = P#add[N#succ]
   type pred = P
   type sub[N <: Integer] = P#sub[N#pred]
   type neg = P#neg#pred
+  type mult[R <: Integer] = R#add[pred#mult[R]]
 }
 
-sealed trait PredInt[S <: NonPosInt] extends NegInt {
+sealed class PredInt[S <: NonPosInt] extends NegInt {
   type succ = S
   type add[N <: Integer] = S#add[N#pred]
   type pred = PredInt[PredInt[S]]
   type sub[N <: Integer] = S#sub[N#succ]
   type neg = S#neg#succ
+  type mult[R <: Integer] = R#sub[succ#mult[R]]
 }
 
-sealed trait _0 extends NonNegInt with NonPosInt {
+sealed class _0 extends NonNegInt with NonPosInt {
   type isZero = True
   type succ = SuccInt[_0]
   type add[N <: Integer] = N
   type pred = PredInt[_0]
   type sub[N <: Integer] = N#neg
   type neg = _0
+  type mult[R <: Integer] = _0
 }
