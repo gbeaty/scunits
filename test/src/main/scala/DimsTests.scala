@@ -2,9 +2,7 @@ package scunits.types
 
 import scunits._
 
-object DimsTests {
-  // New stuff:
-  // implicit val bqs = new (Basis.Length :: Basis.Time :: Basis.Info :: QNil)
+object DimTests {
   implicit val bqs = scunits.siBaseQuantities
   import bqs.ops._
 
@@ -32,21 +30,21 @@ object DimsTests {
   implicitly[(Basis.Length :: QNil)#append[QNil] =:= (Basis.Length :: QNil)]
 
   // Test zeros:
-  implicitly[QNil#zeros =:= Dims]
-  implicitly[LengthTimeMs#zeros =:= Basis.Length#setDim[Basis.Time#setDim[Dims,_0],_0]]
+  implicitly[QNil#zeros =:= Dim]
+  implicitly[LengthTimeMs#zeros =:= Basis.Length#setDim[Basis.Time#setDim[Dim,_0],_0]]
 
   // Test setters/getters:
-  implicitly[Basis.Length#get[Basis.Length#setDim[Dims,p1]] =:= p1]
+  implicitly[Basis.Length#get[Basis.Length#setDim[Dim,p1]] =:= p1]
   implicitly[Basis.Time#get[Basis.Time#setDim[Speed,n2]] =:= n2]
-  implicitly[Basis.Time#get[Basis.Time#setDim[Basis.Time#setDim[Dims,n2],n1]] =:= n1]
-  implicitly[Basis.Time#get[Basis.Time#setDim[Basis.Time#setDim[Dims,n1],n2]] =:= n2]
-  implicitly[Basis.Time#get[TimeMs#zeros with Basis.Time#setDim[Basis.Time#setDim[Dims,n1],n2]] =:= n2]
+  implicitly[Basis.Time#get[Basis.Time#setDim[Basis.Time#setDim[Dim,n2],n1]] =:= n1]
+  implicitly[Basis.Time#get[Basis.Time#setDim[Basis.Time#setDim[Dim,n1],n2]] =:= n2]
+  implicitly[Basis.Time#get[TimeMs#zeros with Basis.Time#setDim[Basis.Time#setDim[Dim,n1],n2]] =:= n2]
 
   // Test negations:
-  implicitly[bqs.neg[Dimless] =:= Dimless]
-  implicitly[bqs.neg[Time] =:= Frequency]
-  implicitly[bqs.neg[bqs.neg[Speed]] =:= Speed]
-  implicitly[bqs.neg[Speed] =:= ((Basis.Length ^ n1) * (Basis.Time ^ p1))]
+  implicitly[bqs.inv[Dimless] =:= Dimless]
+  implicitly[bqs.inv[Time] =:= Frequency]
+  implicitly[bqs.inv[bqs.inv[Speed]] =:= Speed]
+  implicitly[bqs.inv[Speed] =:= ((Basis.Length ^ n1) * (Basis.Time ^ p1))]
 
   // Test mults and divs
   implicitly[Dimless * Dimless =:= Dimless]
@@ -59,4 +57,6 @@ object DimsTests {
   implicitly[Speed * Time =:= Length]
   implicitly[Frequency * Length =:= Speed]
   implicitly[Length * Frequency =:= Speed]
+
+  type Test = Capacitance * Resistance / Capacitance / Resistance * Capacitance * Resistance / Capacitance / Resistance * Capacitance * Resistance / Capacitance / Resistance * Capacitance * Resistance / Capacitance / Resistance * Capacitance * Resistance / Capacitance / Resistance * Capacitance * Resistance / Capacitance / Resistance * Capacitance * Resistance / Capacitance / Resistance * Capacitance * Resistance / Capacitance / Resistance * Capacitance * Resistance / Capacitance / Resistance * Capacitance * Resistance / Capacitance / Resistance * Capacitance * Resistance / Capacitance / Resistance * Capacitance * Resistance / Capacitance / Resistance * Capacitance * Resistance / Capacitance / Resistance * Capacitance * Resistance / Capacitance / Resistance * Capacitance * Resistance / Capacitance / Resistance * Capacitance * Resistance / Capacitance / Resistance * Capacitance * Resistance / Capacitance / Resistance * Capacitance * Resistance / Capacitance / Resistance * Capacitance * Resistance / Capacitance / Resistance * Capacitance * Resistance / Capacitance / Resistance * Capacitance * Resistance / Capacitance / Resistance * Capacitance * Resistance / Capacitance / Resistance * Capacitance * Resistance / Capacitance / Resistance * Capacitance * Resistance / Capacitance / Resistance * Capacitance * Resistance / Capacitance / Resistance * Capacitance * Resistance / Capacitance / Resistance * Capacitance * Resistance / Capacitance / Resistance
 }

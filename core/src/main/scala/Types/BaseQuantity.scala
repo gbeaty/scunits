@@ -2,20 +2,25 @@ package scunits.types
 
 import scunits._
 
+trait DimsConst[Bs <: Dim, Vs <: Dim] extends Dims {
+  type bases = Bs
+  type values = Vs
+  type set[B <: BaseQuantity, To <: Integer] = DimsConst[bases with B#of, values with B#set[To]]
+}
+
 trait BaseQuantity {
-  type of
+  type self <: BaseQuantityOf[self]
+  type of <: Dim
   type set[E <: Integer] <: of
   type get[L <: of] <: Integer
 
-  type to[E <: Integer] = Dims with set[E]
-  type setDim[L <: Dims, To <: Integer] = L with set[To]
+  type to[E <: NonZeroInt] = DimsConst[self#of, self#set[E]]
+  type setDim[L <: Dim, To <: Integer] = L with set[To]
   type dim = to[p1]
-  
-  class op[L <: of, R <: of, E <: Dims] {
-    type getL = get[L]
-    type getR = get[R]
-    type apply[O[_ <: Integer, _ <: Integer] <: Integer] = setDim[E, O[getL,getR]]
-  }
 
-  type setNonZero[L <: Dims, To <: Integer] = To#isZero#branch[L, L, setDim[L,To]]
+  // type setNonZero[L <: Dim, To <: Integer] = To#isZero#branch[L, L, setDim[L,To]]
+  type setNonZero[L <: Dim, To <: Integer] = To#ifZero[L, L, ({type nz[I <: NonZeroInt] = setDim[L,I]})#nz]
+}
+trait BaseQuantityOf[S <: BaseQuantityOf[S]] extends BaseQuantity {
+  type self = S
 }

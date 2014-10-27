@@ -21,10 +21,10 @@ case class UnitM[L <: Dims](
   def label(n: String, s: String) = copy[L](name = Some(n), symbol = Some(s))
   def rename(n: String) = copy[L](name = Some(n))
 
-  def inv[A <: QList](implicit a: A) = UnitM[a.neg[L]](mult = 1 / mult)
+  def inv[Qs <: QListOf[L#bases]](implicit qs: Qs) = UnitM[qs.inv[L]](mult = 1 / mult)
 
-  def *[R <: Dims, Qs <: QList](r: UnitM[R])(implicit qs: Qs) = UnitM[qs.mult[L,R]](mult = prefixedMult * r.prefixedMult)  
-  def /[R <: Dims, Qs <: QList](r: UnitM[R])(implicit qs: Qs) = UnitM[qs.div[L,R]](mult = prefixedMult / r.prefixedMult)
+  def *[R <: Dims, Qs <: QListOf[R#bases]](r: UnitM[R])(implicit qs: Qs) = UnitM[qs.mult[L,R]](mult = prefixedMult * r.prefixedMult)  
+  def /[R <: Dims, Qs <: QListOf[R#bases]](r: UnitM[R])(implicit qs: Qs) = UnitM[qs.div[L,R]](mult = prefixedMult / r.prefixedMult)
 
   def *(r: BigDecimal) = UnitM[L](mult = prefixedMult * r)
   def *(r: Double) = UnitM[L](mult = prefixedMult * r)
@@ -46,8 +46,8 @@ case class UnitM[L <: Dims](
       case (Some(n),Some(s)) => this.label(pn + n, ps + s)
       case _ => this
     }
-  def sq = (this * this).prefixLabel("square ", "sq-")
-  def cu = (this * this * this).prefixLabel("cubic", "cu-")
+  def sq[Qs <: QListOf[L#bases]](implicit qs: Qs) = (this * this).prefixLabel("square ", "sq-")
+  def cu[Qs <: QListOf[L#bases]](implicit qs: Qs) = (this * this * this).prefixLabel("cubic", "cu-")
 }
 object UnitM {
   def apply[D <: Dims](name: String, symbol: String): UnitM[D] =

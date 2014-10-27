@@ -110,8 +110,8 @@ class Examples extends Specification {
       implicitly[Volume / Length =:= Area]
       implicitly[Acceleration * Mass =:= Force]
 
-      // Use #neg to find the reciprocal of a Dims:
-      val hz: Scalar[siBaseQuantities.neg[Time]] = hertz(5.0)
+      // Use #inv to find the multiplicative inverse of a Dims:
+      val hz: Scalar[siBaseQuantities.inv[Time]] = hertz(5.0)
 
       // Dims compose as you might expect:
       Scalar[Length *Length](4.0) ==== metre(2.0) * metre(2.0)

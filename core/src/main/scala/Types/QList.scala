@@ -1,61 +1,63 @@
 package scunits.types
 
 import scunits._
+import annotation.implicitNotFound
 
 trait QList {
-  type set <: BaseQuantity
-  type dims <: Dims   
+  type self <: QList
+  type base <: Dim   
 
-  protected type bugOp[L <: dims, R <: dims, O[_ <: Integer, _ <: Integer] <: Integer] <: Dims
+  type mult[L <: Dims, R <: Dims] = self#op[L#values,R#values,+]
+  type div[L <: Dims, R <: Dims] = self#op[L#values,R#values,-]
+  protected type op[L <: Dim, R <: Dim, O[_ <: Integer, _ <: Integer] <: Integer] = doOp[zeros with L, zeros with R, O]
+  protected type doOp[L <: base, R <: base, O[_ <: Integer, _ <: Integer] <: Integer] <: Dims
   
-  type zeros <: dims
+  type zeros <: base
   type append[As <: QList] <: QList
 
-  type op[L <: Dims, R <: Dims, O[_ <: Integer, _ <: Integer] <: Integer] =
-    bugOp[zeros with L, zeros with R, O]
+  type inv[L <: Dims] = DimsConst[L#bases, self#neg[self#zeros with L#values]]
+  protected type neg[L <: base] <: Dim
 
-  type mult[L <: Dims, R <: Dims] = op[L,R,+]
-  type div[L <: Dims, R <: Dims] = op[L,R,-]
-
-  type neg[L <: Dims] = doNeg[zeros with L]
-  protected type doNeg[L <: dims] <: Dims
-
-  type pow[L <: Dims, R <: Integer] = doPow[zeros with L, R]
-  protected type doPow[L <: dims, R <: Integer] <: Dims
+  type pow[L <: Dims, R <: Integer] = DimsConst[L#bases, doPow[zeros with L#values, R]]
+  protected type doPow[L <: base, R <: Integer] <: Dim
 
   object ops {
     type *[L <: Dims, R <: Dims] = mult[L,R]
     type /[L <: Dims, R <: Dims] = div[L,R]
   }
 }
-trait QListOf[-D <: Dims] extends QList {
-  type dims >: D <: Dims
-  // type dims <: D
+@implicitNotFound(msg = "Cannot find an implicit QList for BaseQuantities ${Bs}.")
+trait QListOf[+Bs <: Dim] extends QList {
+  type self <: QListOf[Bs]
+  type base <: Bs
 }
-class ::[L <: BaseQuantity, R <: QList] extends QListOf[L#of with R#dims] {
+class ::[L <: BaseQuantity, R <: QList] extends QListOf[L#of with R#base] {
+  type self = L :: R
   type head = L
   type tail = R
-  type dims = L#of with R#dims
-  type set = head with tail#set
+  type base = L#of with R#base
   type zeros = head#setDim[tail#zeros, _0]
   type append[As <: QList] = head :: tail#append[As]
 
-  protected type doNeg[L <: dims] = head#setNonZero[tail#doNeg[L], head#get[L]#neg]
+  protected type neg[L <: base] = head#setNonZero[tail#neg[L], head#get[L]#neg]
+  
+  protected type doOp[L <: base, R <: base, O[_ <: Integer, _ <: Integer] <: Integer] = ({
+    type rem = tail#doOp[L,R,O]
+    type exp = O[head#get[L], head#get[R]]
+    // type apply = exp#isZero#branch[Dims, rem, rem#set[head, exp]]
+    type apply = exp#ifZero[Dims, rem, ({type nz[I <: NonZeroInt] = rem#set[head, I]})#nz]
+  })#apply
 
-  protected type bugOp[L <: dims, R <: dims, O[_ <: Integer, _ <: Integer] <: Integer] =
-    head#setNonZero[tail#bugOp[L,R,O], O[head#get[L], head#get[R]]]
+  protected type doPow[L <: base, R <: Integer] = head#setNonZero[tail#doPow[L,R], head#get[L]#mult[R]]
 
-  protected type doPow[L <: dims, R <: Integer] = head#setNonZero[tail#pow[L,R], head#get[L]#mult[R]]
 }
 trait QNil extends QList {
-  type set = BaseQuantity
-  type dims = Dims
-  type zeros = Dims
+  type self = QNil
+  type base = Dim
+  type zeros = Dim
   type append[As <: QList] = As
 
-  protected type doNeg[L <: dims] = Dims
-
-  protected type bugOp[L <: dims, R <: dims, O[_ <: Integer, _ <: Integer] <: Integer] = Dims
-
-  protected type doPow[L <: dims, R <: Integer] = Dims
+  protected type neg[L <: base] = Dim
+  protected type doOp[L <: base, R <: base, O[_ <: Integer, _ <: Integer] <: Integer] = Dimless
+  protected type doPow[L <: base, R <: Integer] = Dim
 }
