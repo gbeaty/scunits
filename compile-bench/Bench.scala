@@ -4,7 +4,7 @@ import scunits.si._
 import scunits.default._
 
 object Bench {
-  // 449 lines: 2s, 122 lines per second.
+  // 449 lines: 4s, 112 lines per second.
   val bench: Array[Measure[Dimless]] = Array(
      metre(1) * metre(2) * metre(3) / second(1) / squareMetre(6) / second(2) * gram(100) / newton(100)
     ,metre(1) * metre(2) * metre(3) / second(1) / squareMetre(6) / second(2) * gram(100) / newton(100)
