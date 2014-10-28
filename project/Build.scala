@@ -41,6 +41,7 @@ object Scunits extends Build {
     libraryDependencies ++= testDeps
     //,scalacOptions ++= Seq("-Xlog-implicits")
   )
+  val compileBench = project("compile-bench").dependsOn(core)
 
   override def rootProject = Some(core)
 }
