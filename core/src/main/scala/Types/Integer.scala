@@ -17,6 +17,7 @@ sealed trait Integer {
   type mult[R <: Integer] <: Integer
 
   type ifZero[B, T <: B, E[_ <: NonZeroInt] <: B] <: B
+  type dimsNzAdd[D <: Dims, B <: BaseQuantity] <: Dims
 }
 
 sealed trait NonNegInt extends Integer {
@@ -47,6 +48,7 @@ sealed class SuccInt[P <: NonNegInt] extends PosInt {
   type neg = P#neg#pred
   type mult[R <: Integer] = R#add[pred#mult[R]]
   type ifZero[B, T <: B, E[_ <: NonZeroInt] <: B] = E[SuccInt[P]]
+  type dimsNzAdd[D <: Dims, B <: BaseQuantity] = DimsConst[D#bases with B#of, D#values with B#set[SuccInt[P]]]
 }
 
 sealed class PredInt[S <: NonPosInt] extends NegInt {
@@ -57,6 +59,7 @@ sealed class PredInt[S <: NonPosInt] extends NegInt {
   type neg = S#neg#succ
   type mult[R <: Integer] = R#sub[succ#mult[R]]
   type ifZero[B, T <: B, E[_ <: NonZeroInt] <: B] = E[PredInt[S]]
+  type dimsNzAdd[D <: Dims, B <: BaseQuantity] = DimsConst[D#bases with B#of, D#values with B#set[PredInt[S]]]
 }
 
 sealed class _0 extends NonNegInt with NonPosInt {
@@ -68,4 +71,5 @@ sealed class _0 extends NonNegInt with NonPosInt {
   type neg = _0
   type mult[R <: Integer] = _0
   type ifZero[B, T <: B, E[_ <: NonZeroInt] <: B] = T
+  type dimsNzAdd[D <: Dims, B <: BaseQuantity] = D
 }

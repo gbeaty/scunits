@@ -38,6 +38,7 @@ object Ddaq extends Build {
   val test = project("test").dependsOn(core).settings(
     libraryDependencies ++= testDeps
   )
+  val compileBench = project("compile-bench").dependsOn(core)
 
   override def rootProject = Some(core)
 }

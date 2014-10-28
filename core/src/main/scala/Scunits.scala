@@ -11,8 +11,7 @@ package object scunits extends Implicits {
   trait Dims {
     type bases <: Dim
     type values <: Dim
-    // Implementing set in DimsConst reduced compilation times by 14%.
-    type set[B <: BaseQuantity, To <: Integer] <: Dims    
+    type set[B <: BaseQuantity, To <: Integer] = DimsConst[bases with B#of, values with B#set[To]]    
     type setVals[Vs <: Dim] = DimsConst[bases,Vs]
   }
   type Dimless = DimsConst[Dim, Dim]
@@ -112,6 +111,4 @@ package object scunits extends Implicits {
   type CatalyticActivity = AmountOfSubstance / Time
 
   type DistancePerFuel = Length / Volume
-
-  implicitly[Conductance * Flux =:= Charge]
 }

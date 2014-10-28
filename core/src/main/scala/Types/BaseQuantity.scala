@@ -5,7 +5,6 @@ import scunits._
 trait DimsConst[Bs <: Dim, Vs <: Dim] extends Dims {
   type bases = Bs
   type values = Vs
-  type set[B <: BaseQuantity, To <: Integer] = DimsConst[bases with B#of, values with B#set[To]]
 }
 
 trait BaseQuantity {

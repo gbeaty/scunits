@@ -45,7 +45,8 @@ class ::[L <: BaseQuantity, R <: QList] extends QListOf[L#of with R#base] {
     type rem = tail#doOp[L,R,O]
     type exp = O[head#get[L], head#get[R]]
     // type apply = exp#isZero#branch[Dims, rem, rem#set[head, exp]]
-    type apply = exp#ifZero[Dims, rem, ({type nz[I <: NonZeroInt] = rem#set[head, I]})#nz]
+    // type apply = exp#ifZero[Dims, rem, ({type nz[I <: NonZeroInt] = rem#set[head, I]})#nz]
+    type apply = exp#dimsNzAdd[rem, head]
   })#apply
 
   protected type doPow[L <: base, R <: Integer] = head#setNonZero[tail#doPow[L,R], head#get[L]#mult[R]]
