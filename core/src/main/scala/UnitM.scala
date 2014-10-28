@@ -16,11 +16,8 @@ case class UnitM[D <: Dims](
   val prefixedMultDouble = prefixedMult.toDouble
   val doubleOffset = offset.toDouble
   
-  def apply(in: Double) = Measure[D](prefixedMultDouble * (in + doubleOffset))
-  def unapply(out: Measure[D]) = out.v / prefixedMultDouble - doubleOffset
-
-  // def apply(in: BigDecimal) = Measure[D](prefixedMult * in + offset)
-  // def unapply(out: Measure[D]) = (out.v - doubleOffset) / prefixedMultDouble
+  def apply(in: Double) = Scalar[D](prefixedMultDouble * (in + doubleOffset))
+  def unapply(out: Scalar[D]) = out.v / prefixedMultDouble - doubleOffset
 
   def label(n: String, s: String) = copy[D](name = Some(n), symbol = Some(s))
   def rename(n: String) = copy[D](name = Some(n))

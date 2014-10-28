@@ -57,4 +57,3 @@ trait ENil extends EList {
   type isPadding = True
   type truncZeros = ENil
 }
-trait EUndefined extends EList

@@ -37,8 +37,8 @@ object ConverterTests {
   import TestConverters._
 
   // Full tests:
-  aToAb(Measure[Aq.A](1)): Measure[ABq.A]
-  bcToAbcd(Measure[BCq.B#mult[BCq.C]](1)): Measure[ABCDq.B#mult[ABCDq.C]]
+  aToAb(Scalar[Aq.A](1)): Scalar[ABq.A]
+  bcToAbcd(Scalar[BCq.B#mult[BCq.C]](1)): Scalar[ABCDq.B#mult[ABCDq.C]]
 
   // Partial tests:
   implicitly[abToA.indices =:= (_0 -: Empty[Integer] =: INil)]
@@ -47,10 +47,10 @@ object ConverterTests {
   implicitly[abToA.exps[ABq.B#exps] =:= Empty[EList]]
   implicitly[abToA.exps[ABq.A#exps] =:= Full[EList, p1 *: ENil]]
 
-  abToA(Measure[ABq.A](1)): Measure[Aq.A]
-  abToBc(Measure[ABq.B](1)): Measure[BCq.B]
+  abToA(Scalar[ABq.A](1)): Scalar[Aq.A]
+  abToBc(Scalar[ABq.B](1)): Scalar[BCq.B]
 
   // Implicit tests:
-  (Measure[ABCDq.B](1.0) + Measure[BCq.B](1.0)): Measure[ABCDq.B]
-  (Measure[ABCDq.C](1.0) + Measure[BCq.C](1.0)): Measure[ABCDq.C]
+  (Scalar[ABCDq.B](1.0) + Scalar[BCq.B](1.0)): Scalar[ABCDq.B]
+  (Scalar[ABCDq.C](1.0) + Scalar[BCq.C](1.0)): Scalar[ABCDq.C]
 }

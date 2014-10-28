@@ -87,14 +87,14 @@ class Benchmarks extends Specification {
 
     val mRes = time(() => {
       var i = 0
-      var res = Measure[Acceleration](1.0)
+      var res = Scalar[Acceleration](1.0)
       while(i < its) {
-        val el = Measure[Acceleration](vals(i))
+        val el = Scalar[Acceleration](vals(i))
         res = res + el * (el ÷ 3.0) × 1.5 / el - el * (el ÷ 3.0) × 1.5 / el + el * (el ÷ 3.0) × 1.5 / el - el * (el ÷ 3.0) × 1.5 / el + el * (el ÷ 3.0) × 1.5 / el - el * (el ÷ 3.0) × 1.5 / el + el * (el ÷ 3.0) × 1.5 / el - el * (el ÷ 3.0) × 1.5 / el + el * (el ÷ 3.0) × 1.5 / el - el * (el ÷ 3.0) × 1.5 / el + el * (el ÷ 3.0) × 1.5 / el - el * (el ÷ 3.0) × 1.5 / el + el * (el ÷ 3.0) × 1.5 / el - el * (el ÷ 3.0) × 1.5 / el + el * (el ÷ 3.0) × 1.5 / el - el * (el ÷ 3.0) × 1.5 / el + el * (el ÷ 3.0) × 1.5 / el - el * (el ÷ 3.0) × 1.5 / el + el * (el ÷ 3.0) × 1.5 / el - el * (el ÷ 3.0) × 1.5 / el + el * (el ÷ 3.0) × 1.5 / el - el * (el ÷ 3.0) × 1.5 / el + el * (el ÷ 3.0) × 1.5 / el - el * (el ÷ 3.0) × 1.5 / el + el * (el ÷ 3.0) × 1.5 / el - el * (el ÷ 3.0) × 1.5 / el + el * (el ÷ 3.0) × 1.5 / el - el * (el ÷ 3.0) × 1.5 / el + el * (el ÷ 3.0) × 1.5 / el - el * (el ÷ 3.0) × 1.5 / el + el * (el ÷ 3.0) × 1.5 / el - el * (el ÷ 3.0) × 1.5 / el + el * (el ÷ 3.0) × 1.5 / el - el * (el ÷ 3.0) × 1.5 / el + el * (el ÷ 3.0) × 1.5 / el - el * (el ÷ 3.0) × 1.5 / el + el * (el ÷ 3.0) × 1.5 / el - el * (el ÷ 3.0) × 1.5 / el + el * (el ÷ 3.0) × 1.5 / el - el * (el ÷ 3.0) × 1.5 / el + el * (el ÷ 3.0) × 1.5 / el - el * (el ÷ 3.0) × 1.5 / el + el * (el ÷ 3.0) × 1.5 / el - el * (el ÷ 3.0) × 1.5 / el + el * (el ÷ 3.0) × 1.5 / el - el * (el ÷ 3.0) × 1.5 / el + el * (el ÷ 3.0) × 1.5 / el - el * (el ÷ 3.0) × 1.5 / el + el * (el ÷ 3.0) × 1.5 / el - el * (el ÷ 3.0) × 1.5 / el + el * (el ÷ 3.0) × 1.5 / el - el * (el ÷ 3.0) × 1.5 / el + el * (el ÷ 3.0) × 1.5 / el - el * (el ÷ 3.0) × 1.5 / el + el * (el ÷ 3.0) × 1.5 / el - el * (el ÷ 3.0) × 1.5 / el + el * (el ÷ 3.0) × 1.5 / el - el * (el ÷ 3.0) × 1.5 / el + el * (el ÷ 3.0) × 1.5 / el - el * (el ÷ 3.0) × 1.5 / el + el * (el ÷ 3.0) × 1.5 / el - el * (el ÷ 3.0) × 1.5 / el
         i += 1
       }
       res.v
-    })("Measure",cycles)
+    })("Scalar",cycles)
 
     val bRes = time(() => {
       var i = 0
@@ -135,7 +135,7 @@ class Benchmarks extends Specification {
   def BenchArray(arraySize: Int) = {
     val double = Vector.fill(arraySize)(util.Random.nextDouble).toArray
     val measureA = ArrayM[Length](double)
-    val measure = double.map(Measure[Length](_))
+    val measure = double.map(Scalar[Length](_))
 
     import scala.collection.mutable._
 
@@ -153,14 +153,14 @@ class Benchmarks extends Specification {
       }
     }
 
-    val mop = (l: Measure[Length], r: Measure[Length]) => l + r
+    val mop = (l: Scalar[Length], r: Scalar[Length]) => l + r
 
     val cycles = arraySize * arraySize / 2
 
     Seq(
       time(() => iterate(double, (l: Double, r: Double) => l + r))("Array[Double]",cycles),
-      time(() => iterate(measureA, mop))("ArrayM[Measure[Length]]",cycles),
-      time(() => iterate(measure, mop))("Array[Measure[Length]]",cycles)
+      time(() => iterate(measureA, mop))("ArrayM[Scalar[Length]]",cycles),
+      time(() => iterate(measure, mop))("Array[Scalar[Length]]",cycles)
     )
   }
 
@@ -195,7 +195,7 @@ class Benchmarks extends Specification {
     }
   }
 
-  "Measures" should {
+  "Scalars" should {
     "Out-perform boxed values before JIT has warmed up" in {
       preJitRes(1).time must be_<(preJitRes(2).time)
     }
@@ -205,7 +205,7 @@ class Benchmarks extends Specification {
   }
 
   "ArrayM[_]s" should {
-    "Out-perform Array[Measure[_]]" in {
+    "Out-perform Array[Scalar[_]]" in {
       jitArray(1).time must be_<(jitArray(2).time)
     }
     "Perform like Array[Double]" in {

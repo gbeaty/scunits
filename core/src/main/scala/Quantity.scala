@@ -22,5 +22,5 @@ class Quantities {
   type Dimless                = dimsOf[ENil]
 
   val coef = UnitM[Dimless](mult = 1.0)
-  implicit def toCoef(v: Double) = Measure[Dimless](v)
+  implicit def toCoef(v: Double) = Scalar[Dimless](v)
 }

@@ -8,8 +8,8 @@ class Converter {
   type to <: QList  
 
   type exps[FE <: EList] <: Box[EList]
-  def apply[F <: DimsOf[from], R <: EList](m: Measure[F])(implicit c: ConvertResult[exps[F#exps],R]) =
-    Measure[to ^ R](m.v)
+  def apply[F <: DimsOf[from], R <: EList](m: Scalar[F])(implicit c: ConvertResult[exps[F#exps],R]) =
+    Scalar[to ^ R](m.v)
 }
 class ConverterFrom[F <: QList] extends Converter {
   type from = F

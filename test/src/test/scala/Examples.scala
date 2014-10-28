@@ -9,14 +9,14 @@ class BasicExamples extends Specification {
   import scunits.us._       // Import American units.  
   import scunits.us.Fluid._ // Default to fluid volumes.
 
-  "Measures" should {
+  "Scalars" should {
     "Work" in {
-      // All measurements (Measures) are case value classes, and are stored internally in SI units,
-      // so comparisons between Measures produce expected results.
-      // Measure is the value class which contains the underlying value (Measure.v).
+      // All measurements (Scalars) are case value classes, and are stored internally in SI units,
+      // so comparisons between Scalars produce expected results.
+      // Scalar is the value class which contains the underlying value (Scalar.v).
       // Volume is the dimension, which is represented by the Dims type.
-      val gal: Measure[Volume] = gallon(1.0)
-      val oneLitre: Measure[Volume] = litre(1.0)
+      val gal: Scalar[Volume] = gallon(1.0)
+      val oneLitre: Scalar[Volume] = litre(1.0)
 
       // gallon, litre and cubicMetre are all units of measure (UnitMs). They convert inputed Doubles to a base SI value.
       // In the case of volume this is cubic metres.
@@ -26,20 +26,20 @@ class BasicExamples extends Specification {
       // Values of the same Dims can be added and subtracted:
       (gal + oneLitre) must be_> (gal - oneLitre)
 
-      // Use Measure.v to access the underlying double,
+      // Use Scalar.v to access the underlying double,
       gal ==== litre(3.785411784)
-      // This value represents the Measure in its SI unit, e.g. one gallon is so many cubic metres:
+      // This value represents the Scalar in its SI unit, e.g. one gallon is so many cubic metres:
       gal.v ==== 0.003785411784
 
-      // Naturally if we do Measure[A] / Measure[A] we get a dimensionless (dimless) result:
-      val dimless: Measure[Dimless] = gal / oneLitre
+      // Naturally if we do Scalar[A] / Scalar[A] we get a dimensionless (dimless) result:
+      val dimless: Scalar[Dimless] = gal / oneLitre
 
       // Type-level Dims composition is easy:
       implicitly[Volume#div[Length] =:= Area]
       implicitly[Acceleration#mult[Mass] =:= Force]
       
       // Dims types change as you'd expect:
-      val litreArea: Measure[Area] = oneLitre / metre(0.1)
+      val litreArea: Scalar[Area] = oneLitre / metre(0.1)
       litreArea ==== squareMetre(0.01)
 
       // This does not compile:
@@ -65,7 +65,7 @@ class BasicExamples extends Specification {
 
       // This syntax also works:
       centi(metre)(10) ==== metre(0.1)
-      // ...but don't use it. Doing this creates an entirely new centimetre unit then creats a Measure of 10 centimetres.
+      // ...but don't use it. Doing this creates an entirely new centimetre unit then creats a Scalar of 10 centimetres.
       // This is a much more costly operation than the centi(metre, 10) example,
       // which only results in some Double multiplication.
 
@@ -101,19 +101,19 @@ class BasicExamples extends Specification {
       // Dimensions are represented by the type Dims.
       // These are lists of base quantities and a list of their exponents.
       // They exist only at the type-level, and have no run-time representation.
-      def sq[D <: Dims](in: Measure[D]) = in * in
+      def sq[D <: Dims](in: Scalar[D]) = in * in
       sq(metre(1)) === squareMetre(1)
 
       // Dimless represents a dimensionless quantity, created by the UnitM coef:
-      val dimless: Measure[Dimless] = coef(5)
+      val dimless: Scalar[Dimless] = coef(5)
 
       // Use #neg to find the reciprocal of a Dims:
-      val hz: Measure[Time#neg] = hertz(5.0)
+      val hz: Scalar[Time#neg] = hertz(5.0)
 
       // Dims compose as you might expect:
-      val sqm: Measure[Length#mult[Length]] = metre(2.0) * metre(2.0)
+      val sqm: Scalar[Length#mult[Length]] = metre(2.0) * metre(2.0)
       sqm ==== squareMetre(4.0)
-      val m: Measure[Area#div[Length]] = sqm / metre(4.0)
+      val m: Scalar[Area#div[Length]] = sqm / metre(4.0)
       m ==== metre(1.0)      
     }
   }
@@ -149,10 +149,10 @@ class QuantitiesExamples extends Specification {
       import AppleOrange._                 
 
       // You can't compare apple and oranges! This won't compile:      
-      // Measure[Apple](4) > Measure[Orange](2)
+      // Scalar[Apple](4) > Scalar[Orange](2)
 
       // This will:
-      Measure[Apple](4) > Measure[Apple](2)
+      Scalar[Apple](4) > Scalar[Apple](2)
     }
   }
 
@@ -166,10 +166,10 @@ class QuantitiesExamples extends Specification {
     val pear = UnitM[Pear]("pear","p",1)
   }
   /*
-    Converting between Measures of different Quantities requires a Converter. These must be cached as
+    Converting between Scalars of different Quantities requires a Converter. These must be cached as
     vals because the creation of a converter is costly but rarely needed. Scunits preserves its
     primitive-like performance with cached converters. They are generally only used when working with
-    Measures from other libraries.
+    Scalars from other libraries.
   */
   implicit val toPears = converter(AppleOrange, AppleOrangePear)
 
@@ -187,23 +187,23 @@ class QuantitiesExamples extends Specification {
   }
 
   /*"Algebra" should {
-    "Work on abstract Measures" in {
+    "Work on abstract Scalars" in {
       // Even when dealing with abstract Dims, some elementary algebra is possible. e.g.:
 
-      // Implicitly convert Measure[A] * Measure[B / A] to Measure[B]
-      def cancelDenominator[L <: Dims, R <: Dims](l: Measure[L], r: Measure[R#Div[L]]): Measure[R] = l * r
+      // Implicitly convert Scalar[A] * Scalar[B / A] to Scalar[B]
+      def cancelDenominator[L <: Dims, R <: Dims](l: Scalar[L], r: Scalar[R#Div[L]]): Scalar[R] = l * r
       cancelDenominator[Time,Length](second(1.0), metrePerSecond(60.0)) ==== metre(60.0)
 
-      // Implicitly convert Measure[A] / (Measure[A] / Measure[B]) to Measure[B]
-      def cancelNumerator[A <: Dims, B <: Dims](a: Measure[A], b: Measure[A#Div[B]]): Measure[B] = a / b
+      // Implicitly convert Scalar[A] / (Scalar[A] / Scalar[B]) to Scalar[B]
+      def cancelNumerator[A <: Dims, B <: Dims](a: Scalar[A], b: Scalar[A#Div[B]]): Scalar[B] = a / b
       cancelNumerator[Length,Time](metre(60.0), metrePerSecond(60.0)) ==== second(1.0)
 
       // A / A = a dimensionless quantity
-      def cancelSelf[A <: Dims](a: Measure[A]): Measure[dimless] = a / a
-      cancelSelf[Length](metre(1.0)) ==== Measure[dimless](1.0)
+      def cancelSelf[A <: Dims](a: Scalar[A]): Scalar[dimless] = a / a
+      cancelSelf[Length](metre(1.0)) ==== Scalar[dimless](1.0)
 
       // More complex algebra does not work, yet:
-      // def abOverAc[A <: Dims, B <: Dims, C <: Dims](l: Measure[A#Mult[B]], r: Measure[A#Mult[C]]): Measure[B#Div[A]] = l / r
+      // def abOverAc[A <: Dims, B <: Dims, C <: Dims](l: Scalar[A#Mult[B]], r: Scalar[A#Mult[C]]): Scalar[B#Div[A]] = l / r
     }
   }*/
 }
