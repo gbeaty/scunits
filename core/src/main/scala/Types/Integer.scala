@@ -3,9 +3,6 @@ package scunits.types
 import scunits._
 
 sealed trait Integer {
-  type isZero <: Bool
-  type isPos <: Bool
-  type isNeg <: Bool
   type succ <: Integer  
   
   type add[N <: Integer] <: Integer
@@ -21,22 +18,16 @@ sealed trait Integer {
 }
 
 sealed trait NonNegInt extends Integer {
-  type isNeg = False
   type succ <: PosInt
 }
 sealed trait NonPosInt extends Integer {
-  type isPos = False
   type pred <: NegInt
 }
-sealed trait NonZeroInt extends Integer {
-  type isZero = False
-}
+sealed trait NonZeroInt extends Integer
 sealed trait NegInt extends NonPosInt with NonZeroInt {
-  type isNeg = True
   type succ <: NonPosInt
 }
 sealed trait PosInt extends NonNegInt with NonZeroInt {
-  type isPos = True
   type pred <: NonNegInt
 }
 
@@ -63,7 +54,6 @@ sealed class PredInt[S <: NonPosInt] extends NegInt {
 }
 
 sealed class _0 extends NonNegInt with NonPosInt {
-  type isZero = True
   type succ = SuccInt[_0]
   type add[N <: Integer] = N
   type pred = PredInt[_0]
