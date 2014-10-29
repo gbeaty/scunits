@@ -1,11 +1,69 @@
 package scunits
 
+import scunits.types._
 import scunits.si._
+import scunits.siBaseQuantities._
 
 object Bench {
-  // 300 lines: 13s, 23 lines per second.
+  trait A extends BaseQuantity {
+    trait of extends Dim { type a <: Integer }
+    type set[I <: Integer] = of { type a = I }
+    type get[Of <: of] = Of#a
+  }
+  trait B extends BaseQuantity {
+    trait of extends Dim { type b <: Integer }
+    type set[I <: Integer] = of { type b = I }
+    type get[Of <: of] = Of#b
+  }
+  trait C extends BaseQuantity {
+    trait of extends Dim { type c <: Integer }
+    type set[I <: Integer] = of { type c = I }
+    type get[Of <: of] = Of#c
+  }
+  /*trait D extends BaseQuantity {
+    trait of extends Dim { type d <: Integer }
+    type set[I <: Integer] = of { type d = I }
+    type get[Of <: of] = Of#d
+  }
+  trait E extends BaseQuantity {
+    trait of extends Dim { type e <: Integer }
+    type set[I <: Integer] = of { type e = I }
+    type get[Of <: of] = Of#e
+  }*/
+  class Qs extends (A :: B :: C :: QNil)
+  implicit val qs = new Qs
+  import qs._
+
+  type A1 = A ^ p1
+  type B1 = B ^ p1
+  type C1 = C ^ p1
+
+  val (ua, ub, uc) = (UnitM[A1]("","",1), UnitM[B1]("","",1), UnitM[C1]("","",1))
+  val (a, b, c) = (ua(1), ub(1), uc(1))
+  val r1 = a
+  val r2 = r1 * b
+  val r3 = r2 * c
+  val r4 = r3 * a
+  val r5 = r4 * b
+  val r6 = r5 * c
+  val r7 = r6 * a
+
+  val nr6 =
+    Scalar[
+      DimsConst[
+        qs.type,
+        Dim with (Bench.C#of{type c = p2}) with (Bench.B#of{type b = p2}) with (Bench.A#of{type a = p2})
+      ]
+    ](1)
+  val nr7 = nr6 * a
+
+  implicitly[nr7.dims =:= r7.dims]
+
+  
+  // val res = a1(1) * b1(1) * c1(1) * a1(1) * b1(1) * c1(1) * a1(1) //* b1(1) * c1(1) / a1(1) / b1(1) / c1(1) * a1(1)
+  
   val bench: Array[Scalar[Dimless]] = Array(
-     metre(1) * metre(2) * metre(3) / second(1) / squareMetre(6) / second(2) * gram(100) / newton(100)
+     /*metre(1) * metre(2) * metre(3) / second(1) / squareMetre(6) / second(2) * gram(100) / newton(100)
     ,metre(1) * metre(2) * metre(3) / second(1) / squareMetre(6) / second(2) * gram(100) / newton(100)
     ,metre(1) * metre(2) * metre(3) / second(1) / squareMetre(6) / second(2) * gram(100) / newton(100)
     ,metre(1) * metre(2) * metre(3) / second(1) / squareMetre(6) / second(2) * gram(100) / newton(100)
@@ -304,6 +362,6 @@ object Bench {
     ,metre(1) * metre(2) * metre(3) / second(1) / squareMetre(6) / second(2) * gram(100) / newton(100)
     ,metre(1) * metre(2) * metre(3) / second(1) / squareMetre(6) / second(2) * gram(100) / newton(100)
     ,metre(1) * metre(2) * metre(3) / second(1) / squareMetre(6) / second(2) * gram(100) / newton(100)
-    ,metre(1) * metre(2) * metre(3) / second(1) / squareMetre(6) / second(2) * gram(100) / newton(100)
+    ,metre(1) * metre(2) * metre(3) / second(1) / squareMetre(6) / second(2) * gram(100) / newton(100)*/
   )
 }

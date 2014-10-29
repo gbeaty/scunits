@@ -42,7 +42,7 @@ trait Base {
   val metrePerSecond = UnitM[Speed]("metre per second", "m/s")
   val metrePerSecondSquared = UnitM[Acceleration]("metre per second squared", "m/s^2")
   val newton = UnitM[Force]("newton","N")
-  val newtonMetre = newton * metre
+  // val newtonMetre = newton * metre
   val pascal = UnitM[Pressure]("pascal","Pa")
   val joule = UnitM[Energy]("joule","J")
   val watt = UnitM[Power]("watt","W")

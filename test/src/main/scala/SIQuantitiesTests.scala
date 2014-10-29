@@ -1,34 +1,33 @@
 package scunits.test
 
 import scunits._
-import scunits.siBaseQuantities.ops._
 
 object SIQuantitiesTests {
 
   // Length
-  implicitly[Area / Length =:= Length]
-  implicitly[Volume / Length =:= Area]
-  implicitly[Volume / Area =:= Length]
-  implicitly[Density * Volume =:= Mass]
-  implicitly[Speed / Length =:= Frequency]
-  implicitly[Energy / Length =:= Force]
+  implicitly[Area#op[Length]#div =:= Length]
+  implicitly[Volume#op[Length]#div =:= Area]
+  implicitly[Volume#op[Area]#div =:= Length]
+  implicitly[Density#op[Volume]#mult =:= Mass]
+  implicitly[Speed#op[Length]#div =:= Frequency]
+  implicitly[Energy#op[Length]#div =:= Force]
 
   // Power and energy
-  implicitly[Power * Time =:= Energy]
-  implicitly[Energy / Time =:= Power]
-  implicitly[Acceleration * Time =:= Speed]
+  implicitly[Power#op[Time]#mult =:= Energy]
+  implicitly[Energy#op[Time]#div =:= Power]
+  implicitly[Acceleration#op[Time]#mult =:= Speed]
 
   // Electricity
-  implicitly[Conductance * Time =:= Capacitance]
-  implicitly[Voltage / Resistance =:= Current]
-  implicitly[Resistance * Current =:= Voltage]
-  implicitly[Conductance * Flux =:= Charge]
-  implicitly[Flux / Inductance =:= Current]
+  implicitly[Conductance#op[Time]#mult =:= Capacitance]
+  implicitly[Voltage#op[Resistance]#div =:= Current]
+  implicitly[Resistance#op[Current]#mult =:= Voltage]
+  implicitly[Conductance#op[Flux]#mult =:= Charge]
+  implicitly[Flux#op[Inductance]#div =:= Current]
 
   // Magnetism
-  implicitly[Flux / Area =:= FieldStrength]
-  implicitly[Flux / Time =:= Voltage]
+  implicitly[Flux#op[Area]#div =:= FieldStrength]
+  implicitly[Flux#op[Time]#div =:= Voltage]
   
   // Radioactivity
-  implicitly[Dose / Length =:= Acceleration]
+  implicitly[Dose#op[Length]#div =:= Acceleration]
 }

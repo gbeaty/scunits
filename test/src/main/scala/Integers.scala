@@ -26,16 +26,4 @@ object Integer {
   implicitly[n3 - p1 =:= n4]
   implicitly[n1 - n3 =:= p2]
   implicitly[n2 - n2 =:= _0]
-
-  implicitly[p1#isPos =:= True]
-  implicitly[_0#isPos =:= False]
-  implicitly[n1#isPos =:= False]
-
-  implicitly[p1#isNeg =:= False]
-  implicitly[_0#isNeg =:= False]
-  implicitly[n1#isNeg =:= True]
-
-  implicitly[p1#isZero =:= False]
-  implicitly[_0#isZero =:= True]
-  implicitly[n1#isZero =:= False]
 }
