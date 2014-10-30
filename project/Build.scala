@@ -6,7 +6,7 @@ import Keys._
 object Scunits extends Build {
 
   val appVersion = "0.0.2-SNAPSHOT"
-  val scala = "2.11.2"
+  val scala = "2.11.3"
 
   val testDeps = Seq(
     "org.specs2" %% "specs2" % "2.4" % "test"
