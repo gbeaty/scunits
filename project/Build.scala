@@ -5,7 +5,7 @@ import Keys._
 
 object Ddaq extends Build {
 
-  val appVersion = "0.0.1-SNAPSHOT"
+  val appVersion = "0.0.2-SNAPSHOT"
   val scala = "2.11.2"
 
   val testDeps = Seq(
@@ -40,6 +40,7 @@ object Ddaq extends Build {
   val test = project("test").dependsOn(core).settings(
     libraryDependencies ++= testDeps
   )
+  val compileBench = project("compile-bench").dependsOn(core)
 
   override def rootProject = Some(core)
 }
