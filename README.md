@@ -18,8 +18,9 @@ scunits is an experimental, extensible library for type-checking dimensional qua
 ## Todo
 - Other numeric (BigDecimal, Int, etc.) support for Measures.
 - More unit conversion tests
-- Logarithmic scale units
+- Logarithmic scale units (dB, etc.)
 - If possible, make the type signatures readable.
+- Add better support for handling abstract Dims.
 
 ## Using scunits
 See: https://github.com/gbeaty/scunits/blob/type-logic/test/src/test/scala/Examples.scala
