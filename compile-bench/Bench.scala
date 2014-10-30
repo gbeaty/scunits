@@ -7,9 +7,6 @@ import scunits.default._
   15 objects of 449 lines each:
   6735 lines in 40 seconds = 168 lines per second.
   2.8 Ghz Haswell running Ubuntu 14.04.
-
-  With 'improved' truncating: 9-11s
-  O(n) truncating: 41s
 */
 
 object Bench1 {

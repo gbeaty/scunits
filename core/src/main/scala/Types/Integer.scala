@@ -15,7 +15,6 @@ sealed trait Integer {
   type neg <: Integer
 
   type loop[B,F[_ <: B] <: B, Res <: B] <: B
-
 }
 
 sealed trait NonNegInt extends Integer {
