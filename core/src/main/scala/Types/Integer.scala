@@ -6,7 +6,7 @@ sealed trait Integer {
   type isZero <: Bool
   type isPos <: Bool
   type isNeg <: Bool
-  type succ <: Integer  
+  type succ <: Integer
   
   type add[N <: Integer] <: Integer
 
@@ -15,6 +15,7 @@ sealed trait Integer {
   type neg <: Integer
 
   type loop[B,F[_ <: B] <: B, Res <: B] <: B
+
 }
 
 sealed trait NonNegInt extends Integer {

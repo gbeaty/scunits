@@ -27,21 +27,3 @@ trait Empty[A] extends Box[A] {
   type getOrElse[E <: A] = E
   type isFull = False
 }
-
-class Bounded[A] {
-  class i[C <: A] {
-    type apply = C
-  }
-}
-class Bounded2[A] {
-  type apply[C <: A] = C
-}
-object Bounded {
-  type B1 = Bounded[Any]#i[String]#apply
-  implicitly[B1 =:= String]
-
-  val b2 = new Bounded2[Integer]
-
-  // type B2 = Bounded2[Integer]#apply[_0]
-  type B2 = b2.apply[_0]
-}

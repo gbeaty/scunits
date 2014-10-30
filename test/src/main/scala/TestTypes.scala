@@ -109,11 +109,14 @@ object TestTypes {
   type i12 = p1 *: p2 *: ENil
   type i21 = p2 *: p1 *: ENil
   type i012 = _0 *: p1 *: p2 *: ENil
+  type i101 = p1 *: _0 *: p1 *: ENil
   type i102 = p1 *: _0 *: p2 *: ENil
   type i0012 = _0 *: i012
   type i3003 = p3 *: _0 *: _0 *: p3 *: ENil
   type i1234 = p1 *: p2 *: p3 *: p4 *: ENil
   type i4321 = p4 *: p3 *: p2 *: p1 *: ENil
+  type i2113 = p2 *: p1 *: p1 *: p3 *: ENil
+  type i1103 = p1 *: p1 *: _0 *: p3 *: ENil
 
   type Rev4 = p3 -: p2 -: p1 -: _0 -: INil
   type Rev2 = p1 -: _0 -: INil

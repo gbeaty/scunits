@@ -10,11 +10,7 @@ object DListTests {
 
   // Test neg:
   implicitly[ENil#neg =:= ENil]
-  implicitly[i012#neg =:= (_0 *: n1 *: n2 *: ENil)]
-
-  // Test truncZeros:
-  implicitly[i00#truncZeros =:= ENil]
-  implicitly[(p1 *: _0 *: p2 *: _0 *: ENil)#truncZeros =:= (p1 *: _0 *: p2 *: ENil)]
+  implicitly[i012#neg =:= (_0 *: n1 *: n2 *: ENil)]  
 
   // Test set:
   implicitly[ENil#set[_0,p1] =:= (p1 *: ENil)]
@@ -35,6 +31,10 @@ object DListTests {
   implicitly[i012#div[i012] =:= ENil]
   implicitly[i012#div[i3003] =:= (n3 *: p1 *: p2 *: n3 *: ENil)]
   implicitly[ENil#div[i012] =:= i012#neg]
+
+  // Test zero truncating:
+  implicitly[i012#div[i102] =:= (n1 *: p1 *: ENil)]
+  implicitly[i2113#div[i1103] =:= i101]
 
   // Test zeros:
   implicitly[EList#zeros[p1,p2] =:= (_0 *: p2 *: ENil)]
