@@ -142,6 +142,8 @@ class QuantitiesExamples extends Specification {
   object AppleOrange extends AppleOrange {
     // Define the order of the quantities:
     type quants = Apple.type :: Orange.type :: QNil
+    // When defining orders, try to define the most commonly used BaseQuantities first. When scunits constructs lists of
+    // exponents, it truncates trailing zeros, which slightly improves compilation performance.
   }
 
   "Apples and Oranges" should {
@@ -183,6 +185,9 @@ class QuantitiesExamples extends Specification {
       implicit val fromPears = converter(AppleOrangePear, AppleOrange)
       AppleOrange.apple(1) ==== AppleOrangePear.apple(1)
       AppleOrange.orange(1) ==== AppleOrangePear.orange(1)
+
+      // This won't compile, because there is no way to express a pear in AppleOrange BaseQuantities:
+      // AppleOrange.orange(1) ==== AppleOrangePear.pear(1)
     }
   }
 
