@@ -4,8 +4,8 @@ import scunits.si._
 import scunits.default._
 
 object Bench {
-  // 449 lines: 4s, 112 lines per second on a 2.4 GHz Haswell running Ubuntu 14.04.
-  val bench: Array[Scalar[Dimless]] = Array(
+  // 449 lines: 3s, 150 lines per second on a 2.4 GHz Haswell running Ubuntu 14.04.
+  val bench: Seq[Scalar[Dimless]] = Seq(
      metre(1) * metre(2) * metre(3) / second(1) / squareMetre(6) / second(2) * gram(100) / newton(100)
     ,metre(1) * metre(2) * metre(3) / second(1) / squareMetre(6) / second(2) * gram(100) / newton(100)
     ,metre(1) * metre(2) * metre(3) / second(1) / squareMetre(6) / second(2) * gram(100) / newton(100)
