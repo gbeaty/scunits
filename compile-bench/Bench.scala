@@ -5,8 +5,14 @@ import scunits.default._
 
 /*
   15 objects of 449 lines each:
-  6735 lines in 40 seconds = 168 lines per second.
+  6735 lines in 39 seconds = 173 lines per second.
   2.8 Ghz Haswell running Ubuntu 14.04.
+
+  Time taken:
+  Generic value class with no type parameters: ~3s
+  Adding Integers: ~4 seconds
+  EList multiplication: ~13s
+  Matching QList with DimsOf[L#qlist]: ~15s
 */
 
 object Bench1 {

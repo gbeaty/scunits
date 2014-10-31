@@ -25,7 +25,6 @@ trait *:[H <: Integer, T <: EList] extends ENel {
   type tail = T
   type neg = head#neg *: tail#neg
   type setInt[I <: Integer, To <: Integer] = I#isPos#branch[EList, head *: tail#set[I#pred,To], (To *: tail)]
-  // type mult[R <: EList] = tail#mult[R#tail]#buildTail[head + R#head]
   type mult[Es <: EList] = Es#tail#mult[tail]#buildTail[head + Es#head]
   type buildTail[E <: Integer] = E *: head *: tail
 }

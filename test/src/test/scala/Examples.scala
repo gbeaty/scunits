@@ -11,7 +11,7 @@ class BasicExamples extends Specification {
 
   "Scalars" should {
     "Work" in {
-      // All measurements (Scalars) are case value classes, and are stored internally in SI units,
+      // All measurements (Scalars) are case value classes. They store values in SI units,
       // so comparisons between Scalars produce expected results.
       // Scalar is the value class which contains the underlying value (Scalar.v).
       // Volume is the dimension, which is represented by the Dims type.
@@ -45,7 +45,7 @@ class BasicExamples extends Specification {
       // This does not compile:
       // litreArea ==== cubicMetre(0.01)
 
-      // Automagically recognize and convert inverse units:
+      // Implicitly recognize and convert inverse units:
       val massPerVolumeOfWater = pound(8.33) / gallon(1.0)
       val volumePerMassOfWater = gallon(1.0) / pound(8.33)
       massPerVolumeOfWater ==== volumePerMassOfWater
@@ -110,10 +110,13 @@ class BasicExamples extends Specification {
       // Use #neg to find the reciprocal of a Dims:
       val hz: Scalar[Time#neg] = hertz(5.0)
 
+      // We can also import type-level Dims operators:
+      import scunits.types._
+
       // Dims compose as you might expect:
-      val sqm: Scalar[Length#mult[Length]] = metre(2.0) * metre(2.0)
+      val sqm: Scalar[Length * Length] = metre(2.0) * metre(2.0)
       sqm ==== squareMetre(4.0)
-      val m: Scalar[Area#div[Length]] = sqm / metre(4.0)
+      val m: Scalar[Area / Length] = sqm / metre(4.0)
       m ==== metre(1.0)      
     }
   }
@@ -143,7 +146,7 @@ class QuantitiesExamples extends Specification {
     // Define the order of the quantities:
     type quants = Apple.type :: Orange.type :: QNil
     // When defining orders, try to define the most commonly used BaseQuantities first. When scunits constructs lists of
-    // exponents, it truncates trailing zeros, which slightly improves compilation performance.
+    // exponents, it truncates trailing zeros, slightly improving compilation performance.
   }
 
   "Apples and Oranges" should {
@@ -190,25 +193,4 @@ class QuantitiesExamples extends Specification {
       // AppleOrange.orange(1) ==== AppleOrangePear.pear(1)
     }
   }
-
-  /*"Algebra" should {
-    "Work on abstract Scalars" in {
-      // Even when dealing with abstract Dims, some elementary algebra is possible. e.g.:
-
-      // Implicitly convert Scalar[A] * Scalar[B / A] to Scalar[B]
-      def cancelDenominator[L <: Dims, R <: Dims](l: Scalar[L], r: Scalar[R#Div[L]]): Scalar[R] = l * r
-      cancelDenominator[Time,Length](second(1.0), metrePerSecond(60.0)) ==== metre(60.0)
-
-      // Implicitly convert Scalar[A] / (Scalar[A] / Scalar[B]) to Scalar[B]
-      def cancelNumerator[A <: Dims, B <: Dims](a: Scalar[A], b: Scalar[A#Div[B]]): Scalar[B] = a / b
-      cancelNumerator[Length,Time](metre(60.0), metrePerSecond(60.0)) ==== second(1.0)
-
-      // A / A = a dimensionless quantity
-      def cancelSelf[A <: Dims](a: Scalar[A]): Scalar[dimless] = a / a
-      cancelSelf[Length](metre(1.0)) ==== Scalar[dimless](1.0)
-
-      // More complex algebra does not work, yet:
-      // def abOverAc[A <: Dims, B <: Dims, C <: Dims](l: Scalar[A#Mult[B]], r: Scalar[A#Mult[C]]): Scalar[B#Div[A]] = l / r
-    }
-  }*/
 }

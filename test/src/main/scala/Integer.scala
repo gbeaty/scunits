@@ -3,6 +3,14 @@ package scunits.test
 import scunits.types._
 
 object Integer {
+  implicitly[_0#succ =:= p1]
+  implicitly[p2#succ =:= p3]
+  implicitly[n2#succ =:= n1]
+
+  implicitly[_0#pred=:= n1]
+  implicitly[n2#pred =:= n3]
+  implicitly[n2#succ =:= n1]
+
   implicitly[_0 + _0 =:= _0]  
   
   implicitly[p1 + p2 =:= p3]
