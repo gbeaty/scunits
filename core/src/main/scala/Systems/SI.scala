@@ -1,6 +1,7 @@
 package scunits.system.si
 
 import scunits._
+import scunits.default._
 
 trait Prefix {
   val yocto = new UnitPrefix("yocto", "y", 1e-24)
@@ -31,9 +32,9 @@ trait Base {
   val gram = UnitM[Mass]("gram", "g")
   val kelvin = UnitM[Temperature]("kelvin", "K")
   val celsius = UnitM[Temperature]("celsius", "°C", 1.0, 273.15)
-  val ampere = UnitM[Electric.Current]("ampere", "A")
+  val ampere = UnitM[Current]("ampere", "A")
   val mole = UnitM[AmountOfSubstance]("mole", "mol")
-  val candela = UnitM[Luminous.Intensity]("candela", "cd")
+  val candela = UnitM[Intensity]("candela", "cd")
   val hertz = UnitM[Frequency]("hertz","Hz")
 
   val minute = (second * 60.0).label("second","s")
@@ -46,19 +47,19 @@ trait Base {
   val pascal = UnitM[Pressure]("pascal","Pa")
   val joule = UnitM[Energy]("joule","J")
   val watt = UnitM[Power]("watt","W")
-  val coulomb = UnitM[Electric.Charge]("coulomb","C")
-  val volt = UnitM[Electric.Potential]("volt","V")
-  val farad = UnitM[Electric.Capacitance]("farad","F")
-  val ohm = UnitM[Electric.Resistance]("ohm","Ω")
-  val siemens = UnitM[Electric.Conductance]("siemens","S")
-  val weber = UnitM[Magnetic.Flux]("weber","Wb")
-  val tesla = UnitM[Magnetic.FieldStrength]("tesla","T")
-  val henry = UnitM[Electric.Inductance]("henry","H")
-  val lumen = UnitM[Luminous.Intensity]("lumen","lm")
+  val coulomb = UnitM[Charge]("coulomb","C")
+  val volt = UnitM[Potential]("volt","V")
+  val farad = UnitM[Capacitance]("farad","F")
+  val ohm = UnitM[Resistance]("ohm","Ω")
+  val siemens = UnitM[Conductance]("siemens","S")
+  val weber = UnitM[Flux]("weber","Wb")
+  val tesla = UnitM[FieldStrength]("tesla","T")
+  val henry = UnitM[Inductance]("henry","H")
+  val lumen = UnitM[Intensity]("lumen","lm")
   val lux = UnitM[Illuminance]("lux","lx")
-  val becquerel = UnitM[Radioactive.Decay]("becquerel","Bq")
-  val gray = UnitM[Radioactive.Dose]("gray","Gy")
-  val sievert = UnitM[Radioactive.Dose]("sievert","Sv")
+  val becquerel = UnitM[Decay]("becquerel","Bq")
+  val gray = UnitM[Dose]("gray","Gy")
+  val sievert = UnitM[Dose]("sievert","Sv")
   val katal = UnitM[CatalyticActivity]("katal","kat")
 
   val jouleSecond = UnitM[AngularMomentum]("Joule-second","J*s")
@@ -70,12 +71,10 @@ trait Base {
 trait Accepted {
   val litre = UnitM[Volume]("litre","L",0.001)
   val tonne = UnitM[Volume]("tonne","t",1000000.0)
-  val electronVolt = UnitM[Electric.Potential]("electron volt","eV",1.60217656535e-19)
+  val electronVolt = UnitM[Potential]("electron volt","eV",1.60217656535e-19)
   val dalton = UnitM[Mass]("dalton","Da",1.66053892173e-24)
   val astroUnit = UnitM[Length]("astronomical unit","au",1.495978706916e11)
   val speedOfLight = UnitM[Speed]("speed of light","c",299792458)
   val reducedPlankConstant = UnitM[Power]("reduced plank constant","ħ",1.0545716818e34)
   val electronMass = UnitM[Mass]("electron mass","me",9.109382616e-28)
 }
-
-trait All extends Base with Prefix with Accepted

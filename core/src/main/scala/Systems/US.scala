@@ -3,6 +3,7 @@ package scunits.system.us
 import scala.math.BigDecimal
 
 import scunits._
+import scunits.default._
 
 class FootBased(metresPerFoot: BigDecimal) {
   val foot = UnitM[Length]("foot","ft",metresPerFoot)
@@ -103,12 +104,5 @@ trait Base {
     val electric = UnitM[Power]("electric horsepower","hp(E)",746)
     val boiler = UnitM[Power]("boiler horsepower","hp(S)",9812.5)
   }
-  val mpg = UnitM[Automotive.DistancePerFuel]("miles per gallon","mpg",425143.707)
-}
-
-trait All extends InternationalFoot with Mass.Avoirdupois with Nautical with Base {
-  object Survey extends SurveyFoot
-  object Fluid extends volume.Fluid
-  object Dry extends volume.Dry
-  object Troy extends Mass.Troy
+  val mpg = UnitM[DistancePerFuelUsed]("miles per gallon","mpg",425143.707)
 }

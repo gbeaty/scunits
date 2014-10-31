@@ -2,27 +2,21 @@ package scunits.test
 
 import org.specs2.mutable._
 
-class Examples extends Specification {
-  // Main import, grabs everything you usually need except specific units:
-  import scunits._
+class BasicExamples extends Specification {
+  import scunits._          // Main import, just the basic types.
+  import scunits.default._  // Default dimensions (Length, Speed, etc.)  
+  import scunits.si._       // Import all base SI units, accepted units and prefixes.  
+  import scunits.us._       // Import American units.  
+  import scunits.us.Fluid._ // Default to fluid volumes.
 
-  // Import all base SI units, accepted units and prefixes:
-  import scunits.si._
-
-  // Import American units:
-  import scunits.us._
-
-  // Default to fluid volumes:
-  import scunits.us.Fluid._
-
-  "Measures" should {
+  "Scalars" should {
     "Work" in {
-      // All measures are case value classes, and are stored as SI units,
-      // so comparisons between measures produce expected results.
-      // Measure is the value class which contains the underlying value (Measure.v).
+      // All measurements (Scalars) are case value classes. They store values in SI units,
+      // so comparisons between Scalars produce expected results.
+      // Scalar is the value class which contains the underlying value (Scalar.v).
       // Volume is the dimension, which is represented by the Dims type.
-      val gal: Measure[Volume] = gallon(1.0)
-      val oneLitre: Measure[Volume] = litre(1.0)
+      val gal: Scalar[Volume] = gallon(1.0)
+      val oneLitre: Scalar[Volume] = litre(1.0)
 
       // gallon, litre and cubicMetre are all units of measure (UnitMs). They convert inputed Doubles to a base SI value.
       // In the case of volume this is cubic metres.
@@ -32,29 +26,29 @@ class Examples extends Specification {
       // Values of the same Dims can be added and subtracted:
       (gal + oneLitre) must be_> (gal - oneLitre)
 
-      // Use Measure.v to access the underlying double,
+      // Use Scalar.v to access the underlying double,
       gal ==== litre(3.785411784)
-      // This value represents the Measure in its SI unit, e.g. one gallon is so many cubic metres:
+      // This value represents the Scalar in its SI unit, e.g. one gallon is so many cubic metres:
       gal.v ==== 0.003785411784
 
-      // Naturally if we do Measure[A] / Measure[A] we get a dimensionless (DNil) result:
-      val dimless: Measure[DNil] = gal / oneLitre
+      // Naturally if we do Scalar[A] / Scalar[A] we get a dimensionless (dimless) result:
+      val dimless: Scalar[Dimless] = gal / oneLitre
 
       // Type-level Dims composition is easy:
-      implicitly[Volume#Div[Length] =:= Area]
-      implicitly[Acceleration#Mult[Mass] =:= Force]
+      implicitly[Volume#div[Length] =:= Area]
+      implicitly[Acceleration#mult[Mass] =:= Force]
       
       // Dims types change as you'd expect:
-      val litreArea: Measure[Area] = oneLitre / metre(0.1)
+      val litreArea: Scalar[Area] = oneLitre / metre(0.1)
       litreArea ==== squareMetre(0.01)
 
       // This does not compile:
       // litreArea ==== cubicMetre(0.01)
 
-      // Automagically recognize and convert inverse units:
+      // Implicitly recognize and convert inverse units:
       val massPerVolumeOfWater = pound(8.33) / gallon(1.0)
       val volumePerMassOfWater = gallon(1.0) / pound(8.33)
-      massPerVolumeOfWater   ==== volumePerMassOfWater
+      massPerVolumeOfWater ==== volumePerMassOfWater
       // Their values will be different because Frequency is dimensionally different from Time:
       massPerVolumeOfWater.v !=== volumePerMassOfWater.v
     }
@@ -71,7 +65,7 @@ class Examples extends Specification {
 
       // This syntax also works:
       centi(metre)(10) ==== metre(0.1)
-      // ...but don't use it. Doing this creates an entirely new centimetre unit then creats a Measure of 10 centimetres.
+      // ...but don't use it. Doing this creates an entirely new centimetre unit then creats a Scalar of 10 centimetres.
       // This is a much more costly operation than the centi(metre, 10) example,
       // which only results in some Double multiplication.
 
@@ -97,94 +91,106 @@ class Examples extends Specification {
 
       // But distance traveled per fuel used is a poor way to represent gas milage. Fuel used per distance is better.
       // Invert a UnitM with .inv:
-      val gpm: UnitM[Volume#Div[Length]] = mpg.inv
+      val gpm = mpg.inv
       mpg(20.0) ==== gpm(1.0 / 20.0)
     }
   }
 
   "Dimensions" should {
     "Be composable" in {
-      // Dimensions are represented by the type Dims, and are stored as lists of base quantities.
+      // Dimensions are represented by the type Dims.
+      // These are lists of base quantities and a list of their exponents.
       // They exist only at the type-level, and have no run-time representation.
+      def sq[D <: Dims](in: Scalar[D]) = in * in
+      sq(metre(1)) === squareMetre(1)
 
-      // Dims can be DNels (non-empty list), which are non-nil dimensions:
-      def sq[D <: DNel](in: Measure[D]) = in * in
-      // So this will compile:
-      sq(metre(2.0)) ==== squareMetre(4.0)
-      // ...but this won't:
-      // sq(coef(2.0)) ==== coef(4.0)
+      // Dimless represents a dimensionless quantity, created by the UnitM coef:
+      val dimless: Scalar[Dimless] = coef(5)
 
-      // ...or DNil, which are empty lists of Dims and represent dimensionless quantites:
-      val dnil: Measure[DNil] = 5.0
+      // Use #neg to find the reciprocal of a Dims:
+      val hz: Scalar[Time#neg] = hertz(5.0)
 
-      // Use #Neg to find the reciprocal of a Dims:
-      val hz: Measure[Time#Neg] = hertz(5.0)
+      // We can also import type-level Dims operators:
+      import scunits.types._
 
       // Dims compose as you might expect:
-      val sqm: Measure[Length#Mult[Length]] = metre(2.0) * metre(2.0)
+      val sqm: Scalar[Length * Length] = metre(2.0) * metre(2.0)
       sqm ==== squareMetre(4.0)
-      val m: Measure[Area#Div[Length]] = sqm / metre(4.0)
+      val m: Scalar[Area / Length] = sqm / metre(4.0)
       m ==== metre(1.0)      
     }
   }
+}
 
-  "Base Quantities" should {
-    "Be definible" in {
-      // We can make up our own base quantities.
-      // Unfortunately they must all be given unique type-level numbers as IDs:
-      import scunits.integer._
-      type _10 = SuccInt[_9]
-      type _11 = SuccInt[_10]
-      object Apple extends BaseQuantity[_10]("apples","a")
-      object Orange extends BaseQuantity[_11]("oranges","o")
+class QuantitiesExamples extends Specification {
+  // We can make up our own base quantities.
+  import scunits._
+  import scunits.types._
 
-      // Then a type alias for each base dimension:
-      type Apple = Apple.Base
-      type Orange = Orange.Base
+  object Apple extends BaseQuantity
+  object Orange extends BaseQuantity
 
-      // You can't compare apple and oranges! This won't compile:
-      // Measure[Apple](4) > Measure[Orange](2)
+  // To use them we need to include them in a Quantities object:
+  trait AppleOrange extends Quantities {
+    // Create a type alias for each quantity:
+    type Apple = dimOf[_0]
+    type Orange = dimOf[p1]
 
-      // Under the hood, UnitM.apply converts a number to a base unit for their dimension.
-      // Generally this is SI units, but the SI sadly lacks a base quantity for apples.
-      // We'll use one apple as the base unit for apples:
-      val apple = UnitM[Apple]("apple","a",1)
-      apple(1) ==== Measure[Apple](1)
-      // So we don't really need the apple UnitM, but I like to have it in case the base unit of Apple changes.
+    // Now we'll need some units.
+    val apple = UnitM[Apple]("apple","a",1)
+    val orange = UnitM[Apple]("orange","o",1)
+    // A bushel is 126 apples:
+    val bushel = apple * 126
+  }
+  object AppleOrange extends AppleOrange {
+    // Define the order of the quantities:
+    type quants = Apple.type :: Orange.type :: QNil
+    // When defining orders, try to define the most commonly used BaseQuantities first. When scunits constructs lists of
+    // exponents, it truncates trailing zeros, slightly improving compilation performance.
+  }
 
-      // Lets define a bushel as 126 apples:
-      val bushel = (apple * 126)
+  "Apples and Oranges" should {
+    "Not be comparable" in { 
+      import AppleOrange._                 
 
-      // All base quantities can be composed with the others, e.g., the average apple weighs 150 grams:
-      val meanAppleMass = gram(150) / Measure[Apple](1)
-      meanAppleMass ==== Measure[Mass#Div[Apple]](150)
+      // You can't compare apple and oranges! This won't compile:      
+      // Scalar[Apple](4) > Scalar[Orange](2)
 
-      // So we can get the average weight of a bushel of apples:
-      bushel(1) * meanAppleMass ==== gram(18900)
-
-      // I'm looking for a way to make base quantities more composable, so there can't be collisions between their IDs.
-      // If anyone has any suggestions on how to do this, please let me know.
+      // This will:
+      Scalar[Apple](4) > Scalar[Apple](2)
     }
   }
 
-  "Algebra" should {
-    "Work on abstract Measures" in {      
-      // Even when dealing with abstract Dims, some elementary algebra is possible. e.g.:
+  // You can also extend existing Quantities. This is done by appending new BaseQuanities:
+  object Pear extends BaseQuantity
+  object AppleOrangePear extends AppleOrange {
+    // We need to append here so the inherited indexes of apple and pear (i0 and i1) are still valid:
+    override type quants = AppleOrange.quants#append[Pear.type :: QNil]
+    type Pear = dimOf[p2]
 
-      // Implicitly convert Measure[A] * Measure[B / A] to Measure[B]
-      def cancelDenominator[L <: Dims, R <: Dims](l: Measure[L], r: Measure[R#Div[L]]): Measure[R] = l * r
-      cancelDenominator[Time,Length](second(1.0), metrePerSecond(60.0)) ==== metre(60.0)
+    val pear = UnitM[Pear]("pear","p",1)
+  }
+  /*
+    Converting between Scalars of different Quantities requires a Converter. These must be cached as
+    vals because the creation of a converter is costly but rarely needed. Scunits preserves its
+    primitive-like performance with cached converters. They are generally only used when working with
+    Scalars from other libraries.
+  */
+  implicit val toPears = converter(AppleOrange, AppleOrangePear)
 
-      // Implicitly convert Measure[A] / (Measure[A] / Measure[B]) to Measure[B]
-      def cancelNumerator[A <: Dims, B <: Dims](a: Measure[A], b: Measure[A#Div[B]]): Measure[B] = a / b
-      cancelNumerator[Length,Time](metre(60.0), metrePerSecond(60.0)) ==== second(1.0)
+  "Apples, Oranges and Pears" should {
+    "Be convertable" in {
+      // Converted using the toPears implicit converter:
+      AppleOrangePear.apple(1) ==== AppleOrange.apple(1)
+      AppleOrangePear.orange(1) ==== AppleOrange.orange(1)
 
-      // A / A = a dimensionless quantity
-      def cancelSelf[A <: Dims](a: Measure[A]): Measure[DNil] = a / a
-      cancelSelf[Length](metre(1.0)) ==== Measure[DNil](1.0)
+      // We can convert AppleOrangePears to AppleOranges, so long as the pear dimension has an exponent of zero:
+      implicit val fromPears = converter(AppleOrangePear, AppleOrange)
+      AppleOrange.apple(1) ==== AppleOrangePear.apple(1)
+      AppleOrange.orange(1) ==== AppleOrangePear.orange(1)
 
-      // More complex algebra does not work, yet:
-      // def abOverAc[A <: Dims, B <: Dims, C <: Dims](l: Measure[A#Mult[B]], r: Measure[A#Mult[C]]): Measure[B#Div[A]] = l / r
+      // This won't compile, because there is no way to express a pear in AppleOrange BaseQuantities:
+      // AppleOrange.orange(1) ==== AppleOrangePear.pear(1)
     }
   }
 }
