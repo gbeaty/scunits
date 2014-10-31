@@ -15,15 +15,8 @@ scunits is an experimental, extensible library for type-checking dimensional qua
 - No dependencies
 - Reasonable compilation times: https://github.com/gbeaty/scunits/blob/type-logic/compile-bench/Bench.scala
 
-## Todo
-- Other numeric (BigDecimal, Int, etc.) support for Measures.
-- More unit conversion tests
-- Logarithmic scale units (dB, etc.)
-- If possible, make the type signatures readable.
-- Add better support for handling abstract Dims.
-
 ## Using scunits
 See: https://github.com/gbeaty/scunits/blob/type-logic/test/src/test/scala/Examples.scala
 
 ## Getting scunits
-scunits is not curretly in a maven repository as I don't consider it ready for general use. You'll have to `git clone https://github.com/gbeaty/scunits.git`, run `sbt publish-local`, then add `"org.scunits" %% "core" % "0.0.2-SNAPSHOT"` to your project dependencies.
+scunits is not curretly in a maven repository. You'll have to `git clone https://github.com/gbeaty/scunits.git`, run `sbt publish-local`, then add `"org.scunits" %% "core" % "0.0.2-SNAPSHOT"` to your project dependencies.
