@@ -13,7 +13,7 @@ scunits is an experimental, extensible library for type-checking dimensional qua
 - Array wrappers (`ArrayM`) for unboxed arrays
 - < 200k jar file size (for now...)
 - No dependencies
-- Reasonable compilation times: https://github.com/gbeaty/scunits/blob/type-logic/compile-bench/Bench.scala
+- Reasonable compilation times: https://github.com/gbeaty/scunits/blob/master/compile-bench/Bench.scala
 
 ## Using scunits
 See: https://github.com/gbeaty/scunits/blob/type-logic/test/src/test/scala/Examples.scala
