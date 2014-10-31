@@ -39,8 +39,4 @@ object DListTests {
   // Test zeros:
   implicitly[EList#zeros[p1,p2] =:= (_0 *: p2 *: ENil)]
   implicitly[EList#zeros[p3,p2] =:= (_0 *: _0 *: _0 *: p2 *: ENil)]
-
-  // Test empty
-  implicitly[ENil#empty =:= True]
-  implicitly[i012#empty =:= False]
 }
