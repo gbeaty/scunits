@@ -1,10 +1,7 @@
 import scunits._
 import scunits.types._
 
-trait LowPriorityImplicits {  
-}
-
-package object scunits extends LowPriorityImplicits {
+package object scunits {
   implicit def invertScalar[D <: Dims](m: Scalar[D]) = m.inv
 
   // Converting:

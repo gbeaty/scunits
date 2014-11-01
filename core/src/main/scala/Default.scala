@@ -3,6 +3,15 @@ package scunits
 import scunits.types._
 
 trait DefaultQuantities extends Quantities {
+  object Time extends BaseQuantity
+  object Info extends BaseQuantity
+  object Length extends BaseQuantity
+  object Mass extends BaseQuantity
+  object Temperature extends BaseQuantity
+  object AmountOfSubstance extends BaseQuantity  
+  object Current extends BaseQuantity
+  object Intensity extends BaseQuantity
+
   trait quants extends
     (Time.type :: Info.type :: Length.type :: Mass.type :: Temperature.type ::
     Current.type :: Intensity.type :: AmountOfSubstance.type :: QNil)  

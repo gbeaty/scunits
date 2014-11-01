@@ -2,16 +2,9 @@ package scunits
 
 import scunits.types._
 
-trait BaseQuantity
-
-object Time extends BaseQuantity
-object Info extends BaseQuantity
-object Length extends BaseQuantity
-object Mass extends BaseQuantity
-object Temperature extends BaseQuantity
-object AmountOfSubstance extends BaseQuantity  
-object Current extends BaseQuantity
-object Intensity extends BaseQuantity
+trait Quantity
+trait BaseQuantity extends Quantity
+trait AbstractQuantity extends Quantity
 
 class Quantities {
   type quants <: QList
