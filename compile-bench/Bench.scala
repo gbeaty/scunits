@@ -4,15 +4,13 @@ import scunits.si._
 import scunits.default._
 
 /*
-  15 objects of 449 lines each:
-  6735 lines in 39 seconds = 173 lines per second.
-  2.8 Ghz Haswell running Ubuntu 14.04.
+  2.8 Ghz Haswell running Ubuntu 14.04. 15 objects of 449 lines each:
+    6735 lines in 24 seconds = 281 lines per second.
 
-  Time taken:
-  Generic value class with no type parameters: ~3s
-  Adding Integers: ~4 seconds
-  EList multiplication: ~13s
-  Matching QList with DimsOf[L#qlist]: ~15s
+  Time after changes:
+    Removing the "DimsOf[D#quants]" type-check in Scalar multiplication and division: 17s
+    Basing DimsOf off Quantities instead of QLists: 24s
+    Skipping Dims mult/div, only outputing Dimless: 14s
 */
 
 object Bench1 {

@@ -12,7 +12,7 @@ trait DefaultQuantities extends Quantities {
   object Current extends BaseQuantity
   object Intensity extends BaseQuantity
 
-  trait quants extends
+  class quants extends
     (Time.type :: Info.type :: Length.type :: Mass.type :: Temperature.type ::
     Current.type :: Intensity.type :: AmountOfSubstance.type :: QNil)  
   
