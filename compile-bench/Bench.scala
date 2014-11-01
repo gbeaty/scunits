@@ -2,9 +2,26 @@ package scunits
 
 import scunits.si._
 
+/*
+  50 lines in 17s = 3 lines per second (!!)
+*/
+
 object Bench1 {
   val bench: Seq[Measure[Dimless]] = Seq(
      metre(1) * metre(2) * metre(3) / second(1) / squareMetre(6) / second(2) * gram(100) / newton(100)
+    ,metre(1) * metre(2) * metre(3) / second(1) / squareMetre(6) / second(2) * gram(100) / newton(100)
+    ,metre(1) * metre(2) * metre(3) / second(1) / squareMetre(6) / second(2) * gram(100) / newton(100)
+    ,metre(1) * metre(2) * metre(3) / second(1) / squareMetre(6) / second(2) * gram(100) / newton(100)
+    ,metre(1) * metre(2) * metre(3) / second(1) / squareMetre(6) / second(2) * gram(100) / newton(100)
+    ,metre(1) * metre(2) * metre(3) / second(1) / squareMetre(6) / second(2) * gram(100) / newton(100)
+    ,metre(1) * metre(2) * metre(3) / second(1) / squareMetre(6) / second(2) * gram(100) / newton(100)
+    ,metre(1) * metre(2) * metre(3) / second(1) / squareMetre(6) / second(2) * gram(100) / newton(100)
+    ,metre(1) * metre(2) * metre(3) / second(1) / squareMetre(6) / second(2) * gram(100) / newton(100)
+    ,metre(1) * metre(2) * metre(3) / second(1) / squareMetre(6) / second(2) * gram(100) / newton(100)
+    ,metre(1) * metre(2) * metre(3) / second(1) / squareMetre(6) / second(2) * gram(100) / newton(100)
+    ,metre(1) * metre(2) * metre(3) / second(1) / squareMetre(6) / second(2) * gram(100) / newton(100)
+    ,metre(1) * metre(2) * metre(3) / second(1) / squareMetre(6) / second(2) * gram(100) / newton(100)
+    ,metre(1) * metre(2) * metre(3) / second(1) / squareMetre(6) / second(2) * gram(100) / newton(100)
     ,metre(1) * metre(2) * metre(3) / second(1) / squareMetre(6) / second(2) * gram(100) / newton(100)
     ,metre(1) * metre(2) * metre(3) / second(1) / squareMetre(6) / second(2) * gram(100) / newton(100)
     ,metre(1) * metre(2) * metre(3) / second(1) / squareMetre(6) / second(2) * gram(100) / newton(100)

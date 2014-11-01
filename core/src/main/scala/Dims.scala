@@ -27,13 +27,6 @@ trait Dims {
   type Set <: Dims
   type Append[R <: Dims] <: Dims
 }
-trait Dimless extends Dims {
-  type Neg = Dimless
-  type Pow[R <: Integer] = Dimless
-  type Mult[R <: Integer] = Dimless
-  type Set = Dimless
-  type Append[R <: Dims] = R
-}
 trait DNel extends Dims {
   type Tail <: Dims
   type Head <: Dim
@@ -51,6 +44,13 @@ trait ::[L <: Dim, R <: Dims] extends DNelOf[L#Quant] {
   type Pow[R <: Integer] = SetExp[Head#Exp#Mult[R]] :: Tail#Pow[R]
   type Mult[R <: Integer] = SetExp[Head#Exp#Add[R]] :: Tail#Mult[R]
   type Append[R <: Dims] = Head :: Tail#Append[R]
+}
+trait Dimless extends Dims {
+  type Neg = Dimless
+  type Pow[R <: Integer] = Dimless
+  type Mult[R <: Integer] = Dimless
+  type Set = Dimless
+  type Append[R <: Dims] = R
 }
 
 @implicitNotFound(msg = "Dimensions ${A} and ${B} are not additive")
