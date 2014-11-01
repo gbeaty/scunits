@@ -15,24 +15,27 @@ class BasicExamples extends Specification {
       // so comparisons between Scalars produce expected results.
       // Scalar is the value class which contains the underlying value (Scalar.v).
       // Volume is the dimension, which is represented by the Dims type.
-      val gal: Scalar[Volume] = gallon(1.0)
+      val oneGallon: Scalar[Volume] = gallon(1.0)
       val oneLitre: Scalar[Volume] = litre(1.0)
 
       // gallon, litre and cubicMetre are all units of measure (UnitMs). They convert inputed Doubles to a base SI value.
       // In the case of volume this is cubic metres.
-      gal !=== oneLitre
+      oneGallon !=== oneLitre
       oneLitre ==== cubicMetre(0.001)
 
       // Values of the same Dims can be added and subtracted:
-      (gal + oneLitre) must be_> (gal - oneLitre)
+      (oneGallon + oneLitre) must be_> (oneGallon - oneLitre)
 
       // Use Scalar.v to access the underlying double,
-      gal ==== litre(3.785411784)
+      oneGallon ==== litre(3.785411784)
       // This value represents the Scalar in its SI unit, e.g. one gallon is so many cubic metres:
-      gal.v ==== 0.003785411784
+      oneGallon.v ==== 0.003785411784
+      // However you generally should specify the units you want to convert the Scalar into, like so:
+      oneGallon.to(litre) ==== 3.785411784
+      oneGallon.to(gallon) ==== 1.0
 
       // Naturally if we do Scalar[A] / Scalar[A] we get a dimensionless (dimless) result:
-      val dimless: Scalar[Dimless] = gal / oneLitre
+      val dimless: Scalar[Dimless] = oneGallon / oneLitre
 
       // Type-level Dims composition is easy:
       implicitly[Volume#div[Length] =:= Area]

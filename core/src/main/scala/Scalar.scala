@@ -21,4 +21,6 @@ case class Scalar[D <: Dims](v: Double) extends AnyVal with Ordered[Scalar[D]] {
   def ===(r: Scalar[D]) = v == r.v
 
   def inv = Scalar[D#neg](1.0 / v)
+
+  def to(u: UnitM[D]) = v / u.prefixedMultDouble - u.doubleOffset
 }
