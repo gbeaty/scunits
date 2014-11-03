@@ -13,7 +13,6 @@ trait EList {
   type neg <: EList
 
   type mult[Es <: EList] <: EList
-  // type div[R <: EList] = mult[R#neg]
   type div[R <: EList] <: EList
   protected type divR[L <: EList] <: EList
   type buildTail[E <: Integer] <: EList

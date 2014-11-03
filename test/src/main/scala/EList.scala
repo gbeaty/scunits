@@ -10,7 +10,7 @@ object DListTests {
 
   // Test neg:
   implicitly[ENil#neg =:= ENil]
-  implicitly[i012#neg =:= (_0 *: n1 *: n2 *: ENil)]  
+  implicitly[i012#neg =:= (_0 *: n1 *: n2 *: ENil)]
 
   // Test set:
   implicitly[ENil#set[_0,p1] =:= (p1 *: ENil)]

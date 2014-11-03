@@ -5,8 +5,11 @@ package object scunits {
   implicit def invertScalar[D <: Dims](m: Scalar[D]) = m.inv
 
   // Converting:
-  implicit def convert[Conv <: ConverterFrom[D#quants] with CachedConverter, D <: Dims, R <: EList](m: Scalar[D])
-    (implicit c: Conv, ic: ConvertResult[Conv#exps[D#exps],R]) = Scalar[Conv#to ^ R](m.v)
+  implicit def convertScalar[Conv <: ConverterFrom[D#quants] with CachedConverter, D <: Dims, R <: EList](m: Scalar[D])
+    (implicit c: Conv, cr: ConvertResult[Conv#exps[D#exps],R]) = Scalar[Conv#to ^ R](m.v)
+
+  implicit def convertUnit[Conv <: ConverterFrom[D#quants] with CachedConverter, D <: Dims, R <: EList](u: UnitM[D])
+    (implicit c: Conv, cr: ConvertResult[Conv#exps[D#exps],R]) = u.copy[Conv#to ^ R]()
 
   implicit def convertResult[C <: EList]: ConvertResult[Full[EList,C],C] = null
 

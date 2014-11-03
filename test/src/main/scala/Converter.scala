@@ -53,4 +53,8 @@ object ConverterTests {
   // Implicit tests:
   (Scalar[ABCDq.B](1.0) + Scalar[BCq.B](1.0)): Scalar[ABCDq.B]
   (Scalar[ABCDq.C](1.0) + Scalar[BCq.C](1.0)): Scalar[ABCDq.C]
+
+  // UnitM tests:
+  val bu = UnitM[ABq.B]("","",1.0)
+  val b: Scalar[BCq.B] = abToBc(bu).apply(1.0)
 }
