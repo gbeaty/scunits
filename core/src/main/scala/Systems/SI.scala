@@ -27,7 +27,7 @@ trait Prefix {
 }
 
 trait Base {
-  val metre = UnitM[Length]("meter", "m")
+  val metre = UnitM[Length]("metre", "m")
   val second = UnitM[Time]("second","s")  
   val gram = UnitM[Mass]("gram", "g")
   val kelvin = UnitM[Temperature]("kelvin", "K")
