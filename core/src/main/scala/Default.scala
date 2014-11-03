@@ -14,7 +14,7 @@ trait DefaultQuantities extends Quantities {
 
   class quants extends
     (Time.type :: Info.type :: Length.type :: Mass.type :: Temperature.type ::
-    Current.type :: Intensity.type :: AmountOfSubstance.type :: QNil)  
+    Current.type :: Intensity.type :: AmountOfSubstance.type :: QNil)
   
   type Time              = dimOf[_0]
   type Info              = dimOf[p1]

@@ -4,7 +4,7 @@ import scunits._
 import TestTypes._
 
 object SearchTests {
-  def s[Qs <: Quantities, Q <: BaseQuantity, R <: Box[Integer]](qs: Qs, bq: Q)
+  def s[Qs <: Quantities, Q <: BaseQuantity, R <: BoxOf[Integer]](qs: Qs, bq: Q)
     (implicit res: QuantSearch[Qs#quants,Q,_0,R]) = res
 
   // Not founds:

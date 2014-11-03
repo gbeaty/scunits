@@ -9,6 +9,8 @@ trait Dims {
   type mult[R <: Dims] <: DimsOf[quants]
   type div[R <: Dims] <: DimsOf[quants]
   type neg <: Dims
+
+  type of = DimsOf[quants]
 }
 trait DimsOf[Q <: QList] extends Dims {
   type quants = Q

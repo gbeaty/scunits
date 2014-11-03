@@ -6,19 +6,19 @@ package object scunits {
 
   // Converting:
   implicit def convertScalar[Conv <: ConverterFrom[D#quants] with CachedConverter, D <: Dims, R <: EList](m: Scalar[D])
-    (implicit c: Conv, cr: ConvertResult[Conv#exps[D#exps],R]) = Scalar[Conv#to ^ R](m.v)
+    (implicit c: Conv, cr: BoxIsFull[Conv#exps[D#exps],R]) = Scalar[Conv#to ^ R](m.v)
 
   implicit def convertUnit[Conv <: ConverterFrom[D#quants] with CachedConverter, D <: Dims, R <: EList](u: UnitM[D])
-    (implicit c: Conv, cr: ConvertResult[Conv#exps[D#exps],R]) = u.copy[Conv#to ^ R]()
+    (implicit c: Conv, cr: BoxIsFull[Conv#exps[D#exps],R]) = u.copy[Conv#to ^ R]()
 
-  implicit def convertResult[C <: EList]: ConvertResult[Full[EList,C],C] = null
+  implicit def convertResult[C <: EList]: BoxIsFull[Full[EList,C],C] = null
 
   def converter[F <: Quantities, T <: Quantities, Is <: IList](f: F, t: T)
     (implicit c: IndicesConverter[F#quants,T#quants,Is]) =
       new IndicesConverter[F#quants,T#quants,Is] with CachedConverter
   
   // Quantity searching:
-  implicit def quantSearch[Qs <: QNel, Q <: BaseQuantity, R <: Box[Integer], I <: Integer]
+  implicit def quantSearch[Qs <: QNel, Q <: BaseQuantity, R <: BoxOf[Integer], I <: Integer]
     (implicit ts: QuantSearch[Qs#tail,Q,I#succ,R]): QuantSearch[Qs,Q,I,R] = null
 
   implicit def quantFound[Qs <: QNelOf[Q], Q <: BaseQuantity, I <: Integer]:
@@ -28,7 +28,7 @@ package object scunits {
     QuantSearch[QNil,Q,I,Empty[Integer]] = null
 
   // Converter construction:
-  implicit def indexConverterBuild[F <: QNel, T <: QList, R <: Box[Integer], Is <: IList]
+  implicit def indexConverterBuild[F <: QNel, T <: QList, R <: BoxOf[Integer], Is <: IList]
     (implicit i: QuantSearch[T,F#head,_0,R], c: IndicesConverter[F#tail,T,Is]): IndicesConverter[F,T,R =: Is] = null
 
   implicit def indexConverterBuilt[T <: QList]: IndicesConverter[QNil,T,INil] = null
