@@ -7,53 +7,52 @@ trait Implicits {
 }
 
 package object scunits extends Implicits {
-  trait Dim
   trait Dims {
-    type bases <: Dim
-    type values <: Dim
+    type bases
+    type values
     type set[B <: BaseQuantity, To <: Integer] = DimsConst[bases with B#of, values with B#set[To]]    
-    type setVals[Vs <: Dim] = DimsConst[bases,Vs]
+    type setVals[Vs] = DimsConst[bases,Vs]
   }
-  type Dimless = DimsConst[Dim, Dim]
+  type Dimless = DimsConst[Any, Any]
 
   object Basis {
     trait Length extends BaseQuantityOf[Length] {
-      trait of extends Dim { type length <: Integer }
+      trait of { type length <: Integer }
       type set[To <: Integer] = of { type length = To }
       type get[L <: of] = L#length
     }
     trait Time extends BaseQuantityOf[Time] {
-      trait of extends Dim { type time <: Integer }
+      trait of { type time <: Integer }
       type set[To <: Integer] = of { type time = To }
       type get[L <: of] = L#time
     }
     trait Mass extends BaseQuantityOf[Mass] {
-      trait of extends Dim { type mass <: Integer }
+      trait of { type mass <: Integer }
       type set[To <: Integer] = of { type mass = To }
       type get[L <: of] = L#mass
     }
     trait Temperature extends BaseQuantityOf[Temperature] {
-      trait of extends Dim { type temperature <: Integer }
+      trait of { type temperature <: Integer }
       type set[To <: Integer] = of { type temperature = To }
       type get[L <: of] = L#temperature
     }
     trait AmountOfSubstance extends BaseQuantityOf[AmountOfSubstance] {
-      trait of extends Dim { type amountOfSubstance <: Integer }
+      trait of { type amountOfSubstance <: Integer }
       type set[To <: Integer] = of { type amountOfSubstance = To }
       type get[L <: of] = L#amountOfSubstance
     }
     trait Current extends BaseQuantityOf[Current] {
-      trait of extends Dim { type current <: Integer }
+      trait of { type current <: Integer }
       type set[To <: Integer] = of { type current = To }
       type get[L <: of] = L#current
     }
     trait Intensity extends BaseQuantityOf[Intensity] {
-      trait of extends Dim { type intensity <: Integer }
+      trait of { type intensity <: Integer }
       type set[To <: Integer] = of { type intensity = To }
       type get[L <: of] = L#intensity
     }
     trait Info extends BaseQuantityOf[Info] {
-      trait of extends Dim { type info <: Integer }
+      trait of { type info <: Integer }
       type set[To <: Integer] = of { type info = To }
       type get[L <: of] = L#info
     }
@@ -111,4 +110,7 @@ package object scunits extends Implicits {
   type CatalyticActivity = AmountOfSubstance / Time
 
   type DistancePerFuel = Length / Volume
+
+  import si._
+  metre(1) * metre(2) * metre(3) / second(1) / squareMetre(6) / second(2) * gram(100) / newton(100): Scalar[Dimless]
 }

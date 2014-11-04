@@ -18,16 +18,22 @@ sealed trait Integer {
 }
 
 sealed trait NonNegInt extends Integer {
+  type neg <: NonPosInt
   type succ <: PosInt
 }
 sealed trait NonPosInt extends Integer {
+  type neg <: NonNegInt
   type pred <: NegInt
 }
-sealed trait NonZeroInt extends Integer
+sealed trait NonZeroInt extends Integer {
+  type neg <: NonZeroInt
+}
 sealed trait NegInt extends NonPosInt with NonZeroInt {
+  type neg <: PosInt
   type succ <: NonPosInt
 }
 sealed trait PosInt extends NonNegInt with NonZeroInt {
+  type neg <: NegInt
   type pred <: NonNegInt
 }
 

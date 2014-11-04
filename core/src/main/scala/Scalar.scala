@@ -6,11 +6,11 @@ case class Scalar[L <: Dims](v: Double) extends AnyVal with Ordered[Scalar[L]] {
   def +(m: Scalar[L]) = Scalar[L](v + m.v)
   def -(m: Scalar[L]) = Scalar[L](v - m.v)
 
-  def *[R <: Dims, Qs <: QListOf[L#bases] with QListOf[R#bases]](r: Scalar[R])(implicit qs: Qs) = Scalar[qs.mult[L,R]](v * r.v)
-  def /[R <: Dims, Qs <: QListOf[L#bases] with QListOf[R#bases]](r: Scalar[R])(implicit qs: Qs) = Scalar[qs.div[L,R]](v / r.v)
+  def *[R <: Dims](r: Scalar[R])(implicit qs: QListOf[L#bases] with QListOf[R#bases]) = Scalar[qs.mult[L,R]](v * r.v)
+  def /[R <: Dims](r: Scalar[R])(implicit qs: QListOf[L#bases] with QListOf[R#bases]) = Scalar[qs.div[L,R]](v / r.v)
 
-  def *(r: Double) = Scalar[L](v * r)
-  def /(r: Double) = Scalar[L](v / r)
+  // def *(r: Double) = Scalar[L](v * r)
+  // def /(r: Double) = Scalar[L](v / r)
 
   def compare(that: Scalar[L]) = if(v < that.v) -1 else if(v > that.v) 1 else 0
 
