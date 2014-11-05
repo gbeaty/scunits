@@ -30,33 +30,31 @@ trait QList {
 
   // Experimental:  
 }
-@implicitNotFound(msg = "Cannot find an implicit QList for BaseQuantities ${Bs}.")
+@implicitNotFound(msg = "Cannot find an implicit QList for BaseQuantities: ${Bs}.")
 trait QListOf[+Bs] extends QList {
   type self <: QListOf[Bs]
   type base <: Bs
 }
-class ::[L <: BaseQuantity, R <: QList] extends QListOf[L#of with R#base] {
-  type self = L :: R
-  type head = L
-  type tail = R
-  type base = L#of with R#base
-  type zeros = head#setDim[tail#zeros, _0]
-  type append[As <: QList] = head :: tail#append[As]
+class ::[H <: BaseQuantity, T <: QList] extends QListOf[H#of with T#base] {
+  type self = H :: T
+  type base = H#of with T#base
+  type zeros = T#zeros with H#set[_0]
+  type append[As <: QList] = H :: T#append[As]
 
-  protected type doInv[L <: base] = head#setNonZero[tail#doInv[L], head#get[L]#neg]
+  protected type doInv[L <: base] = H#setNonZero[T#doInv[L], H#get[L]#neg]
 
-  protected type doPow[L <: base, R <: Integer] = head#setNonZero[tail#doPow[L,R], head#get[L]#mult[R]]
+  protected type doPow[L <: base, R <: Integer] = H#setNonZero[T#doPow[L,R], H#get[L]#mult[R]]
 
   protected type doMult[L <: base, R <: base] = ({
-    type rem = tail#doMult[L,R]
-    type exp = head#get[L] + head#get[R]
-    type apply = exp#dimsNzAdd[rem, head]
+    type exp = H#get[L]#add[H#get[R]]
+    type rem = T#doMult[L,R]
+    type apply = exp#dimsNzAdd[rem, H]
   })#apply
 
   protected type doDiv[L <: base, R <: base] = ({
-    type rem = tail#doDiv[L,R]
-    type exp = head#get[L] - head#get[R]
-    type apply = exp#dimsNzAdd[rem, head]
+    type exp = H#get[L]#sub[H#get[R]]
+    type rem = T#doDiv[L,R]
+    type apply = exp#dimsNzAdd[rem, H]
   })#apply
 
   // Experimental:

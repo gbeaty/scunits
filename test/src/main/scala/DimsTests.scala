@@ -31,14 +31,14 @@ object DimTests {
 
   // Test zeros:
   implicitly[QNil#zeros =:= Any]
-  implicitly[LengthTimeMs#zeros =:= Basis.Length#setDim[Basis.Time#setDim[Any,_0],_0]]
+  implicitly[LengthTimeMs#zeros =:= Basis.Length#set[_0] with Basis.Time#set[_0]]
 
   // Test setters/getters:
   implicitly[Basis.Length#get[Basis.Length#set[p1]] =:= p1]
-  implicitly[Basis.Time#get[Basis.Time#setDim[Speed,n2]] =:= n2]
-  implicitly[Basis.Time#get[Basis.Time#setDim[Basis.Time#set[n2],n1]] =:= n1]
-  implicitly[Basis.Time#get[Basis.Time#setDim[Basis.Time#set[n1],n2]] =:= n2]
-  implicitly[Basis.Time#get[TimeMs#zeros with Basis.Time#setDim[Basis.Time#set[n1],n2]] =:= n2]
+  implicitly[Basis.Time#get[Basis.Time#set[n2]] =:= n2]
+  implicitly[Basis.Time#get[Basis.Time#set[n2] with Basis.Time#set[n1]] =:= n1]
+  implicitly[Basis.Time#get[Basis.Time#set[n1] with Basis.Time#set[n2]] =:= n2]
+  implicitly[Basis.Time#get[TimeMs#zeros with Basis.Time#set[n2]] =:= n2]
 
   // Test negations:
   implicitly[bqs.inv[Dimless] =:= Dimless]
@@ -57,4 +57,8 @@ object DimTests {
   implicitly[Speed * Time =:= Length]
   implicitly[Frequency * Length =:= Speed]
   implicitly[Length * Frequency =:= Speed]
+
+  // Test pow:
+  implicitly[bqs.pow[Length,p2] =:= Area]
+  implicitly[bqs.pow[Length,p3] =:= Volume]
 }

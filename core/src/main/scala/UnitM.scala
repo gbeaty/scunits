@@ -23,8 +23,10 @@ case class UnitM[L <: Dims](
 
   def inv(implicit qs: QListOf[L#bases]) = UnitM[qs.inv[L]](mult = 1 / mult)
 
-  def *[R <: Dims](r: UnitM[R])(implicit qs: QListOf[L#bases]) = UnitM[qs.mult[L,R]](mult = prefixedMult * r.prefixedMult)  
-  def /[R <: Dims](r: UnitM[R])(implicit qs: QListOf[L#bases]) = UnitM[qs.div[L,R]](mult = prefixedMult / r.prefixedMult)
+  def *[R <: Dims](r: UnitM[R])(implicit qs: QListOf[L#bases with R#bases]) =
+    UnitM[qs.mult[L,R]](mult = prefixedMult * r.prefixedMult)
+  def /[R <: Dims](r: UnitM[R])(implicit qs: QListOf[L#bases with R#bases]) =
+    UnitM[qs.div[L,R]](mult = prefixedMult / r.prefixedMult)
 
   def *(r: BigDecimal) = UnitM[L](mult = prefixedMult * r)
   def *(r: Double) = UnitM[L](mult = prefixedMult * r)

@@ -5,7 +5,7 @@ import scunits.si._
 /*
   2.8 Ghz Haswell running Ubuntu 14.04. 15 objects of 300 lines each = 4500 lines
 
-  Implicit QList Checking on 'QListOf[L#bases] with QListOf[R#bases]': 33 seconds = 136 lines per second
+  Implicit QList Checking on 'QListOf[L#bases] with QListOf[R#bases]': 31 seconds = 145 lines per second
 
   Implicit QList, no type-checking on dims: 21 seconds = 214 lines per second
   Hard-coded QList (no implicits): 18 seconds = 250 lines per second
