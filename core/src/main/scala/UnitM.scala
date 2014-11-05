@@ -10,7 +10,6 @@ case class UnitM[L <: Dims](
   mult: BigDecimal = 1.0,
   offset: BigDecimal = 0.0,
   prefix: Option[UnitPrefix] = None) {
-  type dims = DimsConst[L#qlist, L#values]
 
   val prefixedMult: BigDecimal = prefix.map(_.mult * mult).getOrElse(mult)
   val prefixedMultDouble = prefixedMult.toDouble
@@ -22,10 +21,12 @@ case class UnitM[L <: Dims](
   def label(n: String, s: String) = copy[L](name = Some(n), symbol = Some(s))
   def rename(n: String) = copy[L](name = Some(n))
 
-  def inv = UnitM[dims#inv](mult = 1 / mult)
+  def inv(implicit qs: QListOf[L#bases]) = UnitM[qs.inv[L]](mult = 1 / mult)
 
-  def *[R <: DimsOf[L#qlist]](r: UnitM[R]) = UnitM[dims#op[R]#mult](mult = prefixedMult * r.prefixedMult)  
-  def /[R <: DimsOf[L#qlist]](r: UnitM[R]) = UnitM[dims#op[R]#div](mult = prefixedMult / r.prefixedMult)
+  def *[R <: Dims](r: UnitM[R])(implicit qs: QListOf[L#bases with R#bases]) =
+    UnitM[qs.mult[L,R]](mult = prefixedMult * r.prefixedMult)
+  def /[R <: Dims](r: UnitM[R])(implicit qs: QListOf[L#bases with R#bases]) =
+    UnitM[qs.div[L,R]](mult = prefixedMult / r.prefixedMult)
 
   def *(r: BigDecimal) = UnitM[L](mult = prefixedMult * r)
   def *(r: Double) = UnitM[L](mult = prefixedMult * r)
@@ -47,8 +48,9 @@ case class UnitM[L <: Dims](
       case (Some(n),Some(s)) => this.label(pn + n, ps + s)
       case _ => this
     }
-  // def sq = (this * this).prefixLabel("square ", "sq-")
-  // def cu = (this * this * this).prefixLabel("cubic", "cu-")
+  def sq(implicit qs: QListOf[L#bases]) = (this * this).prefixLabel("square ", "sq-")
+  // def cu(implicit qs: QListOf[L#bases]) = (this * this * this).prefixLabel("cubic", "cu-")
+  def cu(implicit qs: QListOf[L#bases]) = (this * this).prefixLabel("cubic", "cu-")
 }
 object UnitM {
   def apply[D <: Dims](name: String, symbol: String): UnitM[D] =

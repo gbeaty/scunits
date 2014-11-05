@@ -4,36 +4,71 @@ import scunits._
 import annotation.implicitNotFound
 
 trait QList {
-  type base <: Dim
-  type op[L <: base, R <: base, O[_ <: Integer, _ <: Integer] <: Integer] <: base
-  type inv[L <: base] <: base
+  type self <: QList
+  type base
+
+  type mult[L <: Dims, R <: Dims] = self#prepMult[L, R]
+  type div[L <: Dims, R <: Dims] = self#prepDiv[L, R]
+  protected type prepMult[L <: Dims, R <: Dims] = doMult[zeros with L#values, zeros with R#values]
+  protected type prepDiv[L <: Dims, R <: Dims] = doDiv[zeros with L#values, zeros with R#values]
+  protected type doMult[L <: base, R <: base] <: Dims
+  protected type doDiv[L <: base, R <: base] <: Dims 
+  
   type zeros <: base
   type append[As <: QList] <: QList
-  type Dimless = DimsConst[this.type, zeros]  
-  type copy[D <: base] <: base
 
-  type ^[L <: BaseQuantity, R <: NonZeroInt] = DimsConst[this.type, copy[zeros with L#set[R]]]
-}
-trait QListOf[B <: Dim] extends QList {
-  type base = B
-}
-class ::[L <: BaseQuantity, R <: QList] extends QListOf[L#of with R#base] {
-  type head = L
-  type tail = R
-  type zeros = head#set[_0] with tail#zeros
-  type append[As <: QList] = head :: tail#append[As]
-  type copy[D <: base] = tail#copy[D] with head#set[head#get[D]]
+  type inv[L <: Dims] = DimsConst[L#bases, doInv[zeros with L#values]]
+  protected type doInv[L <: base]
 
-  type inv[L <: base] = tail#inv[L] with head#set[head#get[L]#neg]
-  
-  type op[L <: base, R <: base, O[_ <: Integer, _ <: Integer] <: Integer] =
-    tail#op[L,R,O] with head#set[O[head#get[L], head#get[R]]]
+  type pow[L <: Dims, R <: Integer] = DimsConst[L#bases, doPow[zeros with L#values, R]]
+  protected type doPow[L <: base, R <: Integer]
+
+  object ops {
+    type *[L <: Dims, R <: Dims] = mult[L,R]
+    type /[L <: Dims, R <: Dims] = div[L,R]
+  }
+
+  // Experimental:  
 }
-class QNil extends QListOf[Dim] {
-  type zeros = Dim
+@implicitNotFound(msg = "Cannot find an implicit QList for BaseQuantities: ${Bs}.")
+trait QListOf[+Bs] extends QList {
+  type self <: QListOf[Bs]
+  type base <: Bs
+}
+class ::[H <: BaseQuantity, T <: QList] extends QListOf[H#of with T#base] {
+  type self = H :: T
+  type base = H#of with T#base
+  type zeros = T#zeros with H#set[_0]
+  type append[As <: QList] = H :: T#append[As]
+
+  protected type doInv[L <: base] = H#setNonZero[T#doInv[L], H#get[L]#neg]
+
+  protected type doPow[L <: base, R <: Integer] = H#setNonZero[T#doPow[L,R], H#get[L]#mult[R]]
+
+  protected type doMult[L <: base, R <: base] = ({
+    type exp = H#get[L]#add[H#get[R]]
+    type rem = T#doMult[L,R]
+    type apply = exp#dimsNzAdd[rem, H]
+  })#apply
+
+  protected type doDiv[L <: base, R <: base] = ({
+    type exp = H#get[L]#sub[H#get[R]]
+    type rem = T#doDiv[L,R]
+    type apply = exp#dimsNzAdd[rem, H]
+  })#apply
+
+  // Experimental:
+}
+trait QNil extends QList {
+  type self = QNil
+  type base = Any
+  type zeros = Any
   type append[As <: QList] = As
-  type copy[D <: base] = Dim
 
-  type inv[L <: base] = Dim
-  type op[L <: base, R <: base, O[_ <: Integer, _ <: Integer] <: Integer] = Dim
+  protected type doInv[L <: base] = Any
+  protected type doMult[L <: base, R <: base] = Dimless
+  protected type doDiv[L <: base, R <: base] = Dimless
+  protected type doPow[L <: base, R <: Integer] = Any
+
+  // Experimental:
 }

@@ -8,6 +8,7 @@ import org.specs2.mutable._
 class Scalars extends Specification {
   val m1 = metre(1.0)
   val m2 = metre(2.0)
+  val mps1 = metre(1) / second(1)
   "Scalars" should {    
     "Add" in {
       m1 + m2 ==== metre(3.0)
@@ -16,9 +17,11 @@ class Scalars extends Specification {
       m2 - m1 ==== m1
     }
     "Multiply" in {
-      m1 * m2 ==== squareMetre(2.0)
+      // newton(2) * metre(4) ==== newtonMetre(8)
+      m1 * m2 ==== squareMetre(2.0)      
     }
     "Divide" in {
+      metre(2) / second(2) ==== metrePerSecond(1)
       m1 / m2 ==== coef(0.5)
     }
     "Automatically invert" in {
