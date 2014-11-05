@@ -5,29 +5,29 @@ import scunits._
 object SIQuantitiesTests {
 
   // Length
-  implicitly[Area#op[Length]#div =:= Length]
-  implicitly[Volume#op[Length]#div =:= Area]
-  implicitly[Volume#op[Area]#div =:= Length]
-  implicitly[Density#op[Volume]#mult =:= Mass]
-  implicitly[Speed#op[Length]#div =:= Frequency]
-  implicitly[Energy#op[Length]#div =:= Force]
+  implicitly[siBaseQuantities.div[Area, Length] =:= Length]
+  implicitly[siBaseQuantities.div[Volume, Length] =:= Area]
+  implicitly[siBaseQuantities.div[Volume, Area] =:= Length]
+  implicitly[siBaseQuantities.mult[Density, Volume] =:= Mass]
+  implicitly[siBaseQuantities.div[Speed, Length] =:= Frequency]
+  implicitly[siBaseQuantities.div[Energy, Length] =:= Force]
 
   // Power and energy
-  implicitly[Power#op[Time]#mult =:= Energy]
-  implicitly[Energy#op[Time]#div =:= Power]
-  implicitly[Acceleration#op[Time]#mult =:= Speed]
+  implicitly[siBaseQuantities.mult[Power, Time] =:= Energy]
+  implicitly[siBaseQuantities.div[Energy, Time] =:= Power]
+  implicitly[siBaseQuantities.mult[Acceleration, Time] =:= Speed]
 
   // Electricity
-  implicitly[Conductance#op[Time]#mult =:= Capacitance]
-  implicitly[Voltage#op[Resistance]#div =:= Current]
-  implicitly[Resistance#op[Current]#mult =:= Voltage]
-  implicitly[Conductance#op[Flux]#mult =:= Charge]
-  implicitly[Flux#op[Inductance]#div =:= Current]
+  implicitly[siBaseQuantities.mult[Conductance, Time] =:= Capacitance]
+  implicitly[siBaseQuantities.div[Voltage, Resistance] =:= Current]
+  implicitly[siBaseQuantities.mult[Resistance, Current] =:= Voltage]
+  implicitly[siBaseQuantities.mult[Conductance, Flux] =:= Charge]
+  implicitly[siBaseQuantities.div[Flux, Inductance] =:= Current]
 
   // Magnetism
-  implicitly[Flux#op[Area]#div =:= FieldStrength]
-  implicitly[Flux#op[Time]#div =:= Voltage]
+  implicitly[siBaseQuantities.div[Flux, Area] =:= FieldStrength]
+  implicitly[siBaseQuantities.div[Flux, Time] =:= Voltage]
   
   // Radioactivity
-  implicitly[Dose#op[Length]#div =:= Acceleration]
+  implicitly[siBaseQuantities.div[Dose, Length] =:= Acceleration]
 }
