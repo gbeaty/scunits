@@ -40,27 +40,27 @@ sealed trait PosInt extends NonNegInt with NonZeroInt {
   type loop[B,F[_ <: B] <: B, Res <: B] = pred#loop[B,F,F[Res]]
 }
 
-sealed trait SuccInt[P <: NonNegInt] extends PosInt {
-  type succ = SuccInt[SuccInt[P]]
+sealed trait ++[P <: NonNegInt] extends PosInt {
+  type succ = ++[++[P]]
   type add[N <: Integer] = P#add[N#succ]
   type pred = P
   type sub[N <: Integer] = P#sub[N#pred]
-  type neg = PredInt[P#neg]
+  type neg = --[P#neg]
 }
 
-sealed trait PredInt[S <: NonPosInt] extends NegInt {
+sealed trait --[S <: NonPosInt] extends NegInt {
   type succ = S
   type add[N <: Integer] = S#add[N#pred]
-  type pred = PredInt[PredInt[S]]
+  type pred = --[--[S]]
   type sub[N <: Integer] = S#sub[N#succ]
-  type neg = SuccInt[S#neg]
+  type neg = ++[S#neg]
 }
 
 sealed trait _0 extends NonNegInt with NonPosInt {
   type isZero = True
-  type succ = SuccInt[_0]
+  type succ = ++[_0]
   type add[N <: Integer] = N
-  type pred = PredInt[_0]
+  type pred = --[_0]
   type sub[N <: Integer] = N#neg
   type neg = _0
 }
