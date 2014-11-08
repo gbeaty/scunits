@@ -110,7 +110,4 @@ package object scunits extends Implicits {
   type CatalyticActivity = AmountOfSubstance / Time
 
   type DistancePerFuel = Length / Volume
-
-  import si._
-  metre(1) * metre(2) * metre(3) / second(1) / squareMetre(6) / second(2) * gram(100) / newton(100): Scalar[Dimless]
 }
