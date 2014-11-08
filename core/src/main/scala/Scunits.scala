@@ -60,8 +60,8 @@ package object scunits extends Implicits {
   
   type SiBaseQuantities =
     Basis.Length :: Basis.Time :: Basis.Mass :: Basis.Temperature ::
-    Basis.AmountOfSubstance :: Basis.Current :: Basis.Intensity :: QNil
-  implicit val siBaseQuantities = new SiBaseQuantities
+    Basis.AmountOfSubstance :: Basis.Current :: Basis.Intensity :: QNil  
+  implicit object siBaseQuantities extends SiBaseQuantities
   import siBaseQuantities.ops._
 
   val coef = UnitM[Dimless]("","",1.0)

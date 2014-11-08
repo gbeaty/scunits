@@ -7,11 +7,12 @@ import scunits.si._
 
   Implicit QList Checking on 'QListOf[L#bases] with QListOf[R#bases]': 31 seconds = 145 lines per second
 
-  Implicit QList, no type-checking on dims: 21 seconds = 214 lines per second
-  Hard-coded QList (no implicits): 18 seconds = 250 lines per second
-  Implicit QList checking with no mult - output is always Dimless: 16 seconds = 281 lines per second
-  Implicit QList checking with zeros for operands: does not terminate
-  No addition/subtraction (Integer#sub/add return _0): 28 seconds = 161 lines per second
+  Old change resultes:
+    Implicit QList, no type-checking on dims: 21 seconds = 214 lines per second
+    Hard-coded QList (no implicits): 18 seconds = 250 lines per second
+    Implicit QList checking with no mult - output is always Dimless: 16 seconds = 281 lines per second
+    Implicit QList checking with zeros for operands: does not terminate
+    No addition/subtraction (Integer#sub/add return _0): 28 seconds = 161 lines per second
 */
 
 object Bench1 {
