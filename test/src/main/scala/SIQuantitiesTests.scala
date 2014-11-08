@@ -3,31 +3,32 @@ package scunits.test
 import scunits._
 
 object SIQuantitiesTests {
+  import siBaseQuantities.ops._
 
   // Length
-  implicitly[siBaseQuantities.div[Area, Length] =:= Length]
-  implicitly[siBaseQuantities.div[Volume, Length] =:= Area]
-  implicitly[siBaseQuantities.div[Volume, Area] =:= Length]
-  implicitly[siBaseQuantities.mult[Density, Volume] =:= Mass]
-  implicitly[siBaseQuantities.div[Speed, Length] =:= Frequency]
-  implicitly[siBaseQuantities.div[Energy, Length] =:= Force]
+  implicitly[Area / Length =:= Length]
+  implicitly[Volume / Length =:= Area]
+  implicitly[Volume / Area =:= Length]
+  implicitly[Density * Volume =:= Mass]
+  implicitly[Speed / Length =:= Frequency]
+  implicitly[Energy / Length =:= Force]
 
   // Power and energy
-  implicitly[siBaseQuantities.mult[Power, Time] =:= Energy]
-  implicitly[siBaseQuantities.div[Energy, Time] =:= Power]
-  implicitly[siBaseQuantities.mult[Acceleration, Time] =:= Speed]
+  implicitly[Power * Time =:= Energy]
+  implicitly[Energy / Time =:= Power]
+  implicitly[Acceleration * Time =:= Speed]
 
   // Electricity
-  implicitly[siBaseQuantities.mult[Conductance, Time] =:= Capacitance]
-  implicitly[siBaseQuantities.div[Voltage, Resistance] =:= Current]
-  implicitly[siBaseQuantities.mult[Resistance, Current] =:= Voltage]
-  implicitly[siBaseQuantities.mult[Conductance, Flux] =:= Charge]
-  implicitly[siBaseQuantities.div[Flux, Inductance] =:= Current]
+  implicitly[Conductance * Time =:= Capacitance]
+  implicitly[Voltage / Resistance =:= Current]
+  implicitly[Resistance * Current =:= Voltage]
+  implicitly[Conductance * Flux =:= Charge]
+  implicitly[Flux / Inductance =:= Current]
 
   // Magnetism
-  implicitly[siBaseQuantities.div[Flux, Area] =:= FieldStrength]
-  implicitly[siBaseQuantities.div[Flux, Time] =:= Voltage]
+  implicitly[Flux / Area =:= FieldStrength]
+  implicitly[Flux / Time =:= Voltage]
   
   // Radioactivity
-  implicitly[siBaseQuantities.div[Dose, Length] =:= Acceleration]
+  implicitly[Dose / Length =:= Acceleration]
 }

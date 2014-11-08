@@ -30,7 +30,7 @@ trait QList {
 
   // Experimental:  
 }
-@implicitNotFound(msg = "Cannot find an implicit QList for BaseQuantities: ${Bs}.")
+@implicitNotFound(msg = "Cannot find an implicit QList which includes all of the operand's BaseQuantities. You may need to import or create one.")
 trait QListOf[+Bs] extends QList {
   type self <: QListOf[Bs]
   type base <: Bs
